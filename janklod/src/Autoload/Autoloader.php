@@ -150,13 +150,7 @@ class Autoloader
            implode(DIRECTORY_SEPARATOR, $pathParts)
         ]);
 
-        $filename .= $filename .'.php';
-
-        if(! \file_exists($filename)) {
-            throw new AutoloaderException('filename ( '. $filename .' ) does not exist.');
-        }
-
-        return $filename;
+        return sprintf('%.php', $filename);
     }
 }
 
