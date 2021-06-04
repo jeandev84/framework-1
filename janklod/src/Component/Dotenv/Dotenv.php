@@ -92,7 +92,10 @@ class Dotenv
         $environs =  file($path);
 
         foreach ($environs as $env) {
-             $data[] = new Env($env);
+             $envObject = new Env($env);
+             if($envObject->getParameter()) {
+                 $data[] = new Env($env);
+             }
         }
 
         return $data;

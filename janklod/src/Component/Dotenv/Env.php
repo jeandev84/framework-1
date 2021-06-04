@@ -28,11 +28,21 @@ class Env
 
 
     /**
+     * @return false|mixed|string
+    */
+    public function getParameter()
+    {
+        return $this->parameter;
+    }
+
+
+
+    /**
      * put environ
     */
     public function put()
     {
-        if($this->parameter) {
+        if(! \is_null($this->parameter)) {
             putenv(sprintf('%s', $this->parameter));
             list($index, $value) = explode("=", $this->parameter);
             $_ENV[$index] = $value;
@@ -50,7 +60,6 @@ class Env
         $env = trim(str_replace("\n", '', $env));
 
         if(preg_match('#^(.*)=(.*)$#', $env, $matches)) {
-
             $matchedEnv = str_replace(' ', '', $matches[0]);
             return explode('#', $matchedEnv)[0];
         }
