@@ -2,11 +2,13 @@
 namespace Jan\Component\Templating;
 
 
+use Jan\Component\Templating\Contract\AssetInterface;
+
 /**
  * Class Asset ( Asset manager. )
  * @package Jan\Component\Templating
- */
-class Asset
+*/
+class Asset implements AssetInterface
 {
 
     const CSS_BLANK = '<link href="%s" rel="stylesheet">';
@@ -15,20 +17,21 @@ class Asset
 
     /**
      * @var array
-     */
+    */
     private $css = [];
 
 
 
     /**
      * @var array
-     */
+    */
     private $js = [];
+
 
 
     /**
      * @var string
-     */
+    */
     private $baseUrl;
 
 
@@ -36,7 +39,7 @@ class Asset
     /**
      * Asset constructor.
      * @param string $baseUrl
-     */
+    */
     public function __construct(string $baseUrl = '')
     {
         if($baseUrl) {
@@ -131,8 +134,8 @@ class Asset
     /**
      * @param $link
      * @return string
-     */
-    public function renderOnceCss($link)
+    */
+    public function renderOnceCss($link): string
     {
         return sprintf(self::CSS_BLANK, $this->generateUrl($link));
     }
@@ -188,13 +191,12 @@ class Asset
      * @param array $resourceFiles
      * @param string $blankTemplate
      * @return string
-     */
+    */
     protected function printHtml(array $resourceFiles, string $blankTemplate): string
     {
         $html = [];
 
-        foreach ($resourceFiles as $filename)
-        {
+        foreach ($resourceFiles as $filename) {
             $html[] = sprintf($blankTemplate, $this->generateUrl($filename));
         }
 

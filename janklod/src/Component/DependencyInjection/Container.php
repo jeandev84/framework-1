@@ -257,11 +257,11 @@ class Container implements ContainerAccessibleInterface
      }
 
 
-
      /**
       * @param string $abstract
       * @param array $parameters
       * @return mixed
+      * @throws Exception
      */
      public function make(string $abstract, array $parameters = [])
      {
@@ -366,7 +366,8 @@ class Container implements ContainerAccessibleInterface
                  throw $e;
              }
 
-             throw new Exception('Entry '. $id .' not found', $e->getCode(), $e);
+             $exceptionMessage = sprintf('Entry %s not found %s', $id, $e->getCode());
+             throw new Exception($exceptionMessage, $e);
          }
      }
 
@@ -387,6 +388,7 @@ class Container implements ContainerAccessibleInterface
 
           if($this->canResolve($concrete)) {
               $concrete = $this->resolveConcrete($concrete, $parameters);
+              $this->resolved[$abstract] = true;
           }
 
           if($this->isShared($abstract)) {
