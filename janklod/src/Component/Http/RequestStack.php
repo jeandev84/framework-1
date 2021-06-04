@@ -2,12 +2,11 @@
 namespace Jan\Component\Http;
 
 
-
 /**
- * Class Request
+ * Class RequestStack
  * @package Jan\Component\Http
- */
-class Request
+*/
+class RequestStack extends Request
 {
 
 }

@@ -2,7 +2,7 @@
 namespace Jan\Foundation;
 
 
-use Jan\Component\DependencyInjection\Container;
+use Jan\Component\Container\Container;
 
 
 

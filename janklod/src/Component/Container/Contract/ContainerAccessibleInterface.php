@@ -1,10 +1,10 @@
 <?php
-namespace Jan\Component\DependencyInjection\Contract;
+namespace Jan\Component\Container\Contract;
 
 
 /**
  * Interface ContainerAccessibleInterface
- * @package Jan\Component\DependencyInjection\Contract
+ * @package Jan\Component\Container\Contract
 */
 interface ContainerAccessibleInterface extends ContainerInterface, \ArrayAccess
 {

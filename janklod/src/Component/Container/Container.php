@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
-namespace Jan\Component\DependencyInjection;
+namespace Jan\Component\Container;
 
 
 use Exception;
-use Jan\Component\DependencyInjection\Contract\ContainerAccessibleInterface;
-use Jan\Component\DependencyInjection\Contract\ContainerInterface;
+use Jan\Component\Container\Contract\ContainerAccessibleInterface;
+use Jan\Component\Container\Contract\ContainerInterface;
 use ReflectionClass;
 
 
 
 /**
  * Class Container
- * @package Jan\Component\DependencyInjection
+ * @package Jan\Component\Container
 */
 class Container implements ContainerAccessibleInterface
 {
