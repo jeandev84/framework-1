@@ -1,0 +1,21 @@
+{
+    "name": "jeandev/framework",
+    "description": "Jan framework",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yao Jean-Claude",
+            "email": "jeandev84@yahoo.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Jan\\": "janklod/src"
+        }
+    }
+}
