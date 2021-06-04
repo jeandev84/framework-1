@@ -4,7 +4,7 @@ namespace Jan\Component\Container;
 
 
 use Exception;
-use Jan\Component\Container\Contract\ContainerAccessibleInterface;
+use Jan\Component\Container\Contract\ContainerContract;
 use Jan\Component\Container\Contract\ContainerInterface;
 use ReflectionClass;
 
@@ -14,7 +14,7 @@ use ReflectionClass;
  * Class Container
  * @package Jan\Component\Container
 */
-class Container implements ContainerAccessibleInterface
+class Container implements ContainerContract
 {
 
      /**
