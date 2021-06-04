@@ -78,7 +78,7 @@ class Autoloader
       */
       public function register()
       {
-          spl_autoload_register([$this, 'autoload']);
+          spl_autoload_register([$this, 'autoloadPsr4']);
       }
 
 
@@ -96,25 +96,38 @@ class Autoloader
       }
 
 
-    /**
-     * @param $classname
-     * @return bool
-     * @throws AutoloaderException
-    */
-    protected function autoload($classname): bool
-    {
+
+      /**
+        * @param array $namespaces
+      */
+      public function maps(array $namespaces)
+      {
+           foreach ($namespaces as $namespace => $rootDirectory) {
+                $this->map($namespace, $rootDirectory);
+           }
+      }
+
+
+     /**
+      * @param $classname
+      * @return bool
+      * @throws AutoloaderException
+     */
+     protected function autoloadPsr4($classname): bool
+     {
         $parts = explode('\\', $classname);
 
-        if(is_array($parts)) {
+        if(\is_array($parts)) {
 
             $namespace = array_shift($parts) .'\\';
 
             if(! empty($this->namespaceMap[$namespace])) {
 
                 $filename = $this->generateFilename($namespace, $parts);
+                $exceptionMessage = sprintf('filename ( %s ) does not exist.', $filename);
 
                 if(! \file_exists($filename)) {
-                    throw new AutoloaderException('filename ( '. $filename .' ) does not exist.');
+                    throw new AutoloaderException($exceptionMessage);
                 }
 
                 require_once $filename;
@@ -124,7 +137,7 @@ class Autoloader
         }
 
         return false;
-    }
+     }
 
 
     /**
@@ -137,24 +150,23 @@ class Autoloader
 
 
     /**
-     * @param $namespace
-     * @param $pathParts
+     * @param string $namespace
+     * @param array $parts
      * @return string
-     * @throws AutoloaderException
     */
-    protected function generateFilename($namespace, $pathParts): string
+    protected function generateFilename(string $namespace, array $parts): string
     {
         $filename = implode(DIRECTORY_SEPARATOR, [
            $this->root,
            $this->namespaceMap[$namespace],
-           implode(DIRECTORY_SEPARATOR, $pathParts)
+           implode(DIRECTORY_SEPARATOR, $parts)
         ]);
 
         return sprintf('%.php', $filename);
     }
 }
 
-
+/*
 $autoloader = Autoloader::load(__DIR__ .'/../../');
 
 $autoloader->map('Jan\\', 'src/')
@@ -162,3 +174,4 @@ $autoloader->map('Jan\\', 'src/')
 ;
 
 $autoloader->register();
+*/

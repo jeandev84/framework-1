@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Jan\Component\DependencyInjection;
 
 
@@ -126,6 +127,20 @@ class Container implements ContainerInterface
      }
 
 
+     /**
+      * @param string $abstract
+      * @return mixed
+     */
+     public function getConcrete(string $abstract)
+     {
+          if(! $this->hasConcrete($abstract)) {
+               return null;
+          }
+
+          return $this->bindings[$abstract]['concrete'];
+     }
+
+
 
      /**
       * @param string $abstract
@@ -186,6 +201,31 @@ class Container implements ContainerInterface
      }
 
 
+     /**
+      * Share a parameter
+      *
+      * @param $abstract
+      * @param $concrete
+      * @return mixed
+     */
+     public function share($abstract, $concrete)
+     {
+          if(! $this->hasInstance($abstract)) {
+              $this->instances[$abstract] = $concrete;
+          }
+
+          return $this->instances[$abstract];
+     }
+
+     /**
+      * @param $abstract
+     */
+     public function isShared($abstract)
+     {
+
+     }
+
+
 
      /**
       * @param string $abstract
@@ -212,12 +252,14 @@ class Container implements ContainerInterface
      /**
       * @param $abstract
       * @param $alias
+      * @return Container
      */
-     public function alias($abstract, $alias)
+     public function alias($abstract, $alias): Container
      {
           $this->aliases[$abstract] = $alias;
-     }
 
+          return $this;
+     }
 
 
      /**
@@ -226,7 +268,7 @@ class Container implements ContainerInterface
      */
      public function getAlias($abstract)
      {
-        if(\array_key_exists($abstract, $this->aliases)) {
+        if($this->hasAlias($abstract)) {
             return $this->aliases[$abstract];
         }
 
@@ -241,11 +283,49 @@ class Container implements ContainerInterface
      */
      public function has($id): bool
      {
-          if($this->bound($id)) {
-              return true;
-          }
+          return $this->bound($id) || $this->hasInstance($id) || $this->resolved($id);
+     }
 
-          return false;
+
+     /**
+      * @param $id
+      * @return bool
+     */
+     public function hasInstance($id): bool
+     {
+         return isset($this->instances[$id]);
+     }
+
+
+     /**
+      * @param $id
+      * @return bool
+     */
+     public function hasAlias($id): bool
+     {
+         return isset($this->aliases[$id]);
+     }
+
+
+
+     /**
+      * @param $id
+      * @return bool
+     */
+     public function resolved($id): bool
+     {
+          return isset($this->resolved[$id]);
+     }
+
+
+
+     /**
+      * @param $abstract
+      * @return bool
+     */
+     protected function hasConcrete($abstract): bool
+     {
+          return isset($this->bindings[$abstract]) && isset($this->bindings[$abstract]['concrete']);
      }
 
 
@@ -282,8 +362,21 @@ class Container implements ContainerInterface
      public function resolve(string $abstract, array $parameters = [])
      {
           $abstract = $this->getAlias($abstract);
-          $concrete = $this->bindings[$abstract]['concrete'];
+          $concrete = $this->getConcrete($abstract);
 
-          return $this->bindings[$abstract]['concrete'];
+          if($this->isSingleton($abstract)) {
+
+          }
+
+          return $concrete;
+     }
+
+
+
+     public function resolveDependencies(array $dependencies)
+     {
+          foreach ($dependencies as $dependency) {
+
+          }
      }
 }

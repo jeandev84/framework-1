@@ -16,3 +16,5 @@ $container->bind(User::class);
 echo $container->get('name');
 echo $container->get(User::class);
 dd($container->getBindings());
+
+
