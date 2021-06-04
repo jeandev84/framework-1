@@ -162,7 +162,7 @@ class Autoloader
            implode(DIRECTORY_SEPARATOR, $parts)
         ]);
 
-        return sprintf('%.php', $filename);
+        return sprintf('%s.php', $filename);
     }
 }
 
