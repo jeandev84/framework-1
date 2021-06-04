@@ -3,7 +3,10 @@ declare(strict_types=1);
 namespace Jan\Component\DependencyInjection;
 
 
+use Exception;
+use Jan\Component\DependencyInjection\Contract\ContainerAccessibleInterface;
 use Jan\Component\DependencyInjection\Contract\ContainerInterface;
+use ReflectionClass;
 
 
 
@@ -11,7 +14,7 @@ use Jan\Component\DependencyInjection\Contract\ContainerInterface;
  * Class Container
  * @package Jan\Component\DependencyInjection
 */
-class Container implements ContainerInterface
+class Container implements ContainerAccessibleInterface
 {
 
      /**
@@ -59,11 +62,11 @@ class Container implements ContainerInterface
      /**
       * Set container instance
       *
-      * @param $instance
+      * @param ContainerInterface|null $instance
      */
-     public static function setInstance($instance)
+     public static function setInstance(ContainerInterface $instance = null): ?ContainerInterface
      {
-           self::$instance = $instance;
+           return static::$instance = $instance;
      }
 
 
@@ -75,8 +78,8 @@ class Container implements ContainerInterface
      */
      public static function getInstance(): Container
      {
-          if(\is_null(self::$instance)) {
-              self::$instance = new static();
+          if(! static::$instance) {
+              static::$instance = new static();
           }
 
           return self::$instance;
@@ -134,7 +137,7 @@ class Container implements ContainerInterface
      public function getConcrete(string $abstract)
      {
           if(! $this->hasConcrete($abstract)) {
-               return null;
+               return $abstract;
           }
 
           return $this->bindings[$abstract]['concrete'];
@@ -202,6 +205,17 @@ class Container implements ContainerInterface
 
 
      /**
+      * @param $abstract
+      * @return bool
+     */
+     public function isShared($abstract): bool
+     {
+         return $this->hasInstance($abstract) || $this->onlyShared($abstract);
+     }
+
+
+
+     /**
       * Share a parameter
       *
       * @param $abstract
@@ -217,14 +231,20 @@ class Container implements ContainerInterface
           return $this->instances[$abstract];
      }
 
+
      /**
+      * Set instance
+      *
       * @param $abstract
+      * @param $concrete
+      * @return Container
      */
-     public function isShared($abstract)
+     public function instance($abstract, $concrete): Container
      {
+         $this->instances[$abstract] = $concrete;
 
+         return $this;
      }
-
 
 
      /**
@@ -283,8 +303,9 @@ class Container implements ContainerInterface
      */
      public function has($id): bool
      {
-          return $this->bound($id) || $this->hasInstance($id) || $this->resolved($id);
+          return $this->bound($id) || $this->hasInstance($id) || $this->hasAlias($id);
      }
+
 
 
      /**
@@ -295,6 +316,7 @@ class Container implements ContainerInterface
      {
          return isset($this->instances[$id]);
      }
+
 
 
      /**
@@ -333,39 +355,42 @@ class Container implements ContainerInterface
      /**
       * @param $id
       * @return mixed|null
-      * @throws \Exception
+      * @throws Exception
      */
      public function get($id)
      {
          try {
-
-             /*
-             if(! $this->has($id)) {
-                 return $id;
-             }
-             */
-
              return $this->resolve($id);
+         } catch (Exception $e) {
+             if($this->has($id)) {
+                 throw $e;
+             }
 
-         } catch (\Exception $e) {
-               throw $e;
+             throw new Exception('Entry '. $id .' not found', $e->getCode(), $e);
          }
      }
-
 
 
      /**
       * @param string $abstract
       * @param array $parameters
       * @return mixed
+      * @throws Exception
      */
      public function resolve(string $abstract, array $parameters = [])
      {
+          // get abstract from alias
           $abstract = $this->getAlias($abstract);
+
+          // get concrete
           $concrete = $this->getConcrete($abstract);
 
-          if($this->isSingleton($abstract)) {
+          if($this->canResolve($concrete)) {
+              $concrete = $this->resolveConcrete($concrete, $parameters);
+          }
 
+          if($this->isShared($abstract)) {
+               return $this->share($abstract, $concrete);
           }
 
           return $concrete;
@@ -373,10 +398,235 @@ class Container implements ContainerInterface
 
 
 
-     public function resolveDependencies(array $dependencies)
+     /**
+      * get function dependencies
+      *
+      * @param array $dependencies
+      * @param array $withParams
+      * @return array
+      * @throws Exception
+     */
+     public function resolveDependencies(array $dependencies, array $withParams = []): array
      {
-          foreach ($dependencies as $dependency) {
+         $resolvedDependencies = [];
 
-          }
+         foreach ($dependencies as $parameter) {
+             $dependency = $parameter->getClass();
+
+             if($parameter->isOptional()) { continue; }
+             if($parameter->isArray()) { continue; }
+
+             if(\is_null($dependency)) {
+                 if ($parameter->isDefaultValueAvailable()) {
+                     $resolvedDependencies[] = $parameter->getDefaultValue();
+                 } else {
+                     if (array_key_exists($parameter->getName(), $withParams)) {
+                         $resolvedDependencies[] = $withParams[$parameter->getName()];
+                     } else {
+                         $resolvedDependencies = array_merge($resolvedDependencies, $withParams);
+                     }
+                }
+             } else {
+                 $resolvedDependencies[] = $this->get($dependency->getName());
+             }
+         }
+
+         return $resolvedDependencies;
      }
+
+
+
+     /**
+      * @param $concrete
+      * @return bool
+     */
+     public function canResolve($concrete): bool
+     {
+          if($concrete instanceof \Closure) {
+              return  true;
+          }
+
+          if (\is_string($concrete) && \class_exists($concrete)) {
+              return true;
+          }
+
+          return false;
+     }
+
+
+     /**
+      * @param $concrete
+      * @param array $withParams
+      * @return mixed
+      * @throws Exception
+     */
+     public function resolveConcrete($concrete, array $withParams = [])
+     {
+         if($concrete instanceof \Closure) {
+             return $this->callFunction($concrete, $withParams);
+         }
+
+         return $this->makeInstance($concrete, $withParams);
+     }
+
+
+
+     /**
+      * @param $classMap
+      * @param array $withParams
+      * @return object
+      * @throws \ReflectionException
+     */
+     public function makeInstance($classMap, array $withParams = [])
+     {
+         try {
+
+             $reflectedClass = new ReflectionClass($classMap);
+
+             if($reflectedClass->isInstantiable()) {
+
+                 $constructor = $reflectedClass->getConstructor();
+
+                 if(\is_null($constructor)) {
+                     return $reflectedClass->newInstance();
+                 }
+
+                 $dependencies = $this->resolveDependencies($constructor->getParameters(), $withParams);
+                 return $reflectedClass->newInstanceArgs($dependencies);
+             }
+
+         } catch (Exception $e) {
+
+              throw $e;
+         }
+     }
+
+
+
+
+     /**
+      * @param callable $closure
+      * @param array $withParams
+      * @return mixed
+      * @throws Exception
+     */
+     public function callFunction(callable $closure, array $withParams = [])
+     {
+         try {
+
+             $reflectedFunction  = new \ReflectionFunction($closure);
+             $functionParameters = $reflectedFunction->getParameters();
+             $dependencyParams = $this->resolveDependencies($functionParameters, $withParams);
+
+             return $closure(...$dependencyParams);
+
+         }catch (Exception $e) {
+              throw $e;
+         }
+     }
+
+
+
+     /**
+      * Flush the container of all bindings and resolved instances.
+      *
+      * @return void
+     */
+     public function flush()
+     {
+         $this->aliases = [];
+         $this->resolved = [];
+         $this->bindings = [];
+         $this->instances = [];
+     }
+
+
+
+
+     /**
+      * @return array
+     */
+     public function log(): array
+     {
+          return [
+             'bindings'  => $this->getBindings(),
+             'instances' => $this->getInstances(),
+             'resolved'  => $this->getResolved(),
+             'aliases'   => $this->getAliases()
+          ];
+     }
+
+
+     /**
+      * @param $abstract
+      * @return bool
+     */
+     protected function onlyShared($abstract): bool
+     {
+        return isset($this->bindings[$abstract]['shared']) && $this->bindings[$abstract]['shared'] === true;
+     }
+
+
+    /**
+     * @param mixed $id
+     * @return bool
+     */
+    public function offsetExists($id): bool
+    {
+        return $this->has($id);
+    }
+
+
+    /**
+     * @param mixed $id
+     * @return mixed
+     * @throws Exception
+     */
+    public function offsetGet($id)
+    {
+        return $this->get($id);
+    }
+
+
+    /**
+     * @param mixed $id
+     * @param mixed $value
+     */
+    public function offsetSet($id, $value)
+    {
+        $this->bind($id, $value);
+    }
+
+
+    /**
+     * @param mixed $id
+     */
+    public function offsetUnset($id)
+    {
+        unset(
+            $this->bindings[$id],
+            $this->instances[$id],
+            $this->resolved[$id]
+        );
+    }
+
+
+    /**
+     * @param $name
+     * @return array|bool|mixed|object|string|null
+     */
+    public function __get($name)
+    {
+        return $this[$name];
+    }
+
+
+    /**
+     * @param $name
+     * @param $value
+    */
+    public function __set($name, $value)
+    {
+        $this[$name] = $value;
+    }
 }
