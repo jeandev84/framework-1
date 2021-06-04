@@ -58,6 +58,10 @@ class RouteCollection
     public function setRoutes(array $routes)
     {
         foreach ($routes as $route) {
+            if(\is_array($route)) {
+                $route = $this->makeRouteFromArray($route);
+            }
+
             if($route instanceof Route) {
                 $this->add($route);
             }
@@ -66,47 +70,44 @@ class RouteCollection
 
 
     /**
-     * @param $data
-     */
-    public function mapRoutes($data)
+     * @param array $items
+     * @return Route
+    */
+    public function makeRouteFromArray(array $items): Route
     {
-        if(is_array($data)) {
-            $route = new Route();
-            foreach ($data as $k => $v) {
-                $route[$k] = $v;
-            }
-
-            $this->add($route);
+        $route = new Route();
+        foreach ($items as $k => $v) {
+            $route[$k] = $v;
         }
+        return $route;
     }
 
 
-
-    /**
-     * add resources
-     *
-     * @param array $routes
-     * @return RouteCollection
-     */
-    public function addRouteResource(array $routes)
-    {
-        $this->setRoutes($routes);
-
-        $this->resources = array_merge($this->resources, $routes);
-
-        return $this;
-    }
-
-
-    /**
-     * get resources
-     *
-     * @return array
-     */
-    public function getResources()
-    {
-        return $this->resources;
-    }
+//    /**
+//     * add resources
+//     *
+//     * @param array $routes
+//     * @return RouteCollection
+//     */
+//    public function addRouteResource(array $routes)
+//    {
+//        $this->setRoutes($routes);
+//
+//        $this->resources = array_merge($this->resources, $routes);
+//
+//        return $this;
+//    }
+//
+//
+//    /**
+//     * get resources
+//     *
+//     * @return array
+//     */
+//    public function getResources()
+//    {
+//        return $this->resources;
+//    }
 
 
 
@@ -140,17 +141,17 @@ class RouteCollection
 
 
     /**
-     * @param $routeName
+     * @param $name
      * @return Route
      * @throws \Exception
-     */
-    public function getRoute($routeName): Route
+    */
+    public function getRoute($name): Route
     {
-        if(! $this->has($routeName)) {
-            throw new \Exception('route ('. $routeName . ') does not exist.');
+        if(! $this->has($name)) {
+            throw new \Exception('route ('. $name . ') does not exist.');
         }
 
-        return $this->getNamedRoutes()[$routeName];
+        return $this->getNamedRoutes()[$name];
     }
 
 
