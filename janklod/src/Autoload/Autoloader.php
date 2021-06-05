@@ -49,10 +49,10 @@ class Autoloader
       protected function loadResource(string $root): Autoloader
       {
           if (\is_dir($root)) {
-               throw new AutoloaderException('root ( '. $root . ' ) is not a directory.');
+               throw new AutoloaderException('Sorry! (%s) is not a directory.', $root);
           }
 
-          $this->root = $root;
+          $this->root = rtrim($root, '\\/');
 
           return $this;
       }
@@ -84,11 +84,11 @@ class Autoloader
 
 
       /**
-       * @param $namespace
-       * @param $rootDirectory
+       * @param string $namespace
+       * @param string $rootDirectory
        * @return $this
       */
-      public function namespaceMap($namespace, $rootDirectory): Autoloader
+      public function namespaceMap(string $namespace, string $rootDirectory): Autoloader
       {
           $this->namespaceMap[$namespace] = trim($rootDirectory, '\\/');
 
@@ -98,11 +98,11 @@ class Autoloader
 
 
       /**
-        * @param array $namespaces
+        * @param array $configs
       */
-      public function namespaceMaps(array $namespaces)
+      public function namespaceMaps(array $configs)
       {
-           foreach ($namespaces as $namespace => $rootDirectory) {
+           foreach ($configs as $namespace => $rootDirectory) {
                 $this->namespaceMap($namespace, $rootDirectory);
            }
       }
