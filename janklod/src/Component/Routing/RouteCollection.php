@@ -58,6 +58,7 @@ class RouteCollection
     public function setRoutes(array $routes)
     {
         foreach ($routes as $route) {
+
             if(\is_array($route)) {
                 $route = $this->makeRouteFromArray($route);
             }
@@ -164,13 +165,9 @@ class RouteCollection
     public function getRoutesByMethod(): array
     {
         $routes = [];
-
-        foreach ($this->getRoutes() as $route)
-        {
-            /** @var Route $route */
+        foreach ($this->getRoutes() as $route) {
             $routes[$route->toStringMethod()][] = $route;
         }
-
         return $routes;
     }
 }

@@ -9,8 +9,9 @@ namespace Jan\Component\Templating\Contract;
 interface RendererInterface
 {
     /**
-     * Render html
-     * @return string
+     * @param string $template
+     * @param array $variables
+     * @return mixed
     */
-    public function renderHtml(): string;
+    public function render(string $template, array $variables = []);
 }

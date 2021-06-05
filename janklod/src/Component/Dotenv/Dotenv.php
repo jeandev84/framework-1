@@ -59,19 +59,16 @@ class Dotenv
     */
     public function load(string $filename = '.env'): bool
     {
-        $environs = $this->loadEnvironments($filename);
-
-        if(! $environs) {
-            return false;
-        }
-
-
         /** @var Env $env */
-        foreach ($environs as $env) {
-            $env->put();
+        if($environs = $this->loadEnvironments($filename)) {
+            foreach ($environs as $env) {
+                $env->put();
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
 
@@ -79,26 +76,54 @@ class Dotenv
      * @param string $filename
      * @return array
      * @throws Exception
-     */
-    public function loadEnvironments(string $filename): array
+    */
+    public function loadEnvironments(string $filename = '.env'): array
     {
-        $data = [];
-        $path = $this->resource . DIRECTORY_SEPARATOR. $filename;
+        $filename = $this->resource . DIRECTORY_SEPARATOR. $filename;
 
-        if(! file_exists($path)) {
-            return $data;
+        if(! file_exists($filename)) {
+            return [];
         }
 
-        $environs =  file($path);
+        return $this->filteredEnvirons(file($filename));
+    }
+
+
+    /**
+     * @param array $environs
+     * @return array
+    */
+    protected function filteredEnvirons(array $environs): array
+    {
+        $data = [];
 
         foreach ($environs as $env) {
-             $envObject = new Env($env);
-             if($envObject->getParameter()) {
-                 $data[] = new Env($env);
-             }
+            $envObject = new Env($env);
+            if($envObject->getParam()) {
+                $data[] = new Env($env);
+            }
         }
 
         return $data;
+    }
+
+
+
+    /**
+     * @param string $filename
+     * @return array
+     * @throws Exception
+    */
+    public function logicToDiscuss(string $filename = '.env'): array
+    {
+        $filename = $this->resource . DIRECTORY_SEPARATOR. $filename;
+
+        if(! file_exists($filename) && touch($filename)) {
+            $content = file_get_contents(__DIR__.'/stub/env.stub');
+            file_put_contents($filename, $content);
+        }
+
+        $this->filteredEnvirons(file($filename));
     }
 }
 

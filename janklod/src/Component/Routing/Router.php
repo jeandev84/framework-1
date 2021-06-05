@@ -52,12 +52,12 @@ class Router extends RouteCollection
 
 
     /**
-     * @param string $url
+     * @param string $baseUrl
      * @return $this
     */
-    public function setUrl(string $url): Router
+    public function setUrl(string $baseUrl): Router
     {
-        $this->baseUrl = rtrim($url, '/');
+        $this->baseUrl = $baseUrl;
 
         return $this;
     }
@@ -316,6 +316,6 @@ class Router extends RouteCollection
      */
     public function url(string $name, array $params = []): string
     {
-        return $this->baseUrl . $this->generate($name, $params);
+        return rtrim($this->baseUrl, '/') . $this->generate($name, $params);
     }
 }

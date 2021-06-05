@@ -544,12 +544,12 @@ class Route implements \ArrayAccess
 
 
     /**
-     * @return $this|false|mixed
-     */
+     * @return mixed
+    */
     public function call()
     {
         if(! is_callable($this->target)) {
-            return $this;
+            return $this->target;
         }
 
         return call_user_func_array($this->target, array_values($this->matches));
@@ -604,7 +604,7 @@ class Route implements \ArrayAccess
      */
     public function convertParams(array $params = [])
     {
-        $path = $this->removeRightTrailingShashes($this->getPath(), '/');
+        $path = $this->getPath();
 
         if($params) {
             foreach($params as $k => $v) {
@@ -612,7 +612,7 @@ class Route implements \ArrayAccess
             }
         }
 
-        return (string) $path;
+        return  sprintf('/%s', trim($path, '/'));
     }
 
 

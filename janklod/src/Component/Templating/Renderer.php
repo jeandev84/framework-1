@@ -98,30 +98,29 @@ class Renderer implements RendererInterface
      * @return false|string
      * @throws ViewException
     */
-    public function renderHtml(): string
+    public function renderTemplate(): string
     {
         extract($this->variables, EXTR_SKIP);
 
         ob_start();
-        require_once($this->resourcePath($this->template));
+        require_once($this->loadTemplate($this->template));
         return ob_get_clean();
     }
-
 
 
     /**
      * Render html template with availables variables
      *
-     *  @param string $template
-     *  @param array $variables
-     *  @return false|string
-     *  @throws ViewException
-     */
-    public function render(string $template, array $variables = [])
+     * @param string $template
+     * @param array $variables
+     * @return false|string
+     * @throws ViewException
+    */
+    public function render(string $template, array $variables = []): string
     {
         return $this->setTemplate($template)
-            ->setVariables($variables)
-            ->renderHtml();
+                    ->setVariables($variables)
+                    ->renderTemplate();
     }
 
 
@@ -130,7 +129,7 @@ class Renderer implements RendererInterface
      * @return string
      * @throws ViewException
     */
-    public function resourcePath(string $template): string
+    public function loadTemplate(string $template): string
     {
         $templatePath = $this->targetResource . DIRECTORY_SEPARATOR . $this->resolvePath($template);
 
@@ -143,11 +142,11 @@ class Renderer implements RendererInterface
 
 
     /**
-     * @param $targetPath
+     * @param $path
      * @return string|string[]
     */
-    protected function resolvePath($targetPath)
+    protected function resolvePath($path)
     {
-        return str_replace(['\\', '/'], DIRECTORY_SEPARATOR, ltrim($targetPath, '\\/'));
+        return str_replace(['\\', '/'], DIRECTORY_SEPARATOR, ltrim($path, '\\/'));
     }
 }

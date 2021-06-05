@@ -133,7 +133,7 @@ class RouteParameter
      * @param $methods
      * @return array
      */
-    public function resolveMethods($methods)
+    public function resolveMethods($methods): array
     {
         if(\is_string($methods)) {
             $methods = explode('|', $methods);

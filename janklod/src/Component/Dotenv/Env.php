@@ -12,7 +12,7 @@ class Env
      /**
       * @var mixed
      */
-     private $parameter;
+     private $param;
 
 
     /**
@@ -21,8 +21,8 @@ class Env
     */
     public function __construct(string $env)
     {
-       if($parameter = $this->filter($env)) {
-           $this->parameter = $parameter;
+       if($param = $this->filterParsed($env)) {
+           $this->param = $param;
        }
     }
 
@@ -30,9 +30,9 @@ class Env
     /**
      * @return false|mixed|string
     */
-    public function getParameter()
+    public function getParam()
     {
-        return $this->parameter;
+        return $this->param;
     }
 
 
@@ -42,9 +42,9 @@ class Env
     */
     public function put()
     {
-        if(! \is_null($this->parameter)) {
-            putenv(sprintf('%s', $this->parameter));
-            list($index, $value) = explode("=", $this->parameter);
+        if(! \is_null($this->param)) {
+            putenv(sprintf('%s', $this->param));
+            list($index, $value) = explode("=", $this->param);
             $_ENV[$index] = $value;
         }
     }
@@ -53,15 +53,13 @@ class Env
 
     /**
      * @param string $env
-     * @return false|mixed|string
-    */
-    public function filter(string $env)
+     * @return string|false
+     */
+    protected function filterParsed(string $env)
     {
         $env = trim(str_replace("\n", '', $env));
-
         if(preg_match('#^(.*)=(.*)$#', $env, $matches)) {
-            $matchedEnv = str_replace(' ', '', $matches[0]);
-            return explode('#', $matchedEnv)[0];
+            return str_replace([' ', '#'], '', $matches[0]);
         }
 
         return false;
