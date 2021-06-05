@@ -62,5 +62,12 @@ $response->send();
 $kernel->terminate($request, $response);
 
 
+/*
 dump($app->get(\Jan\Contract\Http\Kernel::class));
 dd($app->getBindings());
+*/
+
+$file = new \Jan\Component\FileSystem\File(__DIR__.'/../database/migrations/m20210605_1816_users_table.php');
+
+dump($file);
+dd($file->getPath());
