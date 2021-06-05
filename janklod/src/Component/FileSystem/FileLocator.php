@@ -61,10 +61,7 @@ class FileLocator
     */
     public function localise(string $filename): string
     {
-        return implode(DIRECTORY_SEPARATOR, [
-            $this->resourceDirectory,
-            $this->resolvePath($filename)
-        ]);
+        return implode(DIRECTORY_SEPARATOR, [$this->resourceDirectory, $this->resolvePath($filename)]);
     }
 
 
