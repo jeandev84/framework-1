@@ -64,8 +64,22 @@ class File
     }
 
 
+    /**
+     * get file dirname
+     *
+     * @return string
+    */
+    public function getDirname(): string
+    {
+        return $this->dirname;
+    }
+
+
+
 
     /**
+     * get base name
+     *
      * @return string
     */
     public function getBasename(): string
@@ -75,6 +89,8 @@ class File
 
 
     /**
+     * get name of file
+     *
      * @return string
     */
     public function getFilename(): string
@@ -84,6 +100,8 @@ class File
 
 
     /**
+     * get file extension
+     *
      * @return string|null
     */
     public function getExtension(): ?string
@@ -93,6 +111,8 @@ class File
 
 
     /**
+     * set path to given file
+     *
      * @param string $path
      * @return File
     */
@@ -109,6 +129,8 @@ class File
 
 
     /**
+     * get file details
+     *
      * @return array
     */
     public function details(): array
@@ -118,6 +140,8 @@ class File
 
 
     /**
+     * get path
+     *
      * @return string
     */
     public function getPath(): string
