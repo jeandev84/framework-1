@@ -88,7 +88,7 @@ class Autoloader
        * @param $rootDirectory
        * @return $this
       */
-      public function map($namespace, $rootDirectory): Autoloader
+      public function namespaceMap($namespace, $rootDirectory): Autoloader
       {
           $this->namespaceMap[$namespace] = trim($rootDirectory, '\\/');
 
@@ -100,77 +100,92 @@ class Autoloader
       /**
         * @param array $namespaces
       */
-      public function maps(array $namespaces)
+      public function namespaceMaps(array $namespaces)
       {
            foreach ($namespaces as $namespace => $rootDirectory) {
-                $this->map($namespace, $rootDirectory);
+                $this->namespaceMap($namespace, $rootDirectory);
            }
       }
+
+
+
+      /**
+       * @return array
+      */
+      public function getNamespaceMap(): array
+      {
+           return $this->namespaceMap;
+      }
+
 
 
      /**
       * @param $classname
       * @return bool
       * @throws AutoloaderException
-     */
-     protected function autoloadPsr4($classname): bool
-     {
-        $parts = explode('\\', $classname);
+      */
+      protected function autoloadPsr4($classname): bool
+      {
+          $classParts = explode('\\', $classname);
 
-        if(\is_array($parts)) {
+          if(\is_array($classParts)) {
+             if($filename = $this->processGeneratePathClass($classParts)) {
+                 require_once $filename;
+                 return true;
+             }
+          }
 
-            $namespace = array_shift($parts) .'\\';
-
-            if(! empty($this->namespaceMap[$namespace])) {
-
-                $filename = $this->generateFilename($namespace, $parts);
-                $exceptionMessage = sprintf('filename ( %s ) does not exist.', $filename);
-
-                if(! \file_exists($filename)) {
-                    throw new AutoloaderException($exceptionMessage);
-                }
-
-                require_once $filename;
-
-                return true;
-            }
-        }
-
-        return false;
-     }
+          return false;
+       }
 
 
-    /**
-     * @return array
-    */
-    public function getMappedNamespaces(): array
-    {
-        return $this->namespaceMap;
-    }
+
+      /**
+       * @param array $classParts
+       * @return string
+       * @throws AutoloaderException
+      */
+      protected function processGeneratePathClass(array $classParts): string
+      {
+          $namespace = array_shift($classParts) .'\\';
+
+          if(! empty($this->namespaceMap[$namespace])) {
+
+             $filename = $this->generatePath($namespace, $classParts);
+             $exceptionMessage = sprintf('filename ( %s ) does not exist.', $filename);
+
+             if(! \file_exists($filename)) {
+                 throw new AutoloaderException($exceptionMessage);
+             }
+
+             return $filename;
+          }
+       }
 
 
-    /**
-     * @param string $namespace
-     * @param array $parts
-     * @return string
-    */
-    protected function generateFilename(string $namespace, array $parts): string
-    {
-        $filename = implode(DIRECTORY_SEPARATOR, [
-           $this->root,
-           $this->namespaceMap[$namespace],
-           implode(DIRECTORY_SEPARATOR, $parts)
-        ]);
 
-        return sprintf('%s.php', $filename);
-    }
+      /**
+       * @param string $namespace
+       * @param array $parts
+       * @return string
+      */
+       protected function generatePath(string $namespace, array $parts): string
+       {
+          $filename = implode(DIRECTORY_SEPARATOR, [
+             $this->root,
+             $this->namespaceMap[$namespace],
+             implode(DIRECTORY_SEPARATOR, $parts)
+          ]);
+
+          return sprintf('%s.php', $filename);
+       }
 }
 
 /*
 $autoloader = Autoloader::load(__DIR__ .'/../../');
 
-$autoloader->map('Jan\\', 'src/')
-           ->map('App\\', 'app/')
+$autoloader->namespaceMap('Jan\\', 'src/')
+           ->namespaceMap('App\\', 'app/')
 ;
 
 $autoloader->register();
