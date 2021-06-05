@@ -62,7 +62,7 @@ class Response implements ResponseInterface
       public function __construct(string $content = null, int $status = 200, array $headers = [])
       {
            $this->setContent($content);
-           $this->setStatus($status);
+           $this->setStatusCode($status);
            $this->headers = new HeaderBag($headers);
       }
 

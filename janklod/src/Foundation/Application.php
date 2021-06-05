@@ -13,4 +13,37 @@ use Jan\Component\Container\Container;
 class Application extends Container
 {
 
+     /**
+      * Base path of application
+      *
+      * @var string
+     */
+     protected $basePath;
+
+
+     /**
+      * Application constructor.
+      * @param string|null $basePath
+     */
+     public function __construct(string $basePath = null)
+     {
+          if($basePath) {
+              $this->setBasePath($basePath);
+          }
+     }
+
+
+
+     /**
+      * Set base path of application
+      *
+      * @param string $basePath
+      * @return $this
+     */
+     public function setBasePath(string $basePath): Application
+     {
+          $this->basePath = rtrim($basePath, '\\/');
+
+          return $this;
+     }
 }

@@ -1,16 +1,66 @@
 <?php
 
-use App\Entity\User;
-use Jan\Component\Container\Container;
 
+/*
+|----------------------------------------------------------------------
+|   Autoloader classes and dependencies of application
+|----------------------------------------------------------------------
+*/
 
 require_once __DIR__.'/../vendor/autoload.php';
 
 
-$dotenv = \Jan\Component\Dotenv\Dotenv::create(__DIR__.'/../');
-$dotenv->load();
 
-echo getenv('APP_NAME') . "<br>\n";
-echo $_ENV['DB_NAME'];
+/*
+|-------------------------------------------------------
+|    Require bootstrap of Application
+|-------------------------------------------------------
+*/
 
-dump($dotenv->loadEnvironments());
+$app = require_once __DIR__.'/../bootstrap/app.php';
+
+
+
+/*
+|-------------------------------------------------------
+|    Check instance of Kernel
+|-------------------------------------------------------
+*/
+
+$kernel = $app->get(Jan\Contract\Http\Kernel::class);
+
+
+/*
+|-------------------------------------------------------
+|    Get Response
+|-------------------------------------------------------
+*/
+
+
+$response = $kernel->handle(
+    $request = \Jan\Component\Http\Request::createFromGlobals()
+);
+
+
+
+/*
+|-------------------------------------------------------
+|    Send all headers to navigator
+|-------------------------------------------------------
+*/
+
+$response->send();
+
+
+
+/*
+|-------------------------------------------------------
+|    Terminate application
+|-------------------------------------------------------
+*/
+
+$kernel->terminate($request, $response);
+
+
+dump($app->get(\Jan\Contract\Http\Kernel::class));
+dd($app->getBindings());

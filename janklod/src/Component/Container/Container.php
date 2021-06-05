@@ -134,7 +134,7 @@ class Container implements ContainerContract
       * @param string $abstract
       * @return mixed
      */
-     public function getConcrete(string $abstract)
+     public function getConcreteContext(string $abstract)
      {
           if(! $this->hasConcrete($abstract)) {
                return $abstract;
@@ -250,6 +250,7 @@ class Container implements ContainerContract
      /**
       * @param string $abstract
       * @return mixed
+      * @throws Exception
      */
      public function factory(string $abstract)
      {
@@ -383,8 +384,8 @@ class Container implements ContainerContract
           // get abstract from alias
           $abstract = $this->getAlias($abstract);
 
-          // get concrete
-          $concrete = $this->getConcrete($abstract);
+          // get concrete context
+          $concrete = $this->getConcreteContext($abstract);
 
           if($this->canResolve($concrete)) {
               $concrete = $this->resolveConcrete($concrete, $parameters);
@@ -474,12 +475,12 @@ class Container implements ContainerContract
 
 
      /**
-      * @param $classMap
+      * @param string $classMap
       * @param array $withParams
       * @return object
       * @throws \ReflectionException
      */
-     public function makeInstance($classMap, array $withParams = [])
+     public function makeInstance(string $classMap, array $withParams = [])
      {
          try {
 
@@ -493,7 +494,7 @@ class Container implements ContainerContract
                      return $reflectedClass->newInstance();
                  }
 
-                 $dependencies = $this->resolveDependencies($constructor->getParameters(), $withParams);
+                 $dependencies = $this->getMethodDependencies($constructor, $withParams);
                  return $reflectedClass->newInstanceArgs($dependencies);
              }
 
@@ -504,6 +505,18 @@ class Container implements ContainerContract
      }
 
 
+     /**
+      * Get method dependencies
+      *
+      * @param \ReflectionMethod $method
+      * @param array $with
+      * @return array
+      * @throws Exception
+     */
+     public function getMethodDependencies(\ReflectionMethod $method, array $with = []): array
+     {
+         return $this->resolveDependencies($method->getParameters(), $with);
+     }
 
 
      /**
