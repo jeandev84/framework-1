@@ -169,6 +169,8 @@ class FileSystem extends FileLoader
     */
     public function removeResources(string $maskLink)
     {
-        array_map("unlink", $this->resources($maskLink));
+        if($resources = $this->resources($maskLink)) {
+            array_map("unlink", $resources);
+        }
     }
 }
