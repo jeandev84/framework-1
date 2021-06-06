@@ -2,6 +2,8 @@
 namespace Jan\Component\FileSystem;
 
 
+use Jan\Component\FileSystem\Exception\FileLocatorException;
+
 /**
  * Class FileLocator
  * @package Jan\Component\FileSystem
@@ -59,11 +61,30 @@ class FileLocator
      * @param string $filename
      * @return string
     */
-    public function localise(string $filename): string
+    public function locate(string $filename): string
     {
-        return implode(DIRECTORY_SEPARATOR, [$this->resourceDirectory, $this->resolvePath($filename)]);
+         return implode(DIRECTORY_SEPARATOR, [
+             $this->resourceDirectory,
+             $this->resolvePath($filename)
+         ]);
     }
 
+
+    /**
+     * @param string $filename
+     * @return false|string
+     * @throws FileLocatorException
+    */
+    public function realPath(string $filename)
+    {
+        $exceptionMessage = sprintf('Cannot get real path of file (%s) because does not exist. log method (%s)', $filename, __METHOD__);
+
+        if(! $this->exists($filename)) {
+            throw new FileLocatorException($exceptionMessage);
+        }
+
+        return realpath($this->locate($filename));
+    }
 
 
     /**
@@ -74,7 +95,7 @@ class FileLocator
     */
     public function exists(string $filename): bool
     {
-        return file_exists($this->localise($filename));
+        return file_exists($this->locate($filename));
     }
 
 

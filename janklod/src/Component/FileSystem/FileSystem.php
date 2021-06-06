@@ -2,12 +2,26 @@
 namespace Jan\Component\FileSystem;
 
 
+use Jan\Component\FileSystem\Exception\FileSystemException;
+
 /**
  * Class FileSystem
  * @package Jan\Component\FileSystem
 */
 class FileSystem extends FileLoader
 {
+
+
+    /**
+     * FileSystem constructor.
+     * @param string $resourceDirectory
+    */
+    public function __construct(string $resourceDirectory = '')
+    {
+          parent::__construct($resourceDirectory);
+    }
+
+
 
     /**
      * @param string $subDirectory
@@ -29,7 +43,7 @@ class FileSystem extends FileLoader
     */
     public function write($filename, $content)
     {
-        return file_put_contents($this->localise($filename), $content, FILE_APPEND);
+        return file_put_contents($this->locate($filename), $content, FILE_APPEND);
     }
 
 
@@ -42,7 +56,7 @@ class FileSystem extends FileLoader
     */
     public function read($filename)
     {
-        return file_get_contents($this->localise($filename));
+        return file_get_contents($this->locate($filename));
     }
 
 
@@ -76,24 +90,25 @@ class FileSystem extends FileLoader
     */
     public function info($filename): File
     {
-        return new File($this->localise($filename));
+        return new File($this->locate($filename));
     }
 
 
     /**
      * Create directory
      *
-     * @param $directory
+     * @param string $directory
      * @return bool
-     */
-    public function mkdir($directory): bool
+    */
+    public function mkdir(string $directory): bool
     {
-        $directory = $this->localise($directory);
+        $directory = $this->locate($directory);
 
-        if(! is_dir($directory))
-        {
+        if(! \is_dir($directory)) {
             return @mkdir($directory, 0777, true);
         }
+
+        return true;
     }
 
 
@@ -105,14 +120,14 @@ class FileSystem extends FileLoader
      */
     public function make($filename): bool
     {
-        $dirname = dirname($this->localise($filename));
+        $dirname = dirname($this->locate($filename));
 
         if(! \is_dir($dirname))
         {
             @mkdir($dirname, 0777, true);
         }
 
-        return touch($this->localise($filename));
+        return touch($this->locate($filename));
     }
 
 
@@ -120,11 +135,13 @@ class FileSystem extends FileLoader
      * @param $filename
      * @param $replacements
      * @return string|string[]
-     */
+    */
     public function replace($filename, $replacements)
     {
         $content = $this->read($filename);
-        return str_replace(array_keys($replacements), $replacements, $content);
+        $replacements = array_keys($replacements);
+
+        return str_replace($replacements, $replacements, $content);
     }
 
 
@@ -132,20 +149,25 @@ class FileSystem extends FileLoader
 
     /**
      * @param $filename
-     * @return array|false
-     */
-    public function unlink($filename)
+     * @return bool
+    */
+    public function remove($filename): bool
     {
-        return $this->exists($filename) ? unlink($filename) : false;
+        if(! $this->exists($filename)) {
+            return false;
+        }
+
+        return unlink($this->locate($filename));
     }
+
 
 
     /**
      * Remove files
      *
-     * @param $maskLink
-     */
-    public function remove($maskLink)
+     * @param string $maskLink
+    */
+    public function removeResources(string $maskLink)
     {
         array_map("unlink", $this->resources($maskLink));
     }

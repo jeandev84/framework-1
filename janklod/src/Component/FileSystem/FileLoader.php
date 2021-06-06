@@ -22,9 +22,17 @@ class FileLoader extends FileLocator implements FileLoaderInterface
     */
     public function resources($maskLink)
     {
-        return glob($this->localise($maskLink));
+        return glob($this->locate($maskLink));
     }
 
+
+    /**
+     * @param $maskLink
+    */
+    public function loadResources($maskLink)
+    {
+         // TODO implements
+    }
 
 
 
@@ -38,6 +46,6 @@ class FileLoader extends FileLocator implements FileLoaderInterface
             return false;
         }
 
-        return require $this->localise($filename);
+        return require $this->locate($filename);
     }
 }
