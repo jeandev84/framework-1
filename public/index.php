@@ -62,6 +62,34 @@ $response->send();
 $kernel->terminate($request, $response);
 
 
+/*
+$db = new Jan\Component\Database\DatabaseManager();
+$db->addConnection(new \Jan\Component\Database\Connection\FooConnection());
+*/
 
+// dump($db->getConnection());
+
+/*
+$dsn = 'mysql:host=127.0.0.1;dbname=mvc_framework;port=3306;charset=utf8';
+$pdo = new \PDO($dsn, 'root', '');
+*/
+
+$configDb = [
+    'driver'    => 'mysql',
+    'database'  => 'mvc_framework',
+    'host'      => '127.0.0.1',
+    'port'      => '3306',
+    'username'  => 'root',
+    'password'  => '',
+    'collation' => 'utf8_unicode_ci',
+    'charset'   => 'utf8',
+    'prefix'    => '',
+    'engine'    => 'InnoDB', // MyISAM
+    'options'   => [],
+];
+
+$db = new Jan\Component\Database\DatabaseManager($configDb);
+
+dump($db);
 dd($app->log());
 

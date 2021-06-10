@@ -11,7 +11,9 @@
     "minimum-stability": "stable",
     "require": {
         "php": "^7.1",
-        "symfony/var-dumper": "^5.3"
+        "symfony/var-dumper": "^5.3",
+        "ext-pdo": "*",
+        "ext-mysqli": "*"
     },
     "autoload": {
         "psr-4": {

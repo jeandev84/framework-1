@@ -122,8 +122,7 @@ class FileSystem extends FileLoader
     {
         $dirname = dirname($this->locate($filename));
 
-        if(! \is_dir($dirname))
-        {
+        if(! \is_dir($dirname)) {
             @mkdir($dirname, 0777, true);
         }
 
