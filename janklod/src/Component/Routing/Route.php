@@ -622,6 +622,7 @@ class Route implements \ArrayAccess
      */
     protected function resolveURL(string $path): string
     {
+        // TODO refactoring
         if(stripos($path, '?') !== false) {
             $path = explode('?', $path, 2)[0];
         }

@@ -3,7 +3,6 @@ namespace Jan\Component\Database;
 
 
 
-use Jan\Component\Database\Connection\Exception\ConnectionException;
 use Jan\Component\Database\Connection\PDO\MySqlConnection;
 use Jan\Component\Database\Connection\PDO\OracleConnection;
 use Jan\Component\Database\Connection\PDO\PgsqlConnection;
@@ -18,14 +17,7 @@ use Jan\Component\Database\Contract\ConnectionInterface;
 class ConnectionFactory
 {
 
-     /**
-      * @var string
-     */
-     protected $type;
-
-
-
-     /**
+    /**
       * @var array
      */
      protected $connections = [];
@@ -34,27 +26,8 @@ class ConnectionFactory
      /**
       * ConnectionFactory constructor.
      */
-     public function __construct(string $type, array $connections = [])
+     public function __construct()
      {
-         $this->type = $type;
-
-         if ($connections) {
-             $this->setConnections($connections);
-         }
-     }
-
-
-
-     /**
-      * @param $name
-      * @param $connection
-      * @return ConnectionFactory
-     */
-     public function addConnection($name, $connection): ConnectionFactory
-     {
-         $this->connections[$name] = $connection;
-
-         return $this;
      }
 
 
@@ -80,20 +53,16 @@ class ConnectionFactory
 
 
      /**
-      * @param string|null $name
+      * @param string $name
       * @return mixed
      */
-     public function make(string $name = null)
+     public function make(string $name)
      {
-         if ($name) {
-             $this->type = $name;
+         if (! \array_key_exists($name, $this->connections)) {
+            return null;
          }
 
-         if (! \array_key_exists($this->type, $this->connections)) {
-             throw new ConnectionException('Cannot resolve type of connection ('. $this->type .')');
-         }
-
-         return $this->connections[$this->type];
+         return $this->connections[$name];
      }
 
 

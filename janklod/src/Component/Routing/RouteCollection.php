@@ -143,13 +143,13 @@ class RouteCollection
 
     /**
      * @param $name
-     * @return Route
+     * @return Route|null
      * @throws \Exception
     */
-    public function getRoute($name): Route
+    public function getRoute($name)
     {
         if(! $this->has($name)) {
-            throw new \Exception('route ('. $name . ') does not exist.');
+            return null;
         }
 
         return $this->getNamedRoutes()[$name];

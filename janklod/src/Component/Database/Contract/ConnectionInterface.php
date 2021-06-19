@@ -11,7 +11,6 @@ use Closure;
 interface ConnectionInterface
 {
 
-
     /**
      * Get connection status
      *

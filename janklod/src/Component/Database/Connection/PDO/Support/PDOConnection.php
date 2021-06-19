@@ -59,7 +59,7 @@ abstract class PDOConnection extends Connection
     */
     protected function connect(Configuration $config)
     {
-        $driverName = $config->getDriverName();
+        $driverName = $config->getTypeConnection();
 
         if (! \in_array($driverName, \PDO::getAvailableDrivers())) {
             throw new ConnectionException($driverName .' is not available!');
@@ -90,7 +90,7 @@ abstract class PDOConnection extends Connection
     protected function makeDSN(Configuration $config): string
     {
         return sprintf('%s:host=%s;port=%s;dbname=%s;',
-            $config->getDriverName(),
+            $config->getTypeConnection(),
             $config->getHost(),
             $config->getPort(),
             $config->getDatabase()

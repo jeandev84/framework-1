@@ -26,6 +26,6 @@ class SQLiteConnection extends PDOConnection
      */
      protected function makeDSN(Configuration $config): string
      {
-         return sprintf('%s:%s', $config->getDriverName(), $config->getDatabase());
+         return sprintf('%s:%s', $config->getTypeConnection(), $config->getDatabase());
      }
 }

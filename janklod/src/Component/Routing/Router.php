@@ -298,10 +298,8 @@ class Router extends RouteCollection
      */
     public function generate(string $name, array $params = [])
     {
-        try {
-            $route = $this->getRoute($name);
-        }catch (\Exception $e) {
-            return false;
+        if(! $route = $this->getRoute($name)) {
+            return null;
         }
 
         return $route->convertParams($params);
