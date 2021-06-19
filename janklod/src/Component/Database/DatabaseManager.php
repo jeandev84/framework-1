@@ -66,13 +66,12 @@ class DatabaseManager
      {
          if (! $this->connection) {
 
-             $config  = new Configuration($configParams);
+             $this->config  = new Configuration($configParams);
              $this->factory = new ConnectionFactory(
-                 $type = $config->getTypeConnection(),
-                 ConnectionStack::getDefaultConnections($config)
+                 $type = $this->config->getTypeConnection(),
+                 ConnectionStack::getDefaultConnections($this->config)
              );
 
-             $this->config = $config;
              $this->connection($type);
          }
      }
