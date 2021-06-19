@@ -65,6 +65,7 @@ abstract class PDOConnection extends Connection
             throw new ConnectionException($driverName .' is not available!');
         }
 
+
         $dsn = $this->makeDSN($config);
         $username = $config->getUsername();
         $password = $config->getPassword();

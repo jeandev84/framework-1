@@ -18,8 +18,9 @@ class ConnectionStack
      /**
       * @param Configuration $config
       * @return array
+      * @throws Connection\Exception\ConnectionException
      */
-     public static function getDefaults(Configuration $config): array
+     public static function map(Configuration $config): array
      {
          return [
              new MySqlConnection($config),

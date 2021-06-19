@@ -153,10 +153,11 @@ class Autoloader
           if(! empty($this->namespaceMap[$namespace])) {
 
              $filename = $this->generatePath($namespace, $classParts);
-             $exceptionMessage = sprintf('filename ( %s ) does not exist.', $filename);
 
              if(! \file_exists($filename)) {
-                 throw new AutoloaderException($exceptionMessage);
+                 throw new AutoloaderException(
+                     sprintf('filename ( %s ) does not exist.', $filename)
+                 );
              }
 
              return $filename;

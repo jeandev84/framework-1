@@ -75,11 +75,26 @@ $pdo = new \PDO($dsn, 'root', '');
 */
 
 $configDb = [
-    'driver'    => 'mysql',
-    'database'  => 'mvc_framework',
+    'driver'    => 'sqlite',
+    'database'  => '../db.sqlite',
     'host'      => '127.0.0.1',
     'port'      => '3306',
-    'username'  => 'root',
+    'username'  => '',
+    'password'  => '',
+    'collation' => 'utf8_unicode_ci',
+    'charset'   => 'utf8',
+    'prefix'    => '',
+    'engine'    => 'InnoDB', // MyISAM
+    'options'   => [],
+];
+
+/*
+$configDb = [
+    'driver'    => 'sqlite',
+    'database'  => '../db.sqlite',
+    'host'      => '127.0.0.1',
+    'port'      => '3306',
+    'username'  => '',
     'password'  => '',
     'collation' => 'utf8_unicode_ci',
     'charset'   => 'utf8',
@@ -89,7 +104,16 @@ $configDb = [
 ];
 
 $db = new Jan\Component\Database\DatabaseManager($configDb);
-
 dump($db);
+*/
+
+$config = new \Jan\Component\Database\Configuration($configDb);
+$database = new \Jan\Component\Database\DatabaseManager();
+//$database->setConnection();
+//$database->setConnections([
+// new MySQL($config)
+//);
+
+
 dd($app->log());
 
