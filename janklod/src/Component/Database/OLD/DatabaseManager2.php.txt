@@ -70,14 +70,13 @@ class DatabaseManager
      {
          if (! $this->connection) {
 
-             $config  = new Configuration($configParams);
+             $this->config  = new Configuration($configParams);
              $this->factory = new ConnectionFactory(
-                 $type = $config->getTypeConnection(),
-                 ConnectionStack::getDefaultConnections($config)
+                 $type = $this->config->getTypeConnection(),
+                 ConnectionStack::getDefaultConnections($this->config)
              );
 
-             $this->config = $config;
-             $this->connection($type);
+             $this->connect($type);
          }
      }
 
@@ -100,16 +99,6 @@ class DatabaseManager
      }
 
 
-     /**
-      * @return array
-     */
-     public function getConnections(): array
-     {
-         return $this->factory->getConnections();
-     }
-
-
-
 
      /**
       * @param string $name
@@ -127,23 +116,23 @@ class DatabaseManager
       * @return mixed
       * @throws ConnectionException
      */
-     public function connection(string $name)
+     public function connect(string $name)
      {
           $connection = $this->factory->make($name);
 
-          if ($connection instanceof ConnectionInterface) {
+          if($connection instanceof ConnectionInterface) {
              if ($connection->isConnected()) {
                  $this->setConnectionStatus(true);
              }
-         }
+          }
 
-         if (is_object($connection)) {
+          if (\is_object($connection)) {
              $this->setConnectionStatus(true);
-         }
+          }
 
-         $this->connection = $connection;
+          $this->connection = $connection;
 
-         return $connection;
+          return $connection;
      }
 
 

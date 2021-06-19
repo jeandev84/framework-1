@@ -32,6 +32,13 @@ class ConnectionFactory
 
 
      /**
+      * @var array
+     */
+     protected $status = [];
+
+
+
+     /**
       * ConnectionFactory constructor.
      */
      public function __construct(string $type, array $connections = [])
@@ -50,11 +57,21 @@ class ConnectionFactory
       * @param $connection
       * @return ConnectionFactory
      */
-     public function addConnection($name, $connection): ConnectionFactory
+     public function add($name, $connection): ConnectionFactory
      {
          $this->connections[$name] = $connection;
 
          return $this;
+     }
+
+
+     /**
+      * @param $name
+      * @return mixed|null
+     */
+     public function getConnection($name)
+     {
+          return $this->connections[$name] ?? null;
      }
 
 
@@ -69,6 +86,17 @@ class ConnectionFactory
 
 
      /**
+      * @param $name
+      * @return bool
+     */
+     public function getConnectionStatus($name): bool
+     {
+          return $this->status[$name] ?? false;
+     }
+
+
+
+     /**
       * @param $connections
      */
      public function setConnections($connections)
@@ -79,9 +107,11 @@ class ConnectionFactory
      }
 
 
+
      /**
       * @param string|null $name
       * @return mixed
+      * @throws ConnectionException
      */
      public function make(string $name = null)
      {
@@ -93,8 +123,26 @@ class ConnectionFactory
              throw new ConnectionException('Cannot resolve type of connection ('. $this->type .')');
          }
 
-         return $this->connections[$this->type];
+         $connection = $this->connections[$this->type];
+
+         if ($connection instanceof \Closure) {
+             return $connection();
+         }
+
+         return $connection;
      }
+
+
+
+     /**
+      * @return mixed
+      * @throws ConnectionException
+     */
+     public function getDefaultConnection()
+     {
+         return $this->make();
+     }
+
 
 
      /**

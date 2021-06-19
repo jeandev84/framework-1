@@ -96,4 +96,11 @@ abstract class PDOConnection extends Connection
             $config->getDatabase()
         );
     }
+
+
+    public function close()
+    {
+        $this->connection = null;
+    }
+
 }

@@ -93,5 +93,28 @@ $database->open($configDb);
 
 dump($database);
 
+$database->setConnection('foo', function () {
+    return new \Jan\Component\Database\Connection\FooConnection(
+        '127.0.0.1', 'root', 'secret'
+    );
+});
+
+dump($database->connection('foo'));
+
+$database->setConnection('my_pdo', new PDO(
+    'mysql:host=127.0.0.1;port=3306;charset=utf8;dbname=mvc_framework;',
+         'root',
+           '',
+    []
+));
+
+dump($database->connection('my_pdo'));
+
+dump($database->getConnections());
+
+$database->close();
+
+dump($database);
+
 dd($app->log());
 

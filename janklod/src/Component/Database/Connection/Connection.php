@@ -86,11 +86,6 @@ abstract class Connection implements ConnectionInterface
         // TODO: Implement query() method.
     }
 
-    public function close()
-    {
-        // TODO: Implement close() method.
-    }
-
 
     /**
      * @return string
