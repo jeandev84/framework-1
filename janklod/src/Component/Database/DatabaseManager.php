@@ -50,12 +50,8 @@ class DatabaseManager
      */
      public function __construct(array $configParams = [])
      {
-         try {
-             if ($configParams) {
-                 $this->open($configParams);
-             }
-         } catch (\Exception $e) {
-             $this->close();
+         if ($configParams) {
+             $this->open($configParams);
          }
      }
 
