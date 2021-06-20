@@ -26,6 +26,10 @@ abstract class PDOConnection extends Connection
      ];
 
 
+     protected $config;
+
+
+
      /**
       * PDOConnection constructor.
       *
@@ -34,9 +38,20 @@ abstract class PDOConnection extends Connection
      */
      public function __construct(Configuration $config)
      {
+          $this->config = $config;
+
           if(! $this->isConnected()) {
-              $this->connect($config);
+              $this->connect();
           }
+     }
+
+
+     /**
+      * @return Configuration
+     */
+     public function getConfiguration(): Configuration
+     {
+         return $this->config;
      }
 
 
@@ -54,23 +69,21 @@ abstract class PDOConnection extends Connection
 
 
     /**
-      * @param Configuration $config
       * @throws ConnectionException
     */
-    protected function connect(Configuration $config)
+    protected function connect()
     {
-        $driverName = $config->getTypeConnection();
+        $driverName = $this->config->getTypeConnection();
 
         if (! \in_array($driverName, \PDO::getAvailableDrivers())) {
             throw new ConnectionException($driverName .' is not available!');
         }
 
+        $dsn = $this->makeDSN($this->config);
+        $username = $this->config->getUsername();
+        $password = $this->config->getPassword();
 
-        $dsn = $this->makeDSN($config);
-        $username = $config->getUsername();
-        $password = $config->getPassword();
-
-        $options = array_merge(self::DEFAULT_PDO_OPTIONS, (array) $config->getOptions());
+        $options = array_merge(self::DEFAULT_PDO_OPTIONS, (array) $this->config->getOptions());
 
         try {
 
@@ -81,6 +94,16 @@ abstract class PDOConnection extends Connection
             throw $e;
         }
     }
+
+
+    /**
+     * @return PDO
+    */
+    public function getPdo(): PDO
+    {
+        return $this->connection;
+    }
+
 
 
     /**

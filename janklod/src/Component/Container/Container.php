@@ -466,7 +466,7 @@ class Container implements ContainerContract
      public function resolveConcrete($concrete, array $withParams = [])
      {
          if($concrete instanceof \Closure) {
-             return $this->callFunction($concrete, $withParams);
+             return $this->makeClosure($concrete, $withParams);
          }
 
          return $this->makeInstance($concrete, $withParams);
@@ -525,7 +525,7 @@ class Container implements ContainerContract
       * @return mixed
       * @throws Exception
      */
-     public function callFunction(callable $closure, array $withParams = [])
+     public function makeClosure(callable $closure, array $withParams = [])
      {
          try {
 
