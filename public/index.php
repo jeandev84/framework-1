@@ -61,8 +61,30 @@ $response->send();
 
 $kernel->terminate($request, $response);
 
-$configDb = [];
+echo '<h2>Container</h2>';
+dump($app->log());
 
 
-dd($app->log());
 
+echo '<h2>Database</h2>';
+$fs = new \Jan\Component\FileSystem\FileSystem(
+    realpath(__DIR__.'/../')
+);
+
+$configDb = $fs->load('config/database.php');;
+dump($configDb);
+
+
+$db = new Jan\Component\Database\DatabaseManager();
+
+/*
+$db->setConnection('foo', new \Jan\Component\Database\Faker\FooConnection());
+$db->setConnection('bar', new \Jan\Component\Database\Faker\BarConnection());
+*/
+
+$db->addConnection('foo', new \Jan\Component\Database\Faker\FooConnection());
+$db->addConnection('bar', new \Jan\Component\Database\Faker\BarConnection());
+
+
+
+dump($db->getConnections());

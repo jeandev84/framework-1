@@ -21,6 +21,28 @@ class Router extends RouteCollection
     protected $patterns = [];
 
 
+    /**
+     * middleware priority
+     *
+     * @var array
+    */
+    protected $middlewarePriority = [];
+
+
+
+    /**
+     * @var array
+    */
+    protected $middlewareGroups  = [];
+
+
+
+    /**
+     * @var array
+    */
+    protected $routeMiddlewares  = [];
+
+
 
     /**
      * @var RouteParameter
