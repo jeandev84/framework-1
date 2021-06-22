@@ -193,13 +193,6 @@ class DatabaseManager
      }
 
 
-     /**
-      * @return string
-     */
-     public function getDefaultConnection(): string
-     {
-         return $this->defaultConnection;
-     }
 
 
     /**
