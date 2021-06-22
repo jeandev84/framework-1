@@ -114,7 +114,7 @@ class DatabaseManager
        * @param array $config
        * @return $this
      */
-     public function addConnection(string $name, $connection, array $config = []): DatabaseManager
+     public function addConnection($connection, array $config = [], string $name = 'default'): DatabaseManager
      {
          $this->setConnection($name, $connection);
 
