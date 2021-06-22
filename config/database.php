@@ -7,7 +7,7 @@ return [
 |------------------------------------------------------------------
 */
 
-    'connection' => 'mysql',
+    'connection' => 'mysql', // mysql, sqlite, pgsql, oci
     'sqlite' => [
         'driver'   => 'sqlite',
         'database' => '../demo.sqlite',

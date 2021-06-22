@@ -43,8 +43,7 @@ class DatabaseManager
      /**
       * @var string
      */
-     protected $default;
-
+     protected $defaultConnection;
 
 
 
@@ -71,7 +70,7 @@ class DatabaseManager
      */
      public function open(string $type, array $config): DatabaseManager
      {
-         $this->default = $type;
+         $this->defaultConnection = $type;
 
          $this->setConfiguration($type, $config);
 
@@ -179,9 +178,7 @@ class DatabaseManager
      public function connection(string $name = null)
      {
          if (! isset($this->connections[$name])) {
-
-             $name = $this->default;
-
+             $name = $this->defaultConnection;
              if($config = $this->configuration($name)) {
                  return $this->factory->make($name, $config);
              }

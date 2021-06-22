@@ -19,10 +19,10 @@ class ConnectionFactory
       /**
        * @param string $name
        * @param array $config
-       * @return Connection
+       * @return Connection|null
        * @throws DriverException
       */
-      public function make(string $name, array $config): Connection
+      public function make(string $name, array $config)
       {
           if($connection = $this->createPdoConnection($name)) {
               $connection->connect($config);
