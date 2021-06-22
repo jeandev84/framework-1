@@ -40,6 +40,13 @@ class DatabaseManager
 
 
 
+     /**
+      * @var string
+     */
+     protected $default;
+
+
+
 
      /**
       * DatabaseManager constructor.
@@ -51,20 +58,24 @@ class DatabaseManager
          }
 
          $connections = $factory->getPdoStorageConnections();
-         $this->addConnections($connections);
+         $this->setConnections($connections);
 
          $this->factory = $factory;
      }
 
 
-
      /**
-      * @param string $type
-      * @param array $configParams
+       * @param string $type
+       * @param array $config
+       * @return DatabaseManager
      */
-     public function open(string $type, array $configParams)
+     public function open(string $type, array $config): DatabaseManager
      {
-         $this->setConfiguration($type, $configParams);
+         $this->default = $type;
+
+         $this->setConfiguration($type, $config);
+
+         return $this;
      }
 
 
@@ -86,7 +97,7 @@ class DatabaseManager
       * @param array $connections
       * @return DatabaseManager
      */
-     public function addConnections(array $connections): DatabaseManager
+     public function setConnections(array $connections): DatabaseManager
      {
          $this->connections = array_merge($this->connections, $connections);
 
@@ -96,12 +107,12 @@ class DatabaseManager
 
 
      /**
-      * @param array $configurations
+      * @param array $config
       * @return $this
      */
-     public function addConfigurations(array $configurations): DatabaseManager
+     public function setConfigurations(array $config): DatabaseManager
      {
-         $this->configurations = array_merge($this->configurations, $configurations);
+         $this->configurations = array_merge($this->configurations, $config);
 
          return $this;
      }
@@ -130,16 +141,16 @@ class DatabaseManager
 
      /**
       * @param $name
-      * @param $configParams
+      * @param $config
       * @return DatabaseManager
      */
-     public function setConfiguration($name, $configParams): DatabaseManager
+     public function setConfiguration($name, $config): DatabaseManager
      {
-         if (isset($configParams[$name])) {
-             $configParams = $configParams[$name];
+         if (isset($config[$name])) {
+             $config = $config[$name];
          }
 
-         $this->configurations[$name] = $configParams;
+         $this->configurations[$name] = $config;
 
          return $this;
      }
@@ -168,12 +179,10 @@ class DatabaseManager
      public function connection(string $name = null)
      {
          if (! isset($this->connections[$name])) {
+
+             $name = $this->default;
+
              if($config = $this->configuration($name)) {
-                 /*
-                 $connection = $this->factory->make($name, $config);
-                 $this->connections[$name] = $connection;
-                 return $connection;
-                 */
                  return $this->factory->make($name, $config);
              }
 
@@ -251,7 +260,6 @@ class DatabaseManager
     {
         return $this->connections;
     }
-
 
 
 

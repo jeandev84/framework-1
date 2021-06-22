@@ -90,6 +90,7 @@ dump($fooConnection);
 
 $db->disconnect('mysql');
 
+
 dump($db->getConnections());
 dd($app->log());
 

@@ -24,8 +24,10 @@ class ConnectionFactory
       */
       public function make(string $name, array $config): Connection
       {
-          $connection = $this->createPdoConnection($name);
-          $connection->connect($config);
+          if($connection = $this->createPdoConnection($name)) {
+              $connection->connect($config);
+          }
+
           return $connection;
       }
 
@@ -33,10 +35,14 @@ class ConnectionFactory
 
       /**
        * @param string $driver
-       * @return Connection
+       * @return Connection|null
       */
-      public function createPdoConnection(string $driver): Connection
+      public function createPdoConnection(string $driver): ?Connection
       {
+          if (! \array_key_exists($driver, $this->getPdoStorageConnections())) {
+              return null;
+          }
+
           return $this->getPdoStorageConnections()[$driver];
       }
 
