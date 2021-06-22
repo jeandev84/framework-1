@@ -61,8 +61,31 @@ $response->send();
 
 $kernel->terminate($request, $response);
 
-$configDb = [];
+
+$fs = new \Jan\Component\FileSystem\FileSystem(
+    realpath(__DIR__.'/../')
+);
+
+$configDb =  $fs->load('config/database.php');;
+
+dump($configDb);
+
+$db = new \Jan\Component\Database\DatabaseManager();
+
+$db->open($configDb['connection'], $configDb);
 
 
+$db->addConnection('foo', new \Jan\Component\Database\Connection\Fake\FooConnection());
+$db->addConnection('bar', new \Jan\Component\Database\Connection\Fake\BarConnection());
+
+
+$mysqlConnection = $db->connection('mysql');
+dump($mysqlConnection);
+
+$fooConnection = $db->connection('foo');
+dump($fooConnection);
+
+
+dump($db->getConnections());
 dd($app->log());
 
