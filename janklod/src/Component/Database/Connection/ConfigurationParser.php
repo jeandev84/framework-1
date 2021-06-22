@@ -13,17 +13,17 @@ class ConfigurationParser
       /**
        * @var array
       */
-      protected $config = [];
+      protected $params = [];
 
 
 
       /**
-       * @param array $config
+       * @param array $params
        * @return ConfigurationParser
       */
-      public function parse(array $config): ConfigurationParser
+      public function parse(array $params): ConfigurationParser
       {
-          $this->config = $config;
+          $this->params = $params;
 
           return $this;
       }
@@ -37,6 +37,28 @@ class ConfigurationParser
      */
      public function get($name, $default = null)
      {
-         return $this->config[$name] ?? $default;
+         return $this->params[$name] ?? $default;
+     }
+
+
+     /**
+      * Get all config params
+      *
+      * @return array
+     */
+     public function all(): array
+     {
+         return $this->params;
+     }
+
+
+     /**
+      * Remove config param
+      *
+      * @param string $name
+     */
+     public function remove(string $name)
+     {
+         unset($this->params[$name]);
      }
 }

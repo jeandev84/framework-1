@@ -4,6 +4,7 @@ namespace Jan\Component\Database\Connection\PDO;
 
 use Jan\Component\Database\Connection\ConfigurationParser;
 use Jan\Component\Database\Connection\ConnectionInterface;
+use Jan\Component\Database\Exception\DriverException;
 use PDO;
 
 /**
@@ -14,9 +15,9 @@ class Connection implements ConnectionInterface
 {
 
     /**
-     * @var array
+     * @var ConfigurationParser
     */
-    protected $config = [];
+    protected $config;
 
 
 
@@ -26,15 +27,25 @@ class Connection implements ConnectionInterface
     protected $connection;
 
 
-
-
     /**
      * @param array $config
      * @return Connection
+     * @throws DriverException
     */
     public function connect(array $config): Connection
     {
+        $driver = $config['driver'];
+
+        if (! $this->availableDriver($driver)) {
+            throw new DriverException(sprintf('enabled driver (%s) for connection to database.', $driver));
+        }
+
         $dsn = $this->makeDsn($config);
+
+        if ($driver == 'sqlite') {
+            $config['username'] = null;
+            $config['password'] = null;
+        }
 
         try {
             $this->connection = $this->createPdoConnection($dsn, $config['username'], $config['password'], $config['options']);
@@ -42,9 +53,7 @@ class Connection implements ConnectionInterface
             throw $e;
         }
 
-        $this->config = $config;
-
-        return $this;
+        return $this->parseConfiguration($config);
     }
 
 
@@ -71,12 +80,12 @@ class Connection implements ConnectionInterface
 
     /**
      * @param string $dsn
-     * @param string $username
-     * @param string $password
+     * @param string|null $username
+     * @param string|null $password
      * @param array $options
      * @return PDO
     */
-    public function createPdoConnection(string $dsn, string $username = '', string $password = '', array $options = []): PDO
+    public function createPdoConnection(string $dsn, string $username = null, string $password = null, array $options = []): PDO
     {
         return new PDO($dsn, $username, $password, $options);
     }
@@ -88,8 +97,21 @@ class Connection implements ConnectionInterface
     */
     public function getConfiguration(): ConfigurationParser
     {
-        return (new ConfigurationParser())
-               ->parse($this->config);
+        return  $this->config;
+    }
+
+
+    /**
+     * @param array $params
+     * @return Connection
+    */
+    protected function parseConfiguration(array $params): Connection
+    {
+        $config = new ConfigurationParser();
+        $config->parse($params);
+        $this->config = $config;
+
+        return $this;
     }
 
 
@@ -112,7 +134,8 @@ class Connection implements ConnectionInterface
     */
     protected function makeDsn(array $config): string
     {
-        return sprintf('%s:host=%s;port=%s;dbname=%s;charset=%s;',
+        return sprintf(
+    '%s:host=%s;port=%s;dbname=%s;charset=%s;',
             $config['driver'],
             $config['host'],
             $config['port'],
@@ -120,4 +143,15 @@ class Connection implements ConnectionInterface
             $config['charset']
         );
     }
+
+
+    /**
+     * @param $driver
+     * @return bool
+    */
+    public function availableDriver($driver): bool
+    {
+        return \in_array($driver, \PDO::getAvailableDrivers());
+    }
+
 }

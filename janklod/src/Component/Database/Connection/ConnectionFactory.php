@@ -7,6 +7,7 @@ use Jan\Component\Database\Connection\PDO\MysqlConnection;
 use Jan\Component\Database\Connection\PDO\OracleConnection;
 use Jan\Component\Database\Connection\PDO\PostgresConnection;
 use Jan\Component\Database\Connection\PDO\SqliteConnection;
+use Jan\Component\Database\Exception\DriverException;
 
 /**
  * Class ConnectionFactory
@@ -19,8 +20,9 @@ class ConnectionFactory
        * @param string $name
        * @param array $config
        * @return Connection
+       * @throws DriverException
       */
-      public function make(string $name, array $config)
+      public function make(string $name, array $config): Connection
       {
           $connection = $this->createPdoConnection($name);
           $connection->connect($config);
@@ -33,31 +35,58 @@ class ConnectionFactory
        * @param string $driver
        * @return Connection
       */
-      public function createPdoConnection(string $driver)
+      public function createPdoConnection(string $driver): Connection
       {
-          switch ($driver) {
-              case 'mysql':
-                  return new MysqlConnection();
-                  break;
-              case 'sqlite':
-                  return new SqliteConnection();
-                  break;
-              case 'pgsql':
-                  return new PostgresConnection();
-                  break;
-              case 'oci':
-                  return new OracleConnection();
-                  break;
-          }
+          return $this->getPdoStorageConnections()[$driver];
       }
 
 
-     /**
+
+
+      /**
        * @return array
-     */
-     public function supportedDrivers(): array
-     {
+      */
+      public function supportedDrivers(): array
+      {
          return ['mysql', 'pgsql', 'sqlite', 'oci'];
-     }
+      }
+
+
+
+      /**
+       * @return string[]
+      */
+      public function availableDrivers(): array
+      {
+          return array_intersect(
+              $this->supportedDrivers(),
+              str_replace('', '', \PDO::getAvailableDrivers())
+          );
+      }
+
+
+      /**
+       * @param $driver
+       * @return bool
+      */
+      public function availableDriver($driver): bool
+      {
+          return  \array_key_exists($driver, \PDO::getAvailableDrivers());
+      }
+
+
+
+      /**
+       * @return array
+      */
+      public function getPdoStorageConnections(): array
+      {
+          return [
+             'mysql'    => new MysqlConnection(),
+             'sqlite'   => new SqliteConnection(),
+             'postgres' => new PostgresConnection(),
+             'oci'      => new OracleConnection(),
+          ];
+      }
 
 }

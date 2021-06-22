@@ -5,7 +5,8 @@ namespace Jan\Component\Database;
 use InvalidArgumentException;
 use Jan\Component\Database\Connection\ConnectionFactory;
 use Jan\Component\Database\Connection\ConnectionInterface;
-use Jan\Component\Database\Connection\PDO\Connection;
+
+
 
 /**
  * Class DatabaseManager
@@ -18,12 +19,6 @@ class DatabaseManager
       * @var ConnectionFactory
      */
      protected $factory;
-
-
-     /**
-      * @var
-     */
-     protected $defaultConnection;
 
 
 
@@ -46,16 +41,24 @@ class DatabaseManager
 
 
 
-    /**
-     * DatabaseManager constructor.
-    */
-    public function __construct()
-    {
-        $this->factory = new ConnectionFactory();
-    }
+     /**
+      * DatabaseManager constructor.
+     */
+     public function __construct(ConnectionFactory $factory = null)
+     {
+         if (! $factory) {
+             $factory = new ConnectionFactory();
+         }
+
+         $connections = $factory->getPdoStorageConnections();
+         $this->addConnections($connections);
+
+         $this->factory = $factory;
+     }
 
 
-    /**
+
+     /**
       * @param string $type
       * @param array $configParams
      */
@@ -69,19 +72,60 @@ class DatabaseManager
      /**
       * @param string $name
       * @param $connection
-      * @param array $config
       * @return DatabaseManager
      */
-     public function addConnection(string $name, $connection, array $config = []): DatabaseManager
+     public function setConnection(string $name, $connection): DatabaseManager
      {
            $this->connections[$name] = $connection;
 
-           if ($config) {
-               $this->configurations[$name] = $config;
-           }
-
            return $this;
      }
+
+
+     /**
+      * @param array $connections
+      * @return DatabaseManager
+     */
+     public function addConnections(array $connections): DatabaseManager
+     {
+         $this->connections = array_merge($this->connections, $connections);
+
+         return $this;
+     }
+
+
+
+     /**
+      * @param array $configurations
+      * @return $this
+     */
+     public function addConfigurations(array $configurations): DatabaseManager
+     {
+         $this->configurations = array_merge($this->configurations, $configurations);
+
+         return $this;
+     }
+
+
+
+     /**
+       * @param string $name
+       * @param $connection
+       * @param array $config
+       * @return $this
+     */
+     public function addConnection(string $name, $connection, array $config = []): DatabaseManager
+     {
+         $this->setConnection($name, $connection);
+
+         if ($config) {
+             $this->setConfiguration($name, $config);
+         }
+
+         return $this;
+     }
+
+
 
 
      /**
@@ -114,18 +158,22 @@ class DatabaseManager
      }
 
 
-
      /**
       * get connection
       *
       * @param string|null $name
       * @return mixed
+      * @throws Exception\DriverException
      */
      public function connection(string $name = null)
      {
          if (! isset($this->connections[$name])) {
-
              if($config = $this->configuration($name)) {
+                 /*
+                 $connection = $this->factory->make($name, $config);
+                 $this->connections[$name] = $connection;
+                 return $connection;
+                 */
                  return $this->factory->make($name, $config);
              }
 
@@ -166,6 +214,19 @@ class DatabaseManager
 
 
 
+    /**
+     * Flush all connections
+     *
+    */
+    public function close()
+    {
+        $this->factory = null;
+        $this->configurations = [];
+        $this->connections = [];
+    }
+
+
+
 
     /**
      * disconnect connection
@@ -176,22 +237,15 @@ class DatabaseManager
     public function disconnect(string $name = null)
     {
         if (isset($this->connections[$name])) {
-            if ($this->canDisconnect($name)) {
-                return $this->connections[$name]->disconnect();
+            $connection = $this->connections[$name];
+            if (method_exists($connection, 'disconnect')) {
+                return $connection->disconnect();
             }
         }
+
+        throw new InvalidArgumentException('connection ('. $name . ') cannot be disconnected.');
     }
 
-
-
-    /**
-     * @param string $name
-     * @return bool
-    */
-    protected function canDisconnect(string $name): bool
-    {
-        return method_exists($this->connections[$name], 'disconnect');
-    }
 
 
 
