@@ -83,6 +83,21 @@ class ConnectionFactory
 
 
       /**
+       * @param array $connections
+       * @return array
+      */
+      public function getStorageConnections(array $connections = []): array
+      {
+          return array_merge(
+              $this->getPdoStorageConnections(),
+              $connections
+          );
+      }
+
+
+
+
+      /**
        * @return array
       */
       public function getPdoStorageConnections(): array

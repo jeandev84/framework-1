@@ -57,7 +57,7 @@ class DatabaseManager
              $factory = new ConnectionFactory();
          }
 
-         $connections = $factory->getPdoStorageConnections();
+         $connections = $factory->getStorageConnections();
          $this->setConnections($connections);
 
          $this->factory = $factory;
