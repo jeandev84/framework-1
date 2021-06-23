@@ -56,8 +56,7 @@ class DatabaseManager implements ManagerInterface
      {
          if (! isset($this->connections[$type])) {
 
-             $factory = new ConnectionFactory();
-             $this->factory = $factory;
+             $this->factory = new ConnectionFactory();
              $this->type = $type;
 
              $connections = $this->factory->getStorageConnections();
