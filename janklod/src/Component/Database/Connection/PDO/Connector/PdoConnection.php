@@ -1,19 +1,19 @@
 <?php
-namespace Jan\Component\Database\Connection\PDO;
+namespace Jan\Component\Database\Connection\PDO\Connector;
 
 
-use ArrayAccess;
+use Jan\Component\Database\Connection\Connection;
 use Jan\Component\Database\Connection\ConfigurationParser;
-use Jan\Component\Database\Connection\ConnectionInterface;
 use Jan\Component\Database\Connection\PDO\Statement\Query;
 use Jan\Component\Database\Exception\DriverException;
 use PDO;
 
+
 /**
  * Class Connector
- * @package Jan\Component\Database\Connection\PDO
+ * @package Jan\Component\Database\Connection\PDO\Connector
 */
-class Connection implements ConnectionInterface
+class PdoConnection extends Connection
 {
 
     /**
@@ -29,16 +29,17 @@ class Connection implements ConnectionInterface
     protected $connection;
 
 
-
     /**
      * @param array $config
-     * @return Connection
+     * @return PdoConnection
+     * @throws DriverException
     */
-    public function connect(array $config): Connection
+    public function connect(array $config): PdoConnection
     {
         $config = $this->parseConfiguration($config);
 
         try {
+
             $driver = $config['driver'];
 
             if (! $this->availableDriver($driver)) {
@@ -126,20 +127,6 @@ class Connection implements ConnectionInterface
     {
         return  $this->config;
     }
-
-
-
-
-    /**
-     * @param array $params
-     * @return ConfigurationParser
-    */
-    public function parseConfiguration(array $params): ConfigurationParser
-    {
-        return new ConfigurationParser($params);
-    }
-
-
 
 
     /**

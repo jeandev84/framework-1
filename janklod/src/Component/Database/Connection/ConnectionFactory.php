@@ -2,12 +2,10 @@
 namespace Jan\Component\Database\Connection;
 
 
-use Jan\Component\Database\Connection\PDO\Connection;
 use Jan\Component\Database\Connection\PDO\MysqlConnection;
 use Jan\Component\Database\Connection\PDO\OracleConnection;
 use Jan\Component\Database\Connection\PDO\PostgresConnection;
 use Jan\Component\Database\Connection\PDO\SqliteConnection;
-use Jan\Component\Database\Exception\DriverException;
 
 /**
  * Class ConnectionFactory
@@ -24,7 +22,11 @@ class ConnectionFactory
       public function make(string $name, array $config): ?ConnectionInterface
       {
           $connection = $this->createConnection($name);
-          $connection->connect($config);
+
+          if ($connection instanceof ConnectionInterface) {
+              $connection->connect($config);
+          }
+
           return $connection;
       }
 

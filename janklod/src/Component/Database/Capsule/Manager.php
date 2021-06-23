@@ -3,6 +3,7 @@ namespace Jan\Component\Database\Capsule;
 
 
 use Jan\Component\Database\DatabaseManager;
+use Jan\Component\Database\Exception\DriverException;
 
 
 /**
@@ -47,7 +48,7 @@ class Manager
      */
      public function addConnection(string $name, array $config): Manager
      {
-         $this->database->connectTo($name, $config);
+         $this->database->connect($name, $config);
 
          return $this;
      }
@@ -73,10 +74,10 @@ class Manager
      }
 
 
-
      /**
-      * @param string|null $name
-      * @return mixed
+       * @param string|null $name
+       * @return mixed
+       * @throws DriverException
      */
      public static function connection(string $name = null)
      {
@@ -99,3 +100,24 @@ class Manager
          return static::$instance;
      }
 }
+
+/*
+$fs = new \Jan\Component\FileSystem\FileSystem(
+    realpath(__DIR__.'/../')
+);
+
+$configDb =  $fs->load('config/database.php');
+
+$capsule = new \Jan\Component\Database\Capsule\Manager();
+$type = $configDb['connection'];
+
+$capsule->addConnection($type, $configDb);
+$capsule->bootAsGlobal();
+
+
+$connection = \Jan\Component\Database\Capsule\Manager::connection();
+$database = \Jan\Component\Database\Capsule\Manager::instance();
+
+dump($database->connection('sqlite'));
+dump($database->connection());
+*/

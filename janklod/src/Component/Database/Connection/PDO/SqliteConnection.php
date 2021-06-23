@@ -3,12 +3,14 @@ namespace Jan\Component\Database\Connection\PDO;
 
 
 use Jan\Component\Database\Connection\ConfigurationParser;
+use Jan\Component\Database\Connection\PDO\Connector\PdoConnection;
+
 
 /**
  * Class SqliteConnection
  * @package Jan\Component\Database\Connection\PDO
 */
-class SqliteConnection extends Connection
+class SqliteConnection extends PdoConnection
 {
 
      /**

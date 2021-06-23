@@ -100,7 +100,10 @@ $capsule->bootAsGlobal();
 
 $database = \Jan\Component\Database\Capsule\Manager::instance();
 
-dump($database->connection('sqlite')/*->getConnection()*/);
+$connection = \Jan\Component\Database\Capsule\Manager::connection();
+
+/* dump($database->connection('sqlite')); */
+dump($database->connection());
 
 dd($app->log());
 

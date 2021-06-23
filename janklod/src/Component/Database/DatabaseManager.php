@@ -52,7 +52,7 @@ class DatabaseManager implements ManagerInterface
        * @param array $configParams
        * @return DatabaseManager
      */
-     public function connectTo(string $type, array $configParams): DatabaseManager
+     public function connect(string $type, array $configParams): DatabaseManager
      {
          if (! isset($this->connections[$type])) {
 
@@ -60,53 +60,22 @@ class DatabaseManager implements ManagerInterface
              $this->factory = $factory;
              $this->type = $type;
 
+             $connections = $this->factory->getStorageConnections();
              $this->setConfigurations($configParams);
-             $this->setDefaultConnections($factory);
+             $this->setConnections($connections);
          }
 
          return $this;
      }
 
 
-
      /**
-      * @param string $type
-      * @param array $config
-      * @return array|mixed
+      * @return string
      */
-     public function getDefaultConfiguration(string $type, array $config)
+     public function getDefaultConnection(): string
      {
-           if (\array_key_exists($type, $config)) {
-                return $config[$type];
-           }
-
-           return $config;
+         return $this->type;
      }
-
-     /**
-      * @return array|mixed
-     */
-     public function getCurrentConfiguration(string $type, array $config)
-     {
-         if (\array_key_exists($type, $config)) {
-             return $config[$type];
-         }
-
-         return $config;
-     }
-
-
-
-     /**
-      * @param ConnectionFactory $factory
-     */
-     public function setDefaultConnections(ConnectionFactory $factory)
-     {
-         $connections = $factory->getStorageConnections();
-         $this->setConnections($connections);
-     }
-
-
 
 
      /**
@@ -207,23 +176,22 @@ class DatabaseManager implements ManagerInterface
      public function connection(string $name = null)
      {
          if (! $name) {
-             $name = $this->type;
+             $name = $this->getDefaultConnection();
          }
 
-         $configParams = $this->configuration($name);
+         $config = $this->configuration($name);
 
-         if (isset($this->connections[$name])) {
-             $connection = $this->connections[$name];
-
-             if ($connection instanceof ConnectionInterface) {
-                 $connection = $this->factory->make($name, $configParams);
-             }
-
-             return $connection;
+         if (! isset($this->connections[$name])) {
+             throw new \Exception('unavailable ('.$name.') for connection.');
          }
 
-        throw new \Exception('no resolvable '. $name);
+         $connection = $this->connections[$name];
 
+         if ($connection instanceof ConnectionInterface) {
+             $connection = $this->factory->make($name, $config);
+         }
+
+         return $connection;
      }
 
 
