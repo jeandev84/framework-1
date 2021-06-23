@@ -5,7 +5,7 @@ namespace Jan\Component\Routing;
 /**
  * Class RouteCollection
  * @package Jan\Component\Routing
- */
+*/
 class RouteCollection
 {
 
@@ -18,14 +18,14 @@ class RouteCollection
 
     /**
      * @var array
-     */
+   */
     protected $resources = [];
 
 
 
     /**
      * @var array
-     */
+    */
     protected $namedRoutes = [];
 
 
@@ -33,8 +33,8 @@ class RouteCollection
     /**
      * @param Route $route
      * @return Route
-     */
-    public function add(Route $route)
+    */
+    public function add(Route $route): Route
     {
         $this->routes[] = $route;
 
@@ -45,16 +45,17 @@ class RouteCollection
 
     /**
      * @return Route[]
-     */
-    public function getRoutes()
+    */
+    public function getRoutes(): array
     {
         return $this->routes;
     }
 
 
+
     /**
      * @param array $routes
-     */
+    */
     public function setRoutes(array $routes)
     {
         foreach ($routes as $route) {

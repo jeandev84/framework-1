@@ -49,23 +49,48 @@ class DatabaseManager implements ManagerInterface
 
      /**
        * @param string $type
-       * @param array $configParams
+       * @param array $config
        * @return DatabaseManager
      */
-     public function connect(string $type, array $configParams): DatabaseManager
+     public function connect(string $type, array $config): DatabaseManager
      {
-         if (! isset($this->connections[$type])) {
+         $this->factory = new ConnectionFactory();
+         $this->type = $type;
 
-             $this->factory = new ConnectionFactory();
-             $this->type = $type;
-
-             $connections = $this->factory->getStorageConnections();
-             $this->setConfigurations($configParams);
-             $this->setConnections($connections);
-         }
+         $connections = $this->factory->getStorageConnections();
+         $this->setDefaultConfiguration($type, $config);
+         $this->setConnections($connections);
 
          return $this;
      }
+
+
+
+     /**
+      * @param string $type
+      * @param array $config
+     */
+     public function setDefaultConfiguration(string $type, array $config)
+     {
+         if(! isset($config[$type])) {
+             $this->setConfiguration($type, $config);
+         } else {
+             $this->setConfigurations($config);
+         }
+     }
+
+
+
+     /**
+      * @param string $type
+      * @param array $config
+      * @return array|mixed
+     */
+     public function mapConfiguration(string $type, array $config)
+     {
+           return $config[$type] ?? $config;
+     }
+
 
 
      /**

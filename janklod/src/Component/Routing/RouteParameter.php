@@ -8,9 +8,9 @@ namespace Jan\Component\Routing;
 */
 class RouteParameter
 {
-    const PATH_PREFIX               = '_path_prefix';
-    const NAMESPACE_PREFIX          = '_namespace';
-    const NAME_PREFIX               = '_name_prefix';
+    const PATH_PREFIX               = 'path.prefix';
+    const NAMESPACE_PREFIX          = 'namespace.prefix';
+    const NAME_PREFIX               = 'name.prefix';
 
     const OPTION_PARAM_PATH_PREFIX  = 'prefix';
     const OPTION_PARAM_NAMESPACE    = 'namespace';

@@ -224,10 +224,11 @@ class Router extends RouteCollection
     }
 
 
+
     /**
      * @param string $name
      * @return $this
-     */
+    */
     public function name(string $name): Router
     {
         $this->routeParameters->addOptionName($name);

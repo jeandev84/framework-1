@@ -11,15 +11,6 @@ class File
 
 
     /**
-     * File path
-     *
-     * @var string
-    */
-    protected $path;
-
-
-
-    /**
      * Directory name of file
      *
      * @var string
@@ -56,11 +47,12 @@ class File
      *
      * @param string $path
     */
-    public function __construct(string $path = '')
+    public function __construct(string $path)
     {
-         if ($path) {
-             $this->setPath($path);
-         }
+        $this->dirname   = pathinfo($path, PATHINFO_DIRNAME);
+        $this->basename  = pathinfo($path, PATHINFO_BASENAME);
+        $this->filename  = pathinfo($path, PATHINFO_FILENAME);
+        $this->extension = pathinfo($path, PATHINFO_EXTENSION);
     }
 
 
@@ -107,45 +99,5 @@ class File
     public function getExtension(): ?string
     {
         return $this->extension;
-    }
-
-
-    /**
-     * set path to given file
-     *
-     * @param string $path
-     * @return File
-    */
-    protected function setPath(string $path): File
-    {
-        $this->path      = $path;
-        $this->dirname   = pathinfo($this->path, PATHINFO_DIRNAME);
-        $this->basename  = pathinfo($this->path, PATHINFO_BASENAME);
-        $this->filename  = pathinfo($this->path, PATHINFO_FILENAME);
-        $this->extension = pathinfo($this->path, PATHINFO_EXTENSION);
-
-        return $this;
-    }
-
-
-    /**
-     * get file details
-     *
-     * @return array
-    */
-    public function details(): array
-    {
-        return pathinfo($this->path);
-    }
-
-
-    /**
-     * get path
-     *
-     * @return string
-    */
-    public function getPath(): string
-    {
-        return $this->path;
     }
 }

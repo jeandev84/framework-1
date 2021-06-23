@@ -90,7 +90,7 @@ class Route implements \ArrayAccess
     /**
      * @var array
      */
-    protected static $nameList = [];
+    protected static $nameContext = [];
 
 
     /**
@@ -220,7 +220,7 @@ class Route implements \ArrayAccess
             );
         }
 
-        static::$nameList[$name] = $this;
+        static::$nameContext[$name] = $this;
 
         $this->name = $name;
 
@@ -234,7 +234,7 @@ class Route implements \ArrayAccess
      */
     public static function nameList(): array
     {
-        return static::$nameList;
+        return static::$nameContext;
     }
 
 
@@ -245,7 +245,7 @@ class Route implements \ArrayAccess
      */
     public static function exists($name): bool
     {
-        return \array_key_exists($name, static::$nameList);
+        return \array_key_exists($name, static::$nameContext);
     }
 
 
@@ -256,17 +256,17 @@ class Route implements \ArrayAccess
      */
     public static function retrieve($name): Route
     {
-        return static::$nameList[$name];
+        return static::$nameContext[$name];
     }
 
 
 
     /**
-     * @param $name
+     * @param string $name
      * @param array $params
-     * @return false|string|string[]|null
+     * @return bool|string
      */
-    public static function generate($name, $params = [])
+    public static function generate(string $name, array $params = [])
     {
         if(! static::exists($name))
         {
@@ -294,7 +294,7 @@ class Route implements \ArrayAccess
      * @param $name
      * @param $regex
      * @return $this
-     */
+    */
     public function where($name, $regex = null): Route
     {
         foreach ($this->parseWhere($name, $regex) as $name => $regex)

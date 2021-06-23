@@ -68,7 +68,9 @@ class Manager
      */
      public function bootAsGlobal(): Manager
      {
-         static::$instance = $this->getDatabase();
+         if (! static::$instance) {
+             static::$instance = $this->getDatabase();
+         }
 
          return $this;
      }
@@ -81,7 +83,7 @@ class Manager
      */
      public static function connection(string $name = null)
      {
-          return static::$instance->connection($name);
+          return static::instance()->connection($name);
      }
 
 
@@ -94,7 +96,7 @@ class Manager
      public static function instance(): DatabaseManager
      {
          if (! static::$instance) {
-             throw new \Exception('Cannot get globally instance of capsule.');
+             throw new \Exception('Cannot get instance of manager.');
          }
 
          return static::$instance;
