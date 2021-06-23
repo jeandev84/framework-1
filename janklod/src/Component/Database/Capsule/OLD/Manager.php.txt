@@ -18,48 +18,36 @@ class Manager
      protected static $instance;
 
 
-     /**
-      * @var DatabaseManager
-     */
-     protected $database;
+
+     protected $params  = [];
+
 
 
 
      /**
       * Manager constructor.
-      * @param DatabaseManager|null $database
      */
-     public function __construct(DatabaseManager $database = null)
+     public function __construct()
      {
-          if (! $database) {
-              $database = new DatabaseManager();
+          if (! static::$instance) {
+              static::$instance = new DatabaseManager();
           }
-
-          $this->database = $database;
      }
 
 
 
      /**
        * @param string $name
-       * @param array $config
+       * @param array $configParams
       * @return Manager
      */
      public function addConnection(string $name, array $config): Manager
      {
-         $this->database->connectTo($name, $config);
-
+         $this->params = [$name, $config];
          return $this;
      }
 
 
-     /**
-      * @return DatabaseManager
-     */
-     public function getDatabase(): DatabaseManager
-     {
-         return $this->database;
-     }
 
 
      /**
@@ -67,30 +55,32 @@ class Manager
      */
      public function bootAsGlobal(): Manager
      {
-         static::$instance = $this->getDatabase();
+         list($name, $config) = $this->params;
+
+         static::$instance->connectTo($name, $config);
 
          return $this;
      }
 
 
 
+//     /**
+//      * @param string|null $name
+//      * @return mixed
+//     */
+//     public function connection(string $name = null)
+//     {
+//          return static::$instance->connection($name);
+//     }
+
+
+
+
      /**
-      * @param string|null $name
       * @return mixed
-     */
-     public static function connection(string $name = null)
-     {
-          return static::$instance->connection($name);
-     }
-
-
-
-
-     /**
-      * @return DatabaseManager
       * @throws \Exception
      */
-     public static function instance(): DatabaseManager
+     public static function instance()
      {
          if (! static::$instance) {
              throw new \Exception('Cannot get globally instance of capsule.');

@@ -19,9 +19,10 @@ class ConnectionFactory
       /**
        * @param string $name
        * @param array $config
-       * @return ConnectionInterface|null
+       * @return Connection|null
+       * @throws DriverException
       */
-      public function make(string $name, array $config): ?ConnectionInterface
+      public function make(string $name, array $config): ?Connection
       {
           $connection = $this->createConnection($name);
           $connection->connect($config);
@@ -32,15 +33,15 @@ class ConnectionFactory
 
       /**
        * @param string $name
-       * @return ConnectionInterface|null
+       * @return Connection|null
       */
-      public function createConnection(string $name): ?ConnectionInterface
+      public function createConnection(string $name): ?Connection
       {
           if (! \array_key_exists($name, $this->getStorageConnections())) {
               return null;
           }
 
-          return $this->getStorageConnections()[$name];
+          return $this->getPdoStorageConnections()[$name];
       }
 
 
@@ -54,6 +55,28 @@ class ConnectionFactory
          return ['mysql', 'pgsql', 'sqlite', 'oci'];
       }
 
+
+
+      /**
+       * @return string[]
+      */
+      public function availableDrivers(): array
+      {
+          return array_intersect(
+              $this->supportedDrivers(),
+              str_replace('', '', \PDO::getAvailableDrivers())
+          );
+      }
+
+
+      /**
+       * @param $driver
+       * @return bool
+      */
+      public function availableDriver($driver): bool
+      {
+          return  \in_array($driver, \PDO::getAvailableDrivers());
+      }
 
 
 

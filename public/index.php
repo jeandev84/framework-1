@@ -62,12 +62,14 @@ $response->send();
 $kernel->terminate($request, $response);
 
 
+
+/*
+
 $fs = new \Jan\Component\FileSystem\FileSystem(
     realpath(__DIR__.'/../')
 );
 
-$configDb =  $fs->load('config/database.php');;
-
+$configDb =  $fs->load('config/database.php');
 dump($configDb);
 
 $db = new \Jan\Component\Database\DatabaseManager();
@@ -82,5 +84,23 @@ dump($connection);
 
 dump($db);
 dump($db->getConnections());
+*/
+
+$fs = new \Jan\Component\FileSystem\FileSystem(
+    realpath(__DIR__.'/../')
+);
+
+$configDb =  $fs->load('config/database.php');
+
+$capsule = new \Jan\Component\Database\Capsule\Manager();
+$type = $configDb['connection'];
+
+$capsule->addConnection($type, $configDb);
+$capsule->bootAsGlobal();
+
+$database = \Jan\Component\Database\Capsule\Manager::instance();
+
+dump($database->connection('sqlite')/*->getConnection()*/);
+
 dd($app->log());
 

@@ -2,8 +2,10 @@
 namespace Jan\Component\Database\Connection\PDO;
 
 
+use ArrayAccess;
 use Jan\Component\Database\Connection\ConfigurationParser;
 use Jan\Component\Database\Connection\ConnectionInterface;
+use Jan\Component\Database\Connection\PDO\Statement\Query;
 use Jan\Component\Database\Exception\DriverException;
 use PDO;
 
@@ -27,33 +29,39 @@ class Connection implements ConnectionInterface
     protected $connection;
 
 
+
     /**
      * @param array $config
      * @return Connection
-     * @throws DriverException
     */
     public function connect(array $config): Connection
     {
-        $driver = $config['driver'];
-
-        if (! $this->availableDriver($driver)) {
-            throw new DriverException(sprintf('enabled driver (%s) for connection to database.', $driver));
-        }
-
-        $dsn = $this->makeDsn($config);
-
-        if ($driver == 'sqlite') {
-            $config['username'] = null;
-            $config['password'] = null;
-        }
+        $config = $this->parseConfiguration($config);
 
         try {
-            $this->connection = $this->createPdoConnection($dsn, $config['username'], $config['password'], $config['options']);
+            $driver = $config['driver'];
+
+            if (! $this->availableDriver($driver)) {
+                throw new DriverException(sprintf('enabled driver (%s) for connection to database.', $driver));
+            }
+
+            if ($driver == 'sqlite') {
+                $config['username'] = null;
+                $config['password'] = null;
+            }
+
+            if (! $this->connected()) {
+                $dsn = $this->makeDsn($config);
+                $this->connection = $this->make($dsn, $config['username'], $config['password'], $config['options']);
+            }
+
+            $this->config = $config;
+
         } catch (\PDOException $e) {
             throw $e;
         }
 
-        return $this->parseConfiguration($config);
+        return $this;
     }
 
 
@@ -79,13 +87,32 @@ class Connection implements ConnectionInterface
 
 
     /**
+     * @return PDO
+    */
+    public function getConnection(): PDO
+    {
+        return $this->getPdo();
+    }
+
+
+
+    /**
+     * @return Query
+    */
+    public function getQuery(): Query
+    {
+        return new Query($this->getPdo());
+    }
+
+
+    /**
      * @param string $dsn
      * @param string|null $username
      * @param string|null $password
-     * @param array $options
+     * @param array|null $options
      * @return PDO
     */
-    public function createPdoConnection(string $dsn, string $username = null, string $password = null, array $options = []): PDO
+    public function make(string $dsn, string $username = null, string $password = null, array $options = null): PDO
     {
         return new PDO($dsn, $username, $password, $options);
     }
@@ -101,25 +128,22 @@ class Connection implements ConnectionInterface
     }
 
 
+
+
     /**
      * @param array $params
-     * @return Connection
+     * @return ConfigurationParser
     */
-    protected function parseConfiguration(array $params): Connection
+    public function parseConfiguration(array $params): ConfigurationParser
     {
-        $config = new ConfigurationParser();
-        $config->parse($params);
-        $this->config = $config;
-
-        return $this;
+        return new ConfigurationParser($params);
     }
 
 
 
 
     /**
-     * Disconnection
-     *
+     * Disconnection to the databse
     */
     public function disconnect()
     {
@@ -127,12 +151,11 @@ class Connection implements ConnectionInterface
     }
 
 
-
     /**
-     * @param array $config
+     * @param ConfigurationParser $config
      * @return string
     */
-    protected function makeDsn(array $config): string
+    protected function makeDsn(ConfigurationParser $config): string
     {
         return sprintf(
     '%s:host=%s;port=%s;dbname=%s;charset=%s;',
@@ -148,10 +171,11 @@ class Connection implements ConnectionInterface
     /**
      * @param $driver
      * @return bool
-    */
+   */
     public function availableDriver($driver): bool
     {
-        return \in_array($driver, \PDO::getAvailableDrivers());
+        return  \in_array($driver, \PDO::getAvailableDrivers());
     }
+
 
 }

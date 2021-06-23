@@ -26,7 +26,19 @@ class ConfigurationParser implements \ArrayAccess
       /**
        * @var array
       */
-      protected $params = [];
+      protected $params = [
+          self::DRIVER     => 'mysql',
+          self::DATABASE   => 'default',
+          self::HOST       => '127.0.0.1',
+          self::PORT       => '3306',
+          self::CHARSET    => 'utf8',
+          self::USERNAME   => 'root',
+          self::PASSWORD   => 'secret',
+          self::COLLATION  => 'utf8_unicode_ci',
+          self::OPTIONS    => [],
+          self::PREFIX     => '',
+          self::ENGINE     => 'InnoDB', // InnoDB or MyISAM
+      ];
 
 
 

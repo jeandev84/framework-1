@@ -28,6 +28,14 @@ interface ConnectionInterface
 
 
       /**
+       * @return mixed
+      */
+      public function getConnection();
+
+
+
+
+      /**
        * Disconnect to database
        *
        * @return mixed
