@@ -94,6 +94,9 @@ $fs = new \Jan\Component\FileSystem\FileSystem(
     realpath(__DIR__.'/../')
 );
 
+dump($fs->scan('database/migrations'));
+
+
 $configDb =  $fs->load('config/database.php');
 
 $capsule = new \Jan\Component\Database\Capsule\Manager();

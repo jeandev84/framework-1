@@ -2,19 +2,20 @@
 namespace Jan\Component\FileSystem;
 
 
+use Jan\Component\FileSystem\Contract\FileLocatorInterface;
 use Jan\Component\FileSystem\Exception\FileLocatorException;
 
 /**
  * Class FileLocator
  * @package Jan\Component\FileSystem
 */
-class FileLocator
+class FileLocator implements FileLocatorInterface
 {
 
     /**
      * @var string
     */
-    protected $resourceDirectory;
+    protected $resource;
 
 
 
@@ -31,11 +32,11 @@ class FileLocator
 
 
     /**
-     * @param string $resourceDirectory
+     * @param string $resource
     */
-    public function resource(string $resourceDirectory)
+    public function resource(string $resource)
     {
-        $this->resourceDirectory = rtrim($resourceDirectory, '\\/');
+        $this->resource = rtrim($resource, '\\/');
     }
 
 
@@ -59,8 +60,8 @@ class FileLocator
     {
         $subDirectory = DIRECTORY_SEPARATOR . rtrim($subDirectory, '\\/');
 
-        if($this->resourceDirectory) {
-            return $this->resourceDirectory . $subDirectory;
+        if($this->resource) {
+            return $this->resource . $subDirectory;
         }
 
         return $subDirectory;
@@ -76,7 +77,7 @@ class FileLocator
     public function locate(string $filename): string
     {
          return implode(DIRECTORY_SEPARATOR, [
-             $this->resourceDirectory,
+             $this->resource,
              $this->resolvePath($filename)
          ]);
     }
