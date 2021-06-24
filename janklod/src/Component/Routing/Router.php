@@ -22,32 +22,31 @@ class Router extends RouteCollection
 
 
 
-
-    /**
-     * @var RouteParameter
-     */
-    protected $routeParameters;
-
-
-
     /**
      * @var string
     */
     protected $baseUrl;
 
 
+
+    /**
+     * @var RouteParser
+    */
+    protected $routeParser;
+
+
+
     /**
      * Router constructor.
-     * @param string $url
-     */
-    public function __construct(string $url = '')
+     * @param RouteParser|null $parser
+    */
+    public function __construct(RouteParser $parser = null)
     {
-        if($url) {
-            $this->setUrl($url);
+        if(! $parser) {
+            $this->routeParser = new RouteParser();
         }
-
-        $this->routeParameters = new RouteParameter();
     }
+
 
 
 
@@ -61,6 +60,7 @@ class Router extends RouteCollection
 
         return $this;
     }
+
 
 
     /**
@@ -146,11 +146,12 @@ class Router extends RouteCollection
     public function group(Closure $routeCallback, array $options = [])
     {
         if($options) {
-            $this->routeParameters->addOptions($options);
+            $this->routeParser->parseOptions($options);
         }
 
         $routeCallback($this);
-        $this->routeParameters->flushOptions();
+
+        $this->routeParser->flushOptions();
     }
 
 
@@ -159,13 +160,13 @@ class Router extends RouteCollection
      * @param Closure|null $closure
      * @param array $options
      * @return Router
-     */
+    */
     public function api(Closure $closure = null, array $options = []): Router
     {
-        $options = $this->routeParameters->configureApiDefaultOptions($options);
+        $options = $this->routeParser->configureApiDefaultOptions($options);
 
         if(! $closure) {
-            $this->routeParameters->addOptions($options);
+            $this->routeParser->parseOptions($options);
             return $this;
         }
 
@@ -182,18 +183,21 @@ class Router extends RouteCollection
      */
     public function map($methods, string $path, $target, string $name = null): Route
     {
-        $methods    = $this->routeParameters->resolveMethods($methods);
-        $path       = $this->routeParameters->resolvePath($path);
-        $target     = $this->routeParameters->resolveTarget($target);
+        $this->routeParser->parseParams(
+            compact('methods', 'path', 'target', 'name')
+        );
 
-        $middleware = $this->routeParameters->getMiddlewares();
-        $prefixName = $this->routeParameters->getPrefixName();
+        $methods    = $this->routeParser->getMethods();
+        $path       = $this->routeParser->getPath();
+        $target     = $this->routeParser->getTarget();
+        $middleware = $this->routeParser->getMiddlewares();
+        $namePrefix = $this->routeParser->getNamePrefix();
 
-        $route = new Route($methods, $path, $target, $prefixName);
+        $route = new Route($methods, $path, $target, $namePrefix);
 
         $route->where($this->patterns);
         $route->middleware($middleware);
-        $route->addOptions($this->routeParameters->getDefaultParams());
+        $route->addOptions($this->routeParser->getDefaults());
 
         if($name) {
             $route->name($name);
@@ -231,7 +235,7 @@ class Router extends RouteCollection
     */
     public function name(string $name): Router
     {
-        $this->routeParameters->addOptionName($name);
+        $this->routeParser->parseOptions(compact('name'));
 
         return $this;
     }
@@ -240,10 +244,10 @@ class Router extends RouteCollection
     /**
      * @param array $middleware
      * @return $this
-     */
+    */
     public function middleware(array $middleware): Router
     {
-        $this->routeParameters->addOptionMiddleware($middleware);
+        $this->routeParser->parseOptions(compact('middleware'));
 
         return $this;
     }
@@ -252,22 +256,23 @@ class Router extends RouteCollection
     /**
      * @param $prefix
      * @return Router
-     */
+    */
     public function prefix($prefix): Router
     {
-        $this->routeParameters->addOptionPrefix($prefix);
+        $this->routeParser->parseOptions(compact('prefix'));
 
         return $this;
     }
 
 
+
     /**
      * @param $namespace
      * @return Router
-     */
+    */
     public function namespace($namespace): Router
     {
-        $this->routeParameters->addOptionNamespace($namespace);
+        $this->routeParser->parseOptions(compact('namespace'));
 
         return $this;
     }
@@ -278,7 +283,7 @@ class Router extends RouteCollection
      * @param string $requestMethod
      * @param string $requestUri
      * @return Route|bool
-     */
+    */
     public function match(string $requestMethod, string $requestUri)
     {
         foreach ($this->getRoutes() as $route) {
@@ -294,10 +299,10 @@ class Router extends RouteCollection
     /**
      * @param string $name
      * @param array $params
-     * @return string|false
+     * @return string
      * @throws \Exception
-     */
-    public function generate(string $name, array $params = [])
+    */
+    public function generate(string $name, array $params = []): ?string
     {
         if(! $route = $this->getRoute($name)) {
             return null;
@@ -307,12 +312,13 @@ class Router extends RouteCollection
     }
 
 
+
     /**
      * @param string $name
      * @param array $params
      * @return string
      * @throws \Exception
-     */
+    */
     public function url(string $name, array $params = []): string
     {
         return rtrim($this->baseUrl, '/') . $this->generate($name, $params);

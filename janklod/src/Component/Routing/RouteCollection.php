@@ -38,6 +38,10 @@ class RouteCollection
     {
         $this->routes[] = $route;
 
+        if ($name = $route->getName()) {
+            $this->namedRoutes[$name] = $route;
+        }
+
         return $route;
     }
 
@@ -59,57 +63,55 @@ class RouteCollection
     public function setRoutes(array $routes)
     {
         foreach ($routes as $route) {
-
-            if(\is_array($route)) {
-                $route = $this->makeRouteFromArray($route);
-            }
-
-            if($route instanceof Route) {
-                $this->add($route);
-            }
+            $this->addRouteFromArray($route);
         }
     }
+
 
 
     /**
      * @param array $items
      * @return Route
     */
-    public function makeRouteFromArray(array $items): Route
+    public function addRouteFromArray(array $items): Route
     {
         $route = new Route();
+
         foreach ($items as $k => $v) {
             $route[$k] = $v;
         }
-        return $route;
+
+        return $this->add($route);
     }
 
 
-//    /**
-//     * add resources
-//     *
-//     * @param array $routes
-//     * @return RouteCollection
-//     */
-//    public function addRouteResource(array $routes)
-//    {
-//        $this->setRoutes($routes);
-//
-//        $this->resources = array_merge($this->resources, $routes);
-//
-//        return $this;
-//    }
-//
-//
-//    /**
-//     * get resources
-//     *
-//     * @return array
-//     */
-//    public function getResources()
-//    {
-//        return $this->resources;
-//    }
+
+
+    /**
+     * add resources
+     *
+     * @param array $routes
+     * @return RouteCollection
+    */
+    public function addRouteResource(array $routes): RouteCollection
+    {
+        $this->setRoutes($routes);
+
+        $this->resources = array_merge($this->resources, $routes);
+
+        return $this;
+    }
+
+
+    /**
+     * get resources
+     *
+     * @return array
+    */
+    public function getResources(): array
+    {
+        return $this->resources;
+    }
 
 
 
@@ -117,17 +119,18 @@ class RouteCollection
      * get named routes
      *
      * @return array
-     */
+    */
     public function getNamedRoutes(): array
     {
-        $namedRoutes = [];
         foreach ($this->getRoutes() as $route) {
-            if($name = $route->getName()) {
-                $namedRoutes[$name] = $route;
+            if ($name = $route->getName()) {
+                if (! \array_key_exists($name, $this->namedRoutes)) {
+                    $this->namedRoutes[$name] = $route;
+                }
             }
         }
 
-        return $namedRoutes;
+        return $this->namedRoutes;
     }
 
 
@@ -147,7 +150,7 @@ class RouteCollection
      * @return Route|null
      * @throws \Exception
     */
-    public function getRoute($name)
+    public function getRoute($name): ?Route
     {
         if(! $this->has($name)) {
             return null;
@@ -162,13 +165,15 @@ class RouteCollection
      * get routes by method
      *
      * @return array
-     */
+    */
     public function getRoutesByMethod(): array
     {
         $routes = [];
+
         foreach ($this->getRoutes() as $route) {
             $routes[$route->toStringMethod()][] = $route;
         }
+
         return $routes;
     }
 }

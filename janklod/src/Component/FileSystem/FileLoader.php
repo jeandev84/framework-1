@@ -14,24 +14,17 @@ use Jan\Component\FileSystem\Exception\FileLoaderException;
 class FileLoader extends FileLocator implements FileLoaderInterface
 {
 
-    /**
-     * @param $maskLink
-     * @return array|false
-     *
-     * $this->resources("/config/*.php")
-    */
-    public function resources($maskLink)
-    {
-        return glob($this->locate($maskLink));
-    }
-
 
     /**
      * @param $maskLink
     */
     public function loadResources($maskLink)
     {
-         // TODO implements
+         $files = $this->resources($maskLink);
+
+         foreach ($files as $file) {
+             @require_once $file;
+         }
     }
 
 

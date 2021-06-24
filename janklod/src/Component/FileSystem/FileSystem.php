@@ -2,8 +2,6 @@
 namespace Jan\Component\FileSystem;
 
 
-use Jan\Component\FileSystem\Exception\FileSystemException;
-
 /**
  * Class FileSystem
  * @package Jan\Component\FileSystem

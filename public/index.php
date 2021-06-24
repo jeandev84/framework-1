@@ -86,6 +86,8 @@ dump($db);
 dump($db->getConnections());
 */
 
+echo "<h2>Database</h2>";
+
 $fs = new \Jan\Component\FileSystem\FileSystem(
     realpath(__DIR__.'/../')
 );
@@ -104,6 +106,35 @@ $connection = \Jan\Component\Database\Capsule\Manager::connection();
 
 /* dump($database->connection('sqlite')); */
 dump($database->connection());
+
+
+echo "<h2>Routing</h2>";
+
+$router = new \Jan\Component\Routing\Router();
+$router->get('/', function () {
+    return 'Hello world';
+});
+
+
+$router->map('GET|POST', '/contact', function () {
+    return '<form action="/contact" method="POST">
+      <div><input type="email" name="email" value=""></div>
+      <div><input type="password" name="password" value=""></div>
+      <div><button type="submit">Отправить</button></div>
+    </form>';
+});
+
+
+dump($router->getRoutes());
+
+
+$route = $router->match($_SERVER['REQUEST_METHOD'], $uri = $_SERVER['REQUEST_URI']);
+
+if (! $route) {
+    dd('Route '. $uri . ' not found.');
+}
+
+dump($route);
 
 dd($app->log());
 

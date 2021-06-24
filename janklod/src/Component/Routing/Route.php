@@ -37,11 +37,11 @@ class Route implements \ArrayAccess
 
 
     /**
-     * route prefix name
+     * route name prefix
      *
      * @var string
      */
-    protected $prefixName = '';
+    protected $namePrefix = '';
 
 
 
@@ -106,7 +106,7 @@ class Route implements \ArrayAccess
         $this->setMethods($methods);
         $this->setPath($path);
         $this->setTarget($target);
-        $this->setPrefixName($prefixName);
+        $this->setNamePrefix($prefixName);
     }
 
 
@@ -175,19 +175,19 @@ class Route implements \ArrayAccess
     /**
      * @return string
      */
-    public function getPrefixName(): string
+    public function getNamePrefix(): string
     {
-        return $this->prefixName;
+        return $this->namePrefix;
     }
 
 
     /**
-     * @param string $prefixName
+     * @param string $namePrefix
      * @return Route
      */
-    public function setPrefixName(string $prefixName): Route
+    public function setNamePrefix(string $namePrefix): Route
     {
-        $this->prefixName = $prefixName;
+        $this->namePrefix = $namePrefix;
 
         return $this;
     }
@@ -212,7 +212,7 @@ class Route implements \ArrayAccess
      */
     public function name(string $name): Route
     {
-        $name = $this->prefixName . $name;
+        $name = $this->namePrefix . $name;
 
         if(static::exists($name)) {
             throw new \RuntimeException(
