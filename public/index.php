@@ -7,6 +7,8 @@
 |----------------------------------------------------------------------
 */
 
+use Jan\Component\Routing\Router;
+
 require_once __DIR__.'/../vendor/autoload.php';
 
 
@@ -110,20 +112,40 @@ dump($database->connection());
 
 echo "<h2>Routing</h2>";
 
-$router = new \Jan\Component\Routing\Router();
-$router->get('/', function () {
-    return 'Hello world';
-});
+$router = new Router();
+
+$router->group(function (Router $router) {
+    $router->get('/', function () {
+        return 'Hello world';
+    })->name('home')->middleware(\App\Middleware\AuthenticatedMiddleware::class);
 
 
-$router->map('GET|POST', '/contact', function () {
-    return '<form action="/contact" method="POST">
+    $router->map('GET|POST', '/contact', function () {
+        return '<form action="/contact" method="POST">
       <div><input type="email" name="email" value=""></div>
       <div><input type="password" name="password" value=""></div>
       <div><button type="submit">Отправить</button></div>
     </form>';
-});
+    })->name('contact');
 
+
+    $router->get('/post/{id}', function () {
+        return 'Post id : 1';
+    });
+
+    $router->post('/upload', 'UploadController@index', 'upload');
+
+}, [
+    'prefix' => '/admin',
+    'name' => 'admin.',
+    'middleware' => \App\Middleware\FooMiddleware::class,
+    'namespace' => 'Admin\\'
+]);
+
+
+$router->get('/foo/{id}', function (\Jan\Component\Http\Request $request, \Jan\Component\Http\Response $response) {
+
+})->whereDigital('id');
 
 dump($router->getRoutes());
 

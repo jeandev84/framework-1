@@ -180,7 +180,7 @@ class RouteParser
          $target = $this->getParam(self::TARGET);
 
          if(\is_string($target) && $namespace = $this->getOption(static::OPTION_NAMESPACE)) {
-             $target = rtrim(ucfirst($namespace), '\\') .'\\' . $target;
+             $target = rtrim($namespace, '\/') .'\\' . $target;
          }
 
          return $target;
@@ -232,12 +232,6 @@ class RouteParser
      */
      public function getOption(string $name, $default = null)
      {
-         foreach (array_keys($this->options) as $key) {
-               if (! $this->hasOption($key)) {
-                   return new \Exception(sprintf('%s is not available option param.', $index));
-               }
-         }
-
          return $this->options[$name] ?? $default;
      }
 
