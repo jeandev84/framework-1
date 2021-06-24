@@ -387,7 +387,7 @@ class Container implements ContainerContract
           // get concrete context
           $concrete = $this->getConcreteContext($abstract);
 
-          if($this->canResolve($concrete)) {
+          if($this->resolvable($concrete)) {
               $concrete = $this->resolveConcrete($concrete, $parameters);
               $this->resolved[$abstract] = true;
           }
@@ -443,7 +443,7 @@ class Container implements ContainerContract
       * @param $concrete
       * @return bool
      */
-     public function canResolve($concrete): bool
+     public function resolvable($concrete): bool
      {
           if($concrete instanceof \Closure) {
               return  true;
