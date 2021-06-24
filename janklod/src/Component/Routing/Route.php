@@ -14,7 +14,7 @@ class Route implements \ArrayAccess
      * route path
      *
      * @var string
-     */
+    */
     protected $path = '';
 
 
@@ -23,7 +23,7 @@ class Route implements \ArrayAccess
      * route handle
      *
      * @var mixed
-     */
+    */
     protected $target;
 
 
@@ -32,15 +32,16 @@ class Route implements \ArrayAccess
      * route name
      *
      * @var string
-     */
+    */
     protected $name = '';
+
 
 
     /**
      * route name prefix
      *
      * @var string
-     */
+    */
     protected $namePrefix = '';
 
 
@@ -74,7 +75,7 @@ class Route implements \ArrayAccess
      * route middleware
      *
      * @var array
-     */
+    */
     protected $middleware = [];
 
 
@@ -89,8 +90,8 @@ class Route implements \ArrayAccess
 
     /**
      * @var array
-     */
-    protected static $nameContext = [];
+    */
+    protected static $nameStorage = [];
 
 
     /**
@@ -220,7 +221,7 @@ class Route implements \ArrayAccess
             );
         }
 
-        static::$nameContext[$name] = $this;
+        static::$nameStorage[$name] = $this;
 
         $this->name = $name;
 
@@ -234,7 +235,7 @@ class Route implements \ArrayAccess
      */
     public static function nameList(): array
     {
-        return static::$nameContext;
+        return static::$nameStorage;
     }
 
 
@@ -245,7 +246,7 @@ class Route implements \ArrayAccess
      */
     public static function exists($name): bool
     {
-        return \array_key_exists($name, static::$nameContext);
+        return \array_key_exists($name, static::$nameStorage);
     }
 
 
@@ -256,7 +257,7 @@ class Route implements \ArrayAccess
      */
     public static function retrieve($name): Route
     {
-        return static::$nameContext[$name];
+        return static::$nameStorage[$name];
     }
 
 
