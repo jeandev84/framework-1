@@ -233,7 +233,7 @@ class Route implements \ArrayAccess
     /**
      * @return array
      */
-    public static function nameList(): array
+    public static function nameStorage(): array
     {
         return static::$nameStorage;
     }
@@ -243,7 +243,7 @@ class Route implements \ArrayAccess
     /**
      * @param $name
      * @return bool
-     */
+    */
     public static function exists($name): bool
     {
         return \array_key_exists($name, static::$nameStorage);
@@ -254,7 +254,7 @@ class Route implements \ArrayAccess
     /**
      * @param $name
      * @return Route
-     */
+    */
     public static function retrieve($name): Route
     {
         return static::$nameStorage[$name];
