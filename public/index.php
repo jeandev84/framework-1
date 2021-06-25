@@ -114,5 +114,12 @@ $connection = \Jan\Component\Database\Capsule\Manager::connection();
 /* dump($database->connection('sqlite')); */
 dump($database->connection());
 
+
+
+$schema = new Jan\Component\Database\Schema\Schema($connection);
+
+
+dump($schema);
+
 dd($app->log());
 

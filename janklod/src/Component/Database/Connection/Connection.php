@@ -60,4 +60,14 @@ abstract class Connection implements ConnectionInterface
     {
          return $this->config;
     }
+
+
+    /**
+     * @param string $name
+     * @return string
+    */
+    public function prefixTable(string $name): string
+    {
+        return $this->config->tableName($name);
+    }
 }

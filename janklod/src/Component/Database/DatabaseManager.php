@@ -53,17 +53,48 @@ class DatabaseManager implements ManagerInterface
      protected $defaultConnection;
 
 
+     /**
+      * DatabaseManager constructor.
+      * @param string|null $connection
+      * @param array $configParams
+     */
+     public function __construct(string $connection = null, array $configParams = [])
+     {
+           $this->connect($connection, $configParams);
+     }
+
 
      /**
-      * @param string $defaultConnection
-      * @return $this
+      * Connection factory (mysql, sqlite, postgres, oracle by default)
+      *
+      * @param string $connection
+      * @param array $config
      */
-     public function setDefaultConnection(string $defaultConnection): DatabaseManager
-     {
-         $this->defaultConnection = $defaultConnection;
+    public function connect(string $connection, array $config)
+    {
+        if (! isset($this->connections[$connection])) {
+            $this->factory = new ConnectionFactory();
+            $connections = $this->factory->getDefaultConnections();
+            $this->setDefaultConnection($connection);
+            $this->setConfigurations($config);
+            $this->setConnections($connections);
+        }
+    }
 
-         return $this;
-     }
+
+
+
+
+    /**
+     * @param string $defaultConnection
+     * @return $this
+     */
+    public function setDefaultConnection(string $defaultConnection): DatabaseManager
+    {
+        $this->defaultConnection = $defaultConnection;
+
+        return $this;
+    }
 
 
 
@@ -77,42 +108,6 @@ class DatabaseManager implements ManagerInterface
 
 
     /**
-      * Connection factory (mysql, sqlite, postgres, oracle by default)
-      *
-      * @param string $connection
-      * @param array $config
-     */
-     public function connect(string $connection, array $config)
-     {
-         if (! isset($this->connections[$connection])) {
-             $this->factory = new ConnectionFactory();
-             $this->setDefaultConnection($connection);
-             $connections = $this->factory->getDefaultConnections();
-             $this->setConnections($connections);
-             $this->setConfigurations($config);
-         }
-     }
-
-
-
-     /**
-      * DatabaseManager constructor.
-      * @param array $configParams
-     */
-     public function __construct(array $configParams = [])
-     {
-           if ($configParams) {
-              $this->setConfigurations($configParams);
-           }
-
-           $this->factory = new ConnectionFactory();
-           $connections = $this->factory->getDefaultConnections();
-           $this->setConnections($connections);
-     }
-
-
-
-     /**
       * @param string $name
       * @return bool
      */
@@ -288,5 +283,12 @@ class DatabaseManager implements ManagerInterface
     public function getConfigurations(): array
     {
         return $this->configurations;
+    }
+
+
+
+    public function config(string $key)
+    {
+        $connection = $this->connection();
     }
 }

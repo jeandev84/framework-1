@@ -32,8 +32,7 @@ class Manager
      */
      public function addConnection(string $connection, array $config): Manager
      {
-         $this->database = new DatabaseManager($config);
-         $this->database->setDefaultConnection($connection);
+         $this->database = new DatabaseManager($connection, $config);
 
          return $this;
      }
