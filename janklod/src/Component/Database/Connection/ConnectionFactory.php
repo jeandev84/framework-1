@@ -17,13 +17,15 @@ class ConnectionFactory
       /**
        * @param string $name
        * @param array $config
-       * @return ConnectionInterface|null
+       * @return Connection|null
       */
-      public function make(string $name, array $config): ?ConnectionInterface
+      public function make(string $name, array $config): ?Connection
       {
+          /** @var Connection $connection */
           $connection = $this->createConnection($name);
 
-          if ($connection instanceof ConnectionInterface) {
+          if ($connection instanceof Connection) {
+              $connection->parseConfiguration($config);
               $connection->connect($config);
           }
 
@@ -38,11 +40,11 @@ class ConnectionFactory
       */
       public function createConnection(string $name): ?ConnectionInterface
       {
-          if (! \array_key_exists($name, $this->getStorageConnections())) {
+          if (! \array_key_exists($name, $this->getDefaultConnections())) {
               return null;
           }
 
-          return $this->getStorageConnections()[$name];
+          return $this->getDefaultConnections()[$name];
       }
 
 
@@ -63,7 +65,7 @@ class ConnectionFactory
        * @param array $connections
        * @return array
       */
-      public function getStorageConnections(array $connections = []): array
+      public function getDefaultConnections(array $connections = []): array
       {
           return array_merge($this->getPdoStorageConnections(), $connections);
       }

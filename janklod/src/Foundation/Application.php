@@ -22,6 +22,24 @@ class Application extends Container
 
 
      /**
+      * Collect service providers
+      *
+      * @var array
+     */
+     protected $serviceProviders = [];
+
+
+
+     /**
+      * Collect facades
+      *
+      * @var array
+     */
+     protected $facades = [];
+
+
+
+     /**
       * Application constructor.
       * @param string|null $basePath
      */

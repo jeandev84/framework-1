@@ -8,12 +8,56 @@ namespace Jan\Component\Database\Connection;
 */
 abstract class Connection implements ConnectionInterface
 {
+
+    /**
+     * @var Configuration
+    */
+    protected $config;
+
+
+
+    /**
+     * @var mixed
+    */
+    protected $connection;
+
+
+
     /**
      * @param array $params
-     * @return ConfigurationParser
+     * @return void
     */
-    protected function parseConfiguration(array $params): ConfigurationParser
+    public function parseConfiguration(array $params)
     {
-        return new ConfigurationParser($params);
+         $this->config = new Configuration($params);
+    }
+
+
+
+    /**
+     * @param $connection
+    */
+    public function setConnection($connection)
+    {
+         $this->connection = $connection;
+    }
+
+
+
+    /**
+     * @return mixed
+    */
+    public function getConnection()
+    {
+        return $this->connection;
+    }
+
+
+    /**
+     * @return Configuration
+    */
+    public function getConfiguration(): Configuration
+    {
+         return $this->config;
     }
 }

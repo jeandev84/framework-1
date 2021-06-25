@@ -21,14 +21,15 @@ class FileLocator implements FileLocatorInterface
 
     /**
      * FileLocator constructor.
-     * @param string $resourceDirectory
-     */
-    public function __construct(string $resourceDirectory = '')
+     * @param string $resource
+    */
+    public function __construct(string $resource = '')
     {
-        if($resourceDirectory) {
-            $this->resource($resourceDirectory);
+        if($resource) {
+            $this->resource($resource);
         }
     }
+
 
 
     /**
@@ -38,6 +39,7 @@ class FileLocator implements FileLocatorInterface
     {
         $this->resource = rtrim($resource, '\\/');
     }
+
 
 
     /**
@@ -52,6 +54,7 @@ class FileLocator implements FileLocatorInterface
     }
 
 
+
     /**
      * @param $subDirectory
      * @return string
@@ -61,7 +64,7 @@ class FileLocator implements FileLocatorInterface
         $subDirectory = DIRECTORY_SEPARATOR . rtrim($subDirectory, '\\/');
 
         if($this->resource) {
-            return $this->resource . $subDirectory;
+            $subDirectory = $this->resource . $subDirectory;
         }
 
         return $subDirectory;

@@ -42,13 +42,13 @@ class Manager
 
 
      /**
-       * @param string $name
+       * @param string $connection
        * @param array $config
       * @return Manager
      */
-     public function addConnection(string $name, array $config): Manager
+     public function connectTo(string $connection, array $config): Manager
      {
-         $this->database->connect($name, $config);
+         $this->database->connect($connection, $config);
 
          return $this;
      }

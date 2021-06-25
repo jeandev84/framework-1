@@ -180,7 +180,7 @@ class RouteParser
          $target = $this->getParam(self::TARGET);
 
          if(\is_string($target) && $namespace = $this->getOption(static::OPTION_NAMESPACE)) {
-             $target = rtrim($namespace, '\/') .'\\' . $target;
+             $target = rtrim($namespace, '\\') .'\\' . $target;
          }
 
          return $target;

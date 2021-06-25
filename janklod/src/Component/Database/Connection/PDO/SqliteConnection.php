@@ -2,8 +2,9 @@
 namespace Jan\Component\Database\Connection\PDO;
 
 
-use Jan\Component\Database\Connection\ConfigurationParser;
+use Jan\Component\Database\Connection\Configuration;
 use Jan\Component\Database\Connection\PDO\Connector\PdoConnection;
+
 
 
 /**
@@ -14,11 +15,10 @@ class SqliteConnection extends PdoConnection
 {
 
      /**
-      * @param ConfigurationParser $config
       * @return string
      */
-     protected function makeDsn(ConfigurationParser $config): string
+     protected function makeDsn(): string
      {
-         return sprintf('%s:%s', $config['driver'], $config['database']);
+         return sprintf('%s:%s', $this->config['driver'], $this->config['database']);
      }
 }

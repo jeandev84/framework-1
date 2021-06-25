@@ -42,6 +42,15 @@ class File
     protected $extension;
 
 
+
+    /**
+     * @var mixed
+    */
+    protected $content;
+
+
+
+
     /**
      * File constructor.
      *
@@ -53,7 +62,9 @@ class File
         $this->basename  = pathinfo($path, PATHINFO_BASENAME);
         $this->filename  = pathinfo($path, PATHINFO_FILENAME);
         $this->extension = pathinfo($path, PATHINFO_EXTENSION);
+        $this->content   = @file_get_contents($path);
     }
+
 
 
     /**
@@ -99,5 +110,15 @@ class File
     public function getExtension(): ?string
     {
         return $this->extension;
+    }
+
+
+
+    /**
+     * @return false|mixed|string
+    */
+    public function getContent()
+    {
+        return $this->content;
     }
 }

@@ -36,9 +36,25 @@ interface ConnectionInterface
 
 
       /**
+       * @return mixed
+      */
+      public function getConfiguration();
+
+
+
+      /**
        * Disconnect to database
        *
        * @return mixed
       */
       public function disconnect();
+
+
+
+
+      /**
+       * @param string $sql
+       * @return mixed
+      */
+      public function exec(string $sql);
 }

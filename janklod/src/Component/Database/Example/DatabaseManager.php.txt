@@ -126,21 +126,20 @@ class DatabaseManager implements ManagerInterface
      public function setConfigurations(array $configParams): DatabaseManager
      {
          foreach ($configParams as $connection => $config) {
-               if (\is_array($config)) {
-                   $this->setConfiguration($connection, $config);
-               }
+               $this->setConfiguration($connection, $config);
          }
 
          return $this;
      }
 
 
+
     /**
-     * @param string $name
-     * @param array $config
+     * @param $name
+     * @param $config
      * @return DatabaseManager
      */
-    public function setConfiguration(string $name, array $config): DatabaseManager
+    public function setConfiguration($name, $config): DatabaseManager
     {
         $this->configurations[$name] = $config;
 

@@ -3,11 +3,11 @@ namespace Jan\Component\Database\Connection;
 
 
 /**
- * Class ConfigurationParser
+ * Class Configuration
  *
  * @package Jan\Component\Database
 */
-class ConfigurationParser implements \ArrayAccess
+class Configuration implements \ArrayAccess
 {
       const DRIVER    = 'driver';
       const HOST      = 'host';
@@ -31,7 +31,8 @@ class ConfigurationParser implements \ArrayAccess
 
 
       /**
-       * ConfigurationParser constructor.
+       * Configuration constructor
+       *
        * @param array $params
       */
       public function __construct(array $params = [])
@@ -45,9 +46,9 @@ class ConfigurationParser implements \ArrayAccess
 
       /**
        * @param array $params
-       * @return ConfigurationParser
+       * @return Configuration
       */
-      public function parse(array $params): ConfigurationParser
+      public function parse(array $params): Configuration
       {
           $this->params = $params;
 
@@ -99,6 +100,20 @@ class ConfigurationParser implements \ArrayAccess
          return $this->params;
      }
 
+
+
+     /**
+      * @param string $name
+      * @return string
+     */
+     public function tableName(string $name): string
+     {
+         if(! $this->has($name)) {
+             return $name;
+         }
+
+         return $this->get(self::PREFIX) . $name;
+     }
 
      /**
       * Remove config param

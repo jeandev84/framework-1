@@ -41,4 +41,15 @@ class FileLoader extends FileLocator implements FileLoaderInterface
 
         return require $this->locate($filename);
     }
+
+
+
+    /**
+     * @param string $filename
+     * @return array|false
+    */
+    public function toArray(string $filename)
+    {
+         return file($this->locate($filename));
+    }
 }

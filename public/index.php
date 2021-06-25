@@ -94,15 +94,17 @@ $fs = new \Jan\Component\FileSystem\FileSystem(
     realpath(__DIR__.'/../')
 );
 
+/*
 dump($fs->scan('database/migrations'));
-
+dump($fs->toArray('config/database.php'));
+*/
 
 $configDb =  $fs->load('config/database.php');
 
 $capsule = new \Jan\Component\Database\Capsule\Manager();
 $type = $configDb['connection'];
 
-$capsule->addConnection($type, $configDb);
+$capsule->connectTo($type, $configDb);
 $capsule->bootAsGlobal();
 
 $database = \Jan\Component\Database\Capsule\Manager::instance();
