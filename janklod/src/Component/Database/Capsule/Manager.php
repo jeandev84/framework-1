@@ -25,30 +25,15 @@ class Manager
      protected $database;
 
 
-
-     /**
-      * Manager constructor.
-      * @param DatabaseManager|null $database
-     */
-     public function __construct(DatabaseManager $database = null)
-     {
-          if (! $database) {
-              $database = new DatabaseManager();
-          }
-
-          $this->database = $database;
-     }
-
-
-
      /**
        * @param string $connection
        * @param array $config
       * @return Manager
      */
-     public function connectTo(string $connection, array $config): Manager
+     public function addConnection(string $connection, array $config): Manager
      {
-         $this->database->connect($connection, $config);
+         $this->database = new DatabaseManager($config);
+         $this->database->setDefaultConnection($connection);
 
          return $this;
      }
@@ -93,15 +78,11 @@ class Manager
       * @return void
       * @throws DriverException
      */
-     public static function config(string $id = null)
+     public static function config(string $id)
      {
-         $configuration = static::connection()->getConfiguration();
+         $config = static::connection()->getConfiguration();
 
-         if ($id) {
-             return $configuration->get($id);
-         }
-
-         return $configuration;
+         return $config->get($id);
      }
 
 

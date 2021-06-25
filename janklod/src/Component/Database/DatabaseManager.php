@@ -94,6 +94,36 @@ class DatabaseManager implements ManagerInterface
      }
 
 
+
+     /**
+      * DatabaseManager constructor.
+      * @param array $configParams
+     */
+     public function __construct(array $configParams = [])
+     {
+           if ($configParams) {
+              $this->setConfigurations($configParams);
+           }
+
+           $this->factory = new ConnectionFactory();
+           $connections = $this->factory->getDefaultConnections();
+           $this->setConnections($connections);
+     }
+
+
+
+     /**
+      * @param string $name
+      * @return bool
+     */
+     public function hasConnection(string $name): bool
+     {
+         return isset($this->connections[$name]);
+     }
+
+
+
+
      /**
       * @param string $name
       * @param $connection

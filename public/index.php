@@ -104,7 +104,7 @@ $configDb =  $fs->load('config/database.php');
 $capsule = new \Jan\Component\Database\Capsule\Manager();
 $type = $configDb['connection'];
 
-$capsule->connectTo($type, $configDb);
+$capsule->addConnection($type, $configDb);
 $capsule->bootAsGlobal();
 
 $database = \Jan\Component\Database\Capsule\Manager::instance();
