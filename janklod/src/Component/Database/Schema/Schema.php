@@ -37,8 +37,8 @@ class Schema
          */
          public function __construct(Connection $connection)
          {
-             $this->config     = $connection->getConfiguration();
-             $this->connection = $connection;
+              $this->config     = $connection->getConfiguration();
+              $this->connection = $connection;
          }
 
 
@@ -75,16 +75,32 @@ class Schema
 
 
 
-       /**
-        * @param string $table
-       */
-       public function drop(string $table)
-       {
-           $sql = sprintf("DROP TABLE `%s`;",
+        /**
+         * @param string $table
+        */
+        public function drop(string $table)
+        {
+            $sql = sprintf("DROP TABLE `%s`;",
               $this->config->prefixTable($table)
-           );
+            );
 
-           $this->connection->exec($sql);
+            $this->connection->exec($sql);
+        }
+
+
+
+       /**
+        * @param $table
+        * @return void
+        * @throws Exception
+       */
+       public function dropIfExists($table)
+       {
+          $sql = sprintf("DROP TABLE IF EXISTS `%s`;",
+            $this->config->prefixTable($table)
+          );
+
+          $this->connection->exec($sql);
        }
 
 
@@ -92,56 +108,40 @@ class Schema
       /**
        * @param $table
        * @return void
-       * @throws Exception
+       * @throws
       */
-      public function dropIfExists($table)
+      public function truncate($table)
       {
-          $sql = sprintf("DROP TABLE IF EXISTS `%s`;",
-            $this->config->prefixTable($table)
-          );
+            $sql = sprintf("TRUNCATE TABLE `%s`;",
+                $this->config->prefixTable($table)
+            );
 
-          $this->connection->exec($sql);
+            $this->connection->exec($sql);
       }
 
 
 
      /**
-      * @param $table
-      * @return void
-      * @throws
+      * @return Connection
      */
-     public function truncate($table)
+     public function getConnection(): Connection
      {
-         $sql = sprintf("TRUNCATE TABLE `%s`;",
-            $this->config->prefixTable($table)
-         );
-
-         $this->connection->exec($sql);
+           return $this->connection;
      }
 
 
 
-    /**
-     * @return Connection
-    */
-    public function getConnection(): Connection
-    {
-        return $this->connection;
-    }
-
-
-
-    public function backup()
-    {
+     public function backup()
+     {
         // TODO implements
-    }
+     }
 
 
 
-    public function export()
-    {
+     public function export()
+     {
         // TODO implements
-    }
+     }
 
 
 
