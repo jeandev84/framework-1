@@ -7,6 +7,7 @@
 |----------------------------------------------------------------------
 */
 
+use Jan\Component\Database\Schema\BluePrint;
 use Jan\Component\Routing\Router;
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -117,9 +118,16 @@ dump($database->connection());
 
 
 $schema = new Jan\Component\Database\Schema\Schema($connection);
-
-
 dump($schema);
+
+$schema->create('users', function (BluePrint $table) {
+
+});
+
+$migrator = new \Jan\Component\Database\Migration\Migrator($schema);
+dump($migrator);
+
+
 
 dd($app->log());
 

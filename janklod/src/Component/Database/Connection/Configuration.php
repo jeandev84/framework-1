@@ -106,7 +106,7 @@ class Configuration implements \ArrayAccess
       * @param string $name
       * @return string
      */
-     public function tableName(string $name): string
+     public function prefixTable(string $name): string
      {
          return $this->get(self::PREFIX) . $name;
      }
