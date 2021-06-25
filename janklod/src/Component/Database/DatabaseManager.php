@@ -43,25 +43,8 @@ class DatabaseManager implements ManagerInterface
      /**
       * @var string
      */
-     protected $type;
-
-
-
-     /**
-      * @var string
-     */
      protected $defaultConnection;
 
-
-     /**
-      * DatabaseManager constructor.
-      * @param string|null $connection
-      * @param array $configParams
-     */
-     public function __construct(string $connection = null, array $configParams = [])
-     {
-           $this->connect($connection, $configParams);
-     }
 
 
      /**
@@ -69,7 +52,7 @@ class DatabaseManager implements ManagerInterface
       *
       * @param string $connection
       * @param array $config
-     */
+    */
     public function connect(string $connection, array $config)
     {
         if (! isset($this->connections[$connection])) {

@@ -128,6 +128,5 @@ $migrator = new \Jan\Component\Database\Migration\Migrator($schema);
 dump($migrator);
 
 
-
 dd($app->log());
 

@@ -4,6 +4,7 @@ namespace Jan\Component\Database\Connection;
 
 /**
  * Class Connection
+ *
  * @package Jan\Component\Database\Connection
 */
 abstract class Connection implements ConnectionInterface

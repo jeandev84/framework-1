@@ -28,14 +28,16 @@ class Manager
      /**
        * @param string $connection
        * @param array $config
-      * @return Manager
+      * @return void
      */
-     public function addConnection(string $connection, array $config): Manager
+     public function addConnection(string $connection, array $config)
      {
-         $this->database = new DatabaseManager($connection, $config);
-
-         return $this;
+         $database = new DatabaseManager();
+         $database->connect($connection, $config);
+         $this->database = $database;
      }
+
+
 
 
      /**
