@@ -176,7 +176,7 @@ class DatabaseManager implements ManagerInterface
          $config = $this->configuration($name);
 
          if (! isset($this->connections[$name])) {
-             throw new \Exception('unavailable ('.$name.') for connection.');
+             throw new \Exception('unavailable connection name ('.$name.').');
          }
 
          $connection = $this->connections[$name];
