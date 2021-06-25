@@ -26,12 +26,14 @@ class ConnectionFactory
 
           if ($connection instanceof Connection) {
               $connection->parseConfiguration($config);
+          }
+
+          if ($connection instanceof ConnectionInterface) {
               $connection->connect($config);
           }
 
           return $connection;
       }
-
 
 
       /**

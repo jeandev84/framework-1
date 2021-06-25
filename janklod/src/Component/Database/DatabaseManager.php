@@ -149,49 +149,15 @@ class DatabaseManager implements ManagerInterface
 
 
     /**
+     * get connection configuration params
+     *
      * @param string|null $name
      * @return array
     */
-    public function getConfiguration(string $name = null): array
+    public function configuration(string $name = null): array
     {
-        if (isset($this->configurations[$name])) {
-            return  $this->configurations[$name];
-        }
-
-        return $this->configurations[$this->defaultConnection];
+        return $this->configurations[$name] ?? [];
     }
-
-
-
-    /**
-     * get connection configuration params
-     *
-     * @param string $name
-     * @param array|null $default
-     * @return array|mixed
-    */
-    public function configuration(string $name, array $default = null)
-    {
-        return $this->configurations[$name] ?? $default;
-    }
-
-     /**
-       * @param string $name
-       * @param $connection
-       * @param array $config
-       * @return $this
-     */
-     public function addConnection($connection, array $config = [], string $name = 'default'): DatabaseManager
-     {
-         $this->setConnection($name, $connection);
-
-         if ($config) {
-             $this->setConfiguration($name, $config);
-         }
-
-         return $this;
-     }
-
 
 
      /**
