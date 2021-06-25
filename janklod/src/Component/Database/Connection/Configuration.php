@@ -108,10 +108,6 @@ class Configuration implements \ArrayAccess
      */
      public function tableName(string $name): string
      {
-         if(! $this->has($name)) {
-             return $name;
-         }
-
          return $this->get(self::PREFIX) . $name;
      }
 

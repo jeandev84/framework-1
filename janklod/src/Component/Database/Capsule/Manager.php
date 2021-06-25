@@ -88,6 +88,24 @@ class Manager
 
 
 
+     /**
+      * @param string|null $id
+      * @return void
+      * @throws DriverException
+     */
+     public static function config(string $id = null)
+     {
+         $configuration = static::connection()->getConfiguration();
+
+         if ($id) {
+             return $configuration->get($id);
+         }
+
+         return $configuration;
+     }
+
+
+
 
      /**
       * @return DatabaseManager
