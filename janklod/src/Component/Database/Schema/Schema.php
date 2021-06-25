@@ -74,6 +74,7 @@ class Schema
         }
 
 
+
        /**
         * @param string $table
        */
