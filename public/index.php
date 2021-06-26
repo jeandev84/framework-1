@@ -109,6 +109,8 @@ $capsule->addConnection($type, $configDb);
 $capsule->bootAsGlobal();
 
 $database = \Jan\Component\Database\Capsule\Manager::instance();
+dump($database);
+
 $connection = \Jan\Component\Database\Capsule\Manager::connection();
 
 /* dump($database->connection('sqlite')); */

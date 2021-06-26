@@ -41,8 +41,8 @@ class Migrator
       */
       public function __construct(Schema $schema)
       {
-          $this->schema = $schema;
           $this->migrations = [];
           $this->migrationTable = self::TBL_MIGRATION;
+          $this->schema = $schema;
       }
 }

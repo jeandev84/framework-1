@@ -26,21 +26,24 @@ class ConnectionFactory implements ConnectionFactoryInterface
 
       /**
         * ConnectionFactory constructor.
-        * @param array $factories
       */
-      public function __construct(array $factories)
+      public function __construct(array $factories = [])
       {
-           $this->factories = $factories;
+           if ($factories) {
+               $this->factories = $factories;
+           }
       }
-
 
 
       /**
        * @param array $factories
+       * @return ConnectionFactory
       */
-      public function setFactories(array $factories)
+      public function add(array $factories): ConnectionFactory
       {
-          $this->factories = $factories;
+           $this->factories = array_merge($this->factories, $factories);
+
+           return $this;
       }
 
 
@@ -53,9 +56,8 @@ class ConnectionFactory implements ConnectionFactoryInterface
       public function make(string $name, array $config): ?Connection
       {
           if (! \array_key_exists($name, $this->factories)) {
-              throw new InvalidArgumentException('unavailable connection name ('. $name .')');
+              return null;
           }
-
 
           /** @var Connection $connection */
           $connection = $this->factories[$name];
@@ -66,33 +68,9 @@ class ConnectionFactory implements ConnectionFactoryInterface
 
           if ($connection instanceof ConnectionInterface) {
               $connection->connect($config);
+              return $connection;
           }
 
-          return $connection;
-      }
-
-
-      /**
-       * @param string $name
-       * @return ConnectionInterface|null
-      */
-      public function createConnection(string $name): ?ConnectionInterface
-      {
-          if (! \array_key_exists($name, $this->factories)) {
-              return null;
-          }
-
-          return $this->factories[$name];
-      }
-
-
-
-
-      /**
-       * @return array
-      */
-      public function supportedDrivers(): array
-      {
-         return ['mysql', 'pgsql', 'sqlite', 'oci'];
+          return null;
       }
 }

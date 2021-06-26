@@ -57,14 +57,20 @@ class DatabaseManager implements ManagerInterface
      /**
       * DatabaseManager constructor.
       * @param array $configParams
+      * @param ConnectionFactoryInterface|null $factory
      */
-     public function __construct(array $configParams = [])
+     public function __construct(array $configParams = [], ConnectionFactoryInterface $factory = null)
      {
          if ($configParams) {
              $this->setConfigurations($configParams);
          }
 
-         $this->setFactory(new ConnectionFactory());
+         if (! $factory) {
+             $defaultConnections = $this->getDefaultConnections();
+             $factory = new ConnectionFactory($defaultConnections);
+         }
+
+         $this->setFactory($factory);
      }
 
 
@@ -102,11 +108,24 @@ class DatabaseManager implements ManagerInterface
     public function connect(string $connection, array $config)
     {
         if (! $this->hasConnection($connection)) {
-            $defaultConnections = $this->getDefaultConnections();
-            $this->factory->add($defaultConnections);
+             $this->factory->add();
             $this->setDefaultConnection($connection);
             $this->setConfigurations($config);
             $this->setConnections($defaultConnections);
+        }
+    }
+
+
+
+    /**
+     * Remoce default connections
+    */
+    public function removeDefaultConnections()
+    {
+        foreach (\array_keys($this->defaultConnections) as $key) {
+             if (\array_key_exists($key, $this->connections)) {
+                  unset($this->connections[$key]);
+             }
         }
     }
 
