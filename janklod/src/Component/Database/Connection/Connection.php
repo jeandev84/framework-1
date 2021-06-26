@@ -2,6 +2,8 @@
 namespace Jan\Component\Database\Connection;
 
 
+use Jan\Component\Database\Connection\PDO\Statement\Query;
+
 /**
  * Class Connection
  *
@@ -60,5 +62,19 @@ abstract class Connection implements ConnectionInterface
     public function getConfiguration(): Configuration
     {
          return $this->config;
+    }
+
+
+    /*abstract public function query(string $sql, array $params = []); */
+
+
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return Query
+    */
+    public function query(string $sql, array $params = []): Query
+    {
+        return new Query($this->connection);
     }
 }

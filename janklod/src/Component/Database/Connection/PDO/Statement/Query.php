@@ -27,4 +27,23 @@ class Query
      {
           $this->pdo = $pdo;
      }
+
+
+
+     public function execute()
+     {
+         return $this;
+     }
+
+
+     public function getResult()
+     {
+         return [];
+     }
+
+
+     public function getOneOrNullResult()
+     {
+         return [];
+     }
 }

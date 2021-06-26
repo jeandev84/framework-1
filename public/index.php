@@ -110,12 +110,12 @@ $capsule->bootAsGlobal();
 
 $database = \Jan\Component\Database\Capsule\Manager::instance();
 dump($database);
+/*
+dump($database->connection('sqlite'));
+dump($database->connection());
+*/
 
 $connection = \Jan\Component\Database\Capsule\Manager::connection();
-
-/* dump($database->connection('sqlite')); */
-dump($database->connection());
-
 
 $schema = new Jan\Component\Database\Schema\Schema($connection);
 dump($schema);
