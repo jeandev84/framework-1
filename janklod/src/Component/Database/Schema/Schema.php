@@ -51,7 +51,7 @@ class Schema
         */
         public function create(string $table, Closure $closure)
         {
-            $table = $this->config->prefixTable($table);
+            $table = $this->resolveTableName($table);
 
             $bluePrint = new BluePrint($table);
 
@@ -81,7 +81,7 @@ class Schema
         public function drop(string $table)
         {
             $sql = sprintf("DROP TABLE `%s`;",
-              $this->config->prefixTable($table)
+              $this->resolveTableName($table)
             );
 
             $this->connection->exec($sql);
@@ -97,7 +97,7 @@ class Schema
        public function dropIfExists($table)
        {
           $sql = sprintf("DROP TABLE IF EXISTS `%s`;",
-            $this->config->prefixTable($table)
+            $this->resolveTableName($table)
           );
 
           $this->connection->exec($sql);
@@ -113,7 +113,7 @@ class Schema
       public function truncate($table)
       {
             $sql = sprintf("TRUNCATE TABLE `%s`;",
-                $this->config->prefixTable($table)
+                $this->resolveTableName($table)
             );
 
             $this->connection->exec($sql);
@@ -153,4 +153,13 @@ class Schema
         // TODO implements
     }
 
+
+    /**
+     * @param $table
+     * @return string
+    */
+    public function resolveTableName($table): string
+    {
+        return $this->config->prefixTable($table);
+    }
 }
