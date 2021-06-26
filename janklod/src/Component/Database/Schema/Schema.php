@@ -51,7 +51,7 @@ class Schema
         */
         public function create(string $table, Closure $closure)
         {
-            $table = $this->resolveTableName($table);
+            $table = $this->table($table);
 
             $bluePrint = new BluePrint($table);
 
@@ -80,9 +80,7 @@ class Schema
         */
         public function drop(string $table)
         {
-            $sql = sprintf("DROP TABLE `%s`;",
-              $this->resolveTableName($table)
-            );
+            $sql = sprintf("DROP TABLE `%s`;", $this->table($table));
 
             $this->connection->exec($sql);
         }
@@ -96,9 +94,7 @@ class Schema
        */
        public function dropIfExists($table)
        {
-          $sql = sprintf("DROP TABLE IF EXISTS `%s`;",
-            $this->resolveTableName($table)
-          );
+          $sql = sprintf("DROP TABLE IF EXISTS `%s`;", $this->table($table));
 
           $this->connection->exec($sql);
        }
@@ -112,9 +108,7 @@ class Schema
       */
       public function truncate($table)
       {
-            $sql = sprintf("TRUNCATE TABLE `%s`;",
-                $this->resolveTableName($table)
-            );
+            $sql = sprintf("TRUNCATE TABLE `%s`;", $this->table($table));
 
             $this->connection->exec($sql);
       }
@@ -158,7 +152,7 @@ class Schema
      * @param $table
      * @return string
     */
-    public function resolveTableName($table): string
+    public function table($table): string
     {
         return $this->config->prefixTable($table);
     }

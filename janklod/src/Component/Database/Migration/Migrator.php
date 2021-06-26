@@ -184,9 +184,9 @@ class Migrator
     }
 
 
-
     /**
      * @param array $migrations
+     * @throws \ReflectionException
     */
     public function applyMigrations(array $migrations)
     {
@@ -206,14 +206,16 @@ class Migrator
 
     /**
      * @param Migration $migration
+     * @throws \ReflectionException
     */
     public function saveMigration(Migration $migration)
     {
         $this->schema->getConnection()
                      ->exec(sprintf("INSERT INTO `%s` (version, executed_at) VALUES ('%s', '%s')",
-                $this->migrationTable, 'Migration3456575858', '2021-11-20'
-                /* $migration->getVersion(), */
-                /* $migration->getExecutedAt() */
+                $this->migrationTable,
+                        $migration->getVersion(),
+                        'GET EXECUTION TIME'
+                        /* $migration->getExecutedAt() */
             )
         );
     }
@@ -247,12 +249,11 @@ class Migrator
 
     /**
      * @param Migration $migration
-     */
+     * @throws \ReflectionException
+    */
     public function removeMigrationFile(Migration $migration)
     {
-        if(method_exists($migration, 'getFilename')) {
-            unlink($migration->getFilename());
-        }
+          @unlink($migration->getFilename());
     }
 
 
@@ -260,7 +261,7 @@ class Migrator
     /**
      * @param string $message
      * @return void
-     */
+    */
     public function log(string $message)
     {
         echo '['. date('Y-m-d H:i:s') .'] - '. $message .PHP_EOL;
@@ -286,33 +287,17 @@ class Migrator
         array_map('unlink', $this->getMigrationFiles());
     }
 
-
-    /**
-     * @param Migration $migration
-     * @return string
-     * @throws \ReflectionException
-     */
-    public function getFilename(Migration $migration): string
-    {
-        if(method_exists($migration, 'getFilename')) {
-            return $migration->getFilename();
-        }
-
-        return $this->reflectedClass($migration)->getFileName();
-    }
-
-
     /**
      * @return array
-     */
+     * @throws \ReflectionException
+    */
     public function getMigrationFiles(): array
     {
         $migrationFiles = [];
 
         /** @var Migration $migration */
-        foreach ($this->migrations as $migration)
-        {
-            $migrationFiles[] = ''; /* $migration->getFilename(); */
+        foreach ($this->migrations as $migration) {
+            $migrationFiles[] = $migration->getFilename();
         }
 
         return $migrationFiles;
