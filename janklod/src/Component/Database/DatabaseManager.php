@@ -91,20 +91,18 @@ class DatabaseManager implements ManagerInterface
      }
 
 
-
-
     /**
-      * Connection factory (mysql, sqlite, postgres, oracle by default)
-      *
-      * @param string $connection
-      * @param array $config
+     * Connect to the database
+     *
+     * @param string $name (specific : mysql, sqlite, postgres, oracle by default)
+     * @param array $config
     */
-    public function connect(string $connection, array $config)
+    public function connect(string $name, array $config)
     {
-        if (! $this->hasConnection($connection)) {
+        if (! $this->hasConnection($name)) {
             $defaultConnections = $this->getDefaultConnections();
             $this->factory->add($defaultConnections);
-            $this->setDefaultConnection($connection);
+            $this->setDefaultConnection($name);
             $this->setConfigurations($config);
             $this->setConnections($defaultConnections);
         }
@@ -176,9 +174,9 @@ class DatabaseManager implements ManagerInterface
      */
      public function setConfigurations(array $configParams): DatabaseManager
      {
-         foreach ($configParams as $connection => $config) {
+         foreach ($configParams as $name => $config) {
                if (\is_array($config)) {
-                   $this->setConfiguration($connection, $config);
+                   $this->setConfiguration($name, $config);
                }
          }
 
@@ -199,16 +197,16 @@ class DatabaseManager implements ManagerInterface
     }
 
 
-    /**
-     * get connection configuration params
-     *
-     * @param string|null $name
-     * @return array
-    */
-    public function configuration(string $name = null): array
-    {
+     /**
+      * get connection configuration params
+      *
+      * @param string|null $name
+      * @return array
+     */
+     public function configuration(string $name = null): array
+     {
         return $this->configurations[$name] ?? [];
-    }
+     }
 
 
      /**
