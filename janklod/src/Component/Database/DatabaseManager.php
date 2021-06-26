@@ -99,10 +99,12 @@ class DatabaseManager implements ManagerInterface
     */
     public function connect(string $name, array $config)
     {
-        $defaultConnections = $this->getDefaultConnections();
-        $this->factory->add($defaultConnections);
-        $this->setDefaultConnection($name);
-        $this->setConfigurations($config);
+        if (! $this->connection) {
+            $defaultConnections = $this->getDefaultConnections();
+            $this->factory->add($defaultConnections);
+            $this->setConfigurations($config);
+            $this->setDefaultConnection($name);
+        }
     }
 
 
