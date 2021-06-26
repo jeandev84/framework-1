@@ -11,4 +11,6 @@ use Jan\Component\Database\Migration\Contract\MigrationInterface;
 */
 abstract class Migration implements MigrationInterface
 {
+      abstract public function up();
+      abstract public function down();
 }

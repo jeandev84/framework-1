@@ -10,39 +10,41 @@ use Jan\Component\Database\Schema\Schema;
 */
 class Migrator
 {
-
-      const TBL_MIGRATION = 'migrations';
-
-
-      /**
-       * @var Schema
-      */
-      protected $schema;
-
-
-
       /**
        * @var string
       */
-      protected $migrationTable;
+      protected $migrationTable = 'migrations';
 
 
 
       /**
        * @var array
       */
-      protected $migrations;
+      protected $migrations = [];
 
 
 
       /**
-        * Migrator constructor.
-        * @param Schema $schema
+       * @var array
       */
-      public function __construct(Schema $schema)
-      {
-          $this->migrations = [];
-          $this->migrationTable = self::TBL_MIGRATION;
-          $this->schema = $schema;
-      }
+      protected $migrationFiles = [];
+
+
+
+
+     /**
+       * @var Schema
+     */
+     protected $schema;
+
+
+
+     /**
+      * Migrator constructor.
+      * @param Schema $schema
+     */
+     public function __construct(Schema $schema)
+     {
+         $this->schema = $schema;
+     }
 }
