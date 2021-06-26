@@ -66,7 +66,7 @@ class Schema
                   'dddd',
                   $this->config->get('engine'),
                   $this->config->get('charset'),
-                  'add column'
+                  'add_column'
             );
 
             dd($sql);

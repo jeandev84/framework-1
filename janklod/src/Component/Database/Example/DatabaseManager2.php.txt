@@ -5,12 +5,6 @@ namespace Jan\Component\Database;
 use InvalidArgumentException;
 use Jan\Component\Database\Connection\ConnectionFactory;
 use Jan\Component\Database\Connection\ConnectionInterface;
-use Jan\Component\Database\Connection\ConnectionStack;
-use Jan\Component\Database\Connection\Contract\ConnectionFactoryInterface;
-use Jan\Component\Database\Connection\PDO\MysqlConnection;
-use Jan\Component\Database\Connection\PDO\OracleConnection;
-use Jan\Component\Database\Connection\PDO\PostgresConnection;
-use Jan\Component\Database\Connection\PDO\SqliteConnection;
 use Jan\Component\Database\Schema\Schema;
 
 
@@ -53,52 +47,23 @@ class DatabaseManager implements ManagerInterface
 
 
      /**
-       * @var array
-     */
-     protected $defaultConnections = [];
-
-
-
-     /**
       * DatabaseManager constructor.
       * @param array $configParams
      */
      public function __construct(array $configParams = [])
      {
+         $this->factory = new ConnectionFactory();
+         $connections = $this->factory->getDefaultConnections();
+         $this->setConnections($connections);
+
          if ($configParams) {
              $this->setConfigurations($configParams);
          }
-
-         $this->defaultConnections = ConnectionStack::getPdoConnections();
-         $this->setFactory(new ConnectionFactory($this->defaultConnections));
-     }
-
-
-     /**
-      * @param ConnectionFactoryInterface $factory
-      * @return DatabaseManager
-     */
-     public function setFactory(ConnectionFactoryInterface $factory): DatabaseManager
-     {
-           $this->factory = $factory;
-
-           return $this;
      }
 
 
 
      /**
-      * @return ConnectionFactory
-     */
-     public function getFactory(): ConnectionFactory
-     {
-          return $this->factory;
-     }
-
-
-
-
-    /**
       * Connection factory (mysql, sqlite, postgres, oracle by default)
       *
       * @param string $connection
@@ -107,25 +72,15 @@ class DatabaseManager implements ManagerInterface
     public function connect(string $connection, array $config)
     {
         if (! isset($this->connections[$connection])) {
+            $this->factory = new ConnectionFactory();
+            $connections = $this->factory->getDefaultConnections();
             $this->setDefaultConnection($connection);
             $this->setConfigurations($config);
-            $this->setConnections($this->defaultConnections);
+            $this->setConnections($connections);
         }
     }
 
 
-
-    /**
-     * Remoce default connections
-    */
-    public function removeDefaultConnections()
-    {
-        foreach (\array_keys($this->defaultConnections) as $key) {
-             if (\array_key_exists($key, $this->connections)) {
-                  unset($this->connections[$key]);
-             }
-        }
-    }
 
 
 

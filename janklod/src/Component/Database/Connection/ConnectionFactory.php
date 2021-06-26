@@ -2,6 +2,8 @@
 namespace Jan\Component\Database\Connection;
 
 
+use InvalidArgumentException;
+use Jan\Component\Database\Connection\Contract\ConnectionFactoryInterface;
 use Jan\Component\Database\Connection\PDO\MysqlConnection;
 use Jan\Component\Database\Connection\PDO\OracleConnection;
 use Jan\Component\Database\Connection\PDO\PostgresConnection;
@@ -12,8 +14,37 @@ use Jan\Component\Database\Connection\PDO\SqliteConnection;
  *
  * @package Jan\Component\Database\Connection
 */
-class ConnectionFactory
+class ConnectionFactory implements ConnectionFactoryInterface
 {
+
+      /**
+       * @var array
+      */
+      protected $factories = [];
+
+
+
+      /**
+        * ConnectionFactory constructor.
+        * @param array $factories
+      */
+      public function __construct(array $factories)
+      {
+           $this->factories = $factories;
+      }
+
+
+
+      /**
+       * @param array $factories
+      */
+      public function setFactories(array $factories)
+      {
+          $this->factories = $factories;
+      }
+
+
+
       /**
        * @param string $name
        * @param array $config
@@ -21,8 +52,13 @@ class ConnectionFactory
       */
       public function make(string $name, array $config): ?Connection
       {
+          if (! \array_key_exists($name, $this->factories)) {
+              throw new InvalidArgumentException('unavailable connection name ('. $name .')');
+          }
+
+
           /** @var Connection $connection */
-          $connection = $this->createConnection($name);
+          $connection = $this->factories[$name];
 
           if ($connection instanceof Connection) {
               $connection->parseConfiguration($config);
@@ -42,11 +78,11 @@ class ConnectionFactory
       */
       public function createConnection(string $name): ?ConnectionInterface
       {
-          if (! \array_key_exists($name, $this->getDefaultConnections())) {
+          if (! \array_key_exists($name, $this->factories)) {
               return null;
           }
 
-          return $this->getDefaultConnections()[$name];
+          return $this->factories[$name];
       }
 
 
@@ -59,33 +95,4 @@ class ConnectionFactory
       {
          return ['mysql', 'pgsql', 'sqlite', 'oci'];
       }
-
-
-
-
-      /**
-       * @param array $connections
-       * @return array
-      */
-      public function getDefaultConnections(array $connections = []): array
-      {
-          return array_merge($this->getPdoStorageConnections(), $connections);
-      }
-
-
-
-
-      /**
-       * @return array
-      */
-      public function getPdoStorageConnections(): array
-      {
-          return [
-             'mysql'    => new MysqlConnection(),
-             'sqlite'   => new SqliteConnection(),
-             'postgres' => new PostgresConnection(),
-             'oci'      => new OracleConnection(),
-          ];
-      }
-
 }

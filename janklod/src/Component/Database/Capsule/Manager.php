@@ -25,6 +25,7 @@ class Manager
      protected $database;
 
 
+
      /**
        * @param string $connection
        * @param array $config
@@ -49,6 +50,7 @@ class Manager
      }
 
 
+
      /**
       * boot connection
      */
@@ -60,6 +62,7 @@ class Manager
 
          return $this;
      }
+
 
 
      /**

@@ -8,6 +8,7 @@ namespace Jan\Component\Database\Schema;
 */
 class BluePrint
 {
+
      /**
       * @var string
      */
@@ -22,5 +23,11 @@ class BluePrint
      public function __construct(string $table)
      {
          $this->table = $table;
+     }
+
+
+     public function column()
+     {
+         return '';
      }
 }
