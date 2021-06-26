@@ -11,6 +11,38 @@ use Jan\Component\Database\Migration\Contract\MigrationInterface;
 */
 abstract class Migration implements MigrationInterface
 {
-      abstract public function up();
-      abstract public function down();
+
+       abstract public function up();
+       abstract public function down();
+
+
+      /**
+       * @return string
+       * @throws \ReflectionException
+      */
+      public function getVersion(): string
+      {
+           return $this->map()->getShortName();
+      }
+
+
+
+      /**
+       * @return false|string
+       * @throws \ReflectionException
+      */
+      public function getFilename()
+      {
+          return $this->map()->getFileName();
+      }
+
+
+      /**
+       * @return \ReflectionClass
+       * @throws \ReflectionException
+      */
+      protected function map(): \ReflectionClass
+      {
+          return new \ReflectionClass(get_called_class());
+      }
 }
