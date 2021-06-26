@@ -56,7 +56,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
       public function make(string $name, array $config): ?Connection
       {
           if (! \array_key_exists($name, $this->factories)) {
-              return null;
+              throw new InvalidArgumentException('Unsupported driver ('. $name .')');
           }
 
           /** @var Connection $connection */

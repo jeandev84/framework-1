@@ -104,7 +104,6 @@ class DatabaseManager implements ManagerInterface
             $this->factory->add($defaultConnections);
             $this->setDefaultConnection($name);
             $this->setConfigurations($config);
-            $this->setConnections($defaultConnections);
         }
     }
 
@@ -222,18 +221,11 @@ class DatabaseManager implements ManagerInterface
              $name = $this->getDefaultConnection();
          }
 
-         if (! isset($this->connections[$name])) {
-             throw new \Exception('unavailable connection name ('.$name.').');
+         if (isset($this->connections[$name])) {
+             return $this->connections[$name];
          }
 
-         $connection = $this->connections[$name];
-
-         if ($connection instanceof ConnectionInterface) {
-             $config = $this->configuration($name);
-             $connection = $this->factory->make($name, $config);
-         }
-
-         return $connection;
+         return $this->factory->make($name, $this->configuration($name));
      }
 
 
