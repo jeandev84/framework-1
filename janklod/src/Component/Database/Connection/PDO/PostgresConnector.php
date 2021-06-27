@@ -5,12 +5,11 @@ namespace Jan\Component\Database\Connection\PDO;
 use Jan\Component\Database\Connection\PDO\Connector\PdoConnection;
 
 
-
 /**
- * Class OracleConnection
+ * Class PostgresConnector
  * @package Jan\Component\Database\Connection\PDO
 */
-class OracleConnection extends PdoConnection
+class PostgresConnector extends PdoConnection
 {
 
 }

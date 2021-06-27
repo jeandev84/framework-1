@@ -4,10 +4,7 @@ namespace Jan\Component\Database\Connection;
 
 use InvalidArgumentException;
 use Jan\Component\Database\Connection\Contract\ConnectionFactoryInterface;
-use Jan\Component\Database\Connection\PDO\MysqlConnection;
-use Jan\Component\Database\Connection\PDO\OracleConnection;
-use Jan\Component\Database\Connection\PDO\PostgresConnection;
-use Jan\Component\Database\Connection\PDO\SqliteConnection;
+use Jan\Component\Database\Connection\Contract\ConnectionInterface;
 
 /**
  * Class ConnectionFactory

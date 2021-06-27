@@ -128,5 +128,15 @@ $migrator = new \Jan\Component\Database\Migration\Migrator($schema);
 dump($migrator);
 
 
+
+$migrator->setMigrations([
+    new \App\Migration\Version202106051623(),
+    new \App\Migration\Version202106051624()
+]);
+
+
+dump($migrator->getMigrationFiles());
+
+
 dd($app->log());
 

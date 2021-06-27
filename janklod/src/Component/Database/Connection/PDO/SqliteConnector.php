@@ -8,10 +8,10 @@ use Jan\Component\Database\Connection\PDO\Connector\PdoConnection;
 
 
 /**
- * Class SqliteConnection
+ * Class SqliteConnector
  * @package Jan\Component\Database\Connection\PDO
 */
-class SqliteConnection extends PdoConnection
+class SqliteConnector extends PdoConnection
 {
 
      /**

@@ -3,8 +3,6 @@ namespace Jan\Component\Database\Connection\PDO\Connector;
 
 
 use Jan\Component\Database\Connection\Connection;
-use Jan\Component\Database\Connection\Configuration;
-use Jan\Component\Database\Connection\PDO\Statement\Query;
 use Jan\Component\Database\Exception\DriverException;
 use PDO;
 
@@ -47,6 +45,7 @@ class PdoConnection extends Connection
                 );
 
                 $this->setConnection($pdo);
+                $this->setQuery(new Query($pdo));
             }
 
         } catch (\PDOException $e) {
@@ -148,5 +147,20 @@ class PdoConnection extends Connection
             $this->config['database'],
             $this->config['charset']
         );
+    }
+
+
+
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return Query
+    */
+    public function query(string $sql, array $params = []): Query
+    {
+         $this->query->setSQL($sql);
+         $this->query->setParams($params);
+
+         return $this->query;
     }
 }

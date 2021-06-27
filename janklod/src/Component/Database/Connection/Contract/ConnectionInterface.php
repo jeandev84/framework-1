@@ -1,11 +1,11 @@
 <?php
-namespace Jan\Component\Database\Connection;
+namespace Jan\Component\Database\Connection\Contract;
 
 
 /**
  * Interface ConnectionInterface
  *
- * @package Jan\Component\Database\Connection
+ * @package Jan\Component\Database\Connection\Contract
 */
 interface ConnectionInterface
 {
@@ -57,4 +57,13 @@ interface ConnectionInterface
        * @return mixed
       */
       public function exec(string $sql);
+
+
+
+      /**
+       * @param string $sql
+       * @param array $params
+       * @return mixed
+      */
+      public function query(string $sql, array $params = []);
 }

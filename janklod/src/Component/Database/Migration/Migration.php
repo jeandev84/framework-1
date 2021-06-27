@@ -22,7 +22,7 @@ abstract class Migration implements MigrationInterface
       */
       public function getVersion(): string
       {
-           return $this->map()->getShortName();
+           return $this->checkMigration()->getShortName();
       }
 
 
@@ -33,7 +33,7 @@ abstract class Migration implements MigrationInterface
       */
       public function getFilename()
       {
-          return $this->map()->getFileName();
+          return $this->checkMigration()->getFileName();
       }
 
 
@@ -41,7 +41,7 @@ abstract class Migration implements MigrationInterface
        * @return \ReflectionClass
        * @throws \ReflectionException
       */
-      protected function map(): \ReflectionClass
+      protected function checkMigration(): \ReflectionClass
       {
           return new \ReflectionClass(get_called_class());
       }

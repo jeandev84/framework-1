@@ -7,10 +7,10 @@ use Jan\Component\Database\Connection\ConnectionFactory;
 use Jan\Component\Database\Connection\ConnectionInterface;
 use Jan\Component\Database\Connection\ConnectionStack;
 use Jan\Component\Database\Connection\Contract\ConnectionFactoryInterface;
-use Jan\Component\Database\Connection\PDO\MysqlConnection;
-use Jan\Component\Database\Connection\PDO\OracleConnection;
-use Jan\Component\Database\Connection\PDO\PostgresConnection;
-use Jan\Component\Database\Connection\PDO\SqliteConnection;
+use Jan\Component\Database\Connection\PDO\MysqlConnector;
+use Jan\Component\Database\Connection\PDO\OracleConnector;
+use Jan\Component\Database\Connection\PDO\PostgresConnector;
+use Jan\Component\Database\Connection\PDO\SqliteConnector;
 use Jan\Component\Database\Schema\Schema;
 
 
@@ -100,8 +100,8 @@ class DatabaseManager implements ManagerInterface
     public function connect(string $name, array $config)
     {
         if (! $this->connection) {
-            $defaultConnections = $this->getDefaultConnections();
-            $this->factory->add($defaultConnections);
+            $connectors = $this->getConnectors();
+            $this->factory->add($connectors);
             $this->setConfigurations($config);
             $this->setDefaultConnection($name);
         }
@@ -225,6 +225,7 @@ class DatabaseManager implements ManagerInterface
              return $this->connections[$name];
          }
 
+
          return $this->factory->make($name, $this->configuration($name));
      }
 
@@ -304,9 +305,9 @@ class DatabaseManager implements ManagerInterface
     /**
      * @return array
     */
-    public function getDefaultConnections(): array
+    public function getConnectors(): array
     {
-        return ConnectionStack::getPdoConnections();
+        return ConnectionStack::getPdoConnectors();
     }
 
 

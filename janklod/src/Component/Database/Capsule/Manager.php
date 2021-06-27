@@ -2,6 +2,7 @@
 namespace Jan\Component\Database\Capsule;
 
 
+use Exception;
 use Jan\Component\Database\DatabaseManager;
 use Jan\Component\Database\Exception\DriverException;
 
@@ -68,8 +69,8 @@ class Manager
      /**
        * @param string|null $name
        * @return mixed
-       * @throws DriverException
-     */
+       * @throws DriverException|Exception
+      */
      public static function connection(string $name = null)
      {
           return static::instance()->connection($name);
@@ -94,12 +95,12 @@ class Manager
 
      /**
       * @return DatabaseManager
-      * @throws \Exception
+      * @throws Exception
      */
      public static function instance(): DatabaseManager
      {
          if (! static::$instance) {
-             throw new \Exception('Cannot get instance of manager.');
+             throw new Exception('Cannot get instance of manager.');
          }
 
          return static::$instance;

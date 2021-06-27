@@ -2,10 +2,10 @@
 namespace Jan\Component\Database\Connection;
 
 
-use Jan\Component\Database\Connection\PDO\MysqlConnection;
-use Jan\Component\Database\Connection\PDO\OracleConnection;
-use Jan\Component\Database\Connection\PDO\PostgresConnection;
-use Jan\Component\Database\Connection\PDO\SqliteConnection;
+use Jan\Component\Database\Connection\PDO\MysqlConnector;
+use Jan\Component\Database\Connection\PDO\OracleConnector;
+use Jan\Component\Database\Connection\PDO\PostgresConnector;
+use Jan\Component\Database\Connection\PDO\SqliteConnector;
 
 
 
@@ -19,13 +19,13 @@ class ConnectionStack
     /**
      * @return array
     */
-    public static function getPdoConnections(): array
+    public static function getPdoConnectors(): array
     {
         return [
-            'mysql'    => new MysqlConnection(),
-            'sqlite'   => new SqliteConnection(),
-            'postgres' => new PostgresConnection(),
-            'oci'      => new OracleConnection(),
+            'mysql'    => new MysqlConnector(),
+            'sqlite'   => new SqliteConnector(),
+            'postgres' => new PostgresConnector(),
+            'oci'      => new OracleConnector(),
         ];
     }
 }

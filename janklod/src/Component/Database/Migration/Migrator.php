@@ -157,7 +157,7 @@ class Migrator
      * Migrate table to the database
      *
      * @throws Exception
-     */
+    */
     public function migrate()
     {
         $this->install();
@@ -168,7 +168,7 @@ class Migrator
 
     /**
      * @throws Exception
-     */
+    */
     public function diff()
     {
         $this->install();
@@ -203,6 +203,8 @@ class Migrator
     {
          // down(), do for one migration
     }
+
+
 
     /**
      * @param Migration $migration
@@ -248,6 +250,23 @@ class Migrator
 
 
     /**
+     * Remove migration file
+     *
+     * @param Migration $migration
+    */
+    public function removeMigration(Migration $migration)
+    {
+         /*
+           Delete record from migration table
+          'DELETE FROM {$this->migrationTable} WHERE version = {$migration->getVersion()}'
+          $this->removeMigrationFile($migration);
+         */
+
+    }
+
+
+
+    /**
      * @param Migration $migration
      * @throws \ReflectionException
     */
@@ -266,17 +285,6 @@ class Migrator
     {
         echo '['. date('Y-m-d H:i:s') .'] - '. $message .PHP_EOL;
     }
-
-
-    /**
-     * @return array
-     */
-    public function getMessages(): array
-    {
-        return $this->messages;
-    }
-
-
 
 
     /**

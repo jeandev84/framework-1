@@ -69,8 +69,8 @@ class Schema
                   'add_column'
             );
 
-            dd($sql);
-          // $this->connection->exec($sql);
+            /* dump($sql); */
+            $this->connection->exec($sql);
         }
 
 
@@ -155,5 +155,15 @@ class Schema
     public function table($table): string
     {
         return $this->config->prefixTable($table);
+    }
+
+
+    /**
+     * @param $sql
+     * @return mixed
+    */
+    public function execSQL($sql)
+    {
+        return $this->connection->exec($sql);
     }
 }
