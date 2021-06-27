@@ -310,22 +310,4 @@ class Migrator
 
         return $migrationFiles;
     }
-
-
-
-    /**
-     * @param string $className
-     * @return \ReflectionClass
-     * @throws \ReflectionException
-     */
-    protected function reflectedClass(string $className): \ReflectionClass
-    {
-        try {
-
-            return new \ReflectionClass($className);
-
-        } catch (\ReflectionException $e) {
-            throw $e;
-        }
-    }
 }
