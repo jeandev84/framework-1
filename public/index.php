@@ -132,10 +132,29 @@ dump($migrator);
 /* $migrator->install(); */
 
 
-$migrator->setMigrations([
+$otherMigrationFiles = $fs->resources('/migrations/*.php');
+
+dump($otherMigrationFiles);
+
+$otherMigrations = [];
+
+if ($otherMigrationFiles) {
+    foreach ($otherMigrationFiles as $otherMigrationFile) {
+        require_once $otherMigrationFile;
+        $migration = pathinfo($otherMigrationFile, PATHINFO_FILENAME);
+        $otherMigrations[] = new $migration();
+    }
+}
+
+
+$defaultMigrations = [
     new \App\Migration\Version202106051623(),
     new \App\Migration\Version202106051624()
-]);
+];
+
+$migrations = array_merge($defaultMigrations, $otherMigrations);
+
+$migrator->setMigrations($migrations);
 
 /* $migrator->rollback(); */
 
