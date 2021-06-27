@@ -3,10 +3,11 @@
 
 
 /**
- * Class initial_migration
+ * Class add_column_migration_00
+ *
  * @package app\migrations
 */
-class initial_migration extends \Jan\Component\Database\Migration\Migration
+class add_column_migration_00 extends \Jan\Component\Database\Migration\Migration
 {
 
     public function up()

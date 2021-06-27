@@ -19,6 +19,15 @@ class Version202106051623 extends Migration
             $table->increments('id');
             $table->string('email', 200);
             $table->string('password', 300);
+
+            /*
+            $table->string('surname')->nullable();
+            $table->string('name')->nullable();
+            $table->string('patronymic')->nullable();
+            $table->boolean('enabled');
+            $table->softDeletes();
+            */
+
             $table->timestamps();
         });
     }
