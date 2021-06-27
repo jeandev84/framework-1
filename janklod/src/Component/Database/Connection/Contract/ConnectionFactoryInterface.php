@@ -8,6 +8,7 @@ namespace Jan\Component\Database\Connection\Contract;
 */
 interface ConnectionFactoryInterface
 {
+
       /**
         * @param string $name
         * @param array $config

@@ -38,12 +38,11 @@ abstract class Connection implements ConnectionInterface
 
 
     /**
-     * @param array $params
-     * @return void
+     * @param Configuration $config
     */
-    public function parseConfiguration(array $params)
+    public function setConfiguration(Configuration $config)
     {
-         $this->config = new Configuration($params);
+         $this->config = $config;
     }
 
 

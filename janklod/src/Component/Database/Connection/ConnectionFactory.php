@@ -59,15 +59,25 @@ class ConnectionFactory implements ConnectionFactoryInterface
           /** @var Connection $connection */
           $connection = $this->factories[$name];
 
-          if ($connection instanceof Connection) {
-              $connection->parseConfiguration($config);
-          }
-
           if ($connection instanceof ConnectionInterface) {
+              if ($connection instanceof Connection) {
+                  $connection->setConfiguration(new Configuration());
+              }
+
               $connection->connect($config);
               return $connection;
           }
 
           return null;
+      }
+
+
+
+      /**
+       * @return array
+      */
+      public function getFactories(): array
+      {
+          return $this->factories;
       }
 }

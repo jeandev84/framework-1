@@ -24,6 +24,8 @@ class PdoConnection extends Connection
     {
         try {
 
+            $this->config->parse($config);
+
             $driver = $this->config['driver'];
 
             if (! $this->availableDriver($driver)) {

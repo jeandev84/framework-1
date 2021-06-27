@@ -54,6 +54,16 @@ class DatabaseManager implements ManagerInterface
      protected $configurations = [];
 
 
+
+     /**
+      * Collect connection status
+      *
+      * @var array
+     */
+     protected $status = [];
+
+
+
      /**
       * DatabaseManager constructor.
       * @param array $configParams
@@ -224,7 +234,6 @@ class DatabaseManager implements ManagerInterface
          if (isset($this->connections[$name])) {
              return $this->connections[$name];
          }
-
 
          return $this->factory->make($name, $this->configuration($name));
      }
