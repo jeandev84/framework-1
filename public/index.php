@@ -113,8 +113,12 @@ $migrations = array_merge($defaultMigrations, $otherMigrations);
 $migrator->setMigrations($migrations);
 
 /* $migrator->rollback(); */
-$migrator->migrate();
+/* $migrator->migrate(); */
 
+/*
+$m = new add_column_migration_00();
+$migrator->removeMigration($m);
+*/
 
 dump($migrator->getMigrationFiles());
 dump($migrator->getMigrations());

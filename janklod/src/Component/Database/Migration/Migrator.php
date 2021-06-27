@@ -85,11 +85,13 @@ class Migrator
     */
     public function addMigration(Migration $migration): Migrator
     {
+        $migrationName = $migration->getName();
+
         $migration->schema($this->schema);
 
-        $this->migrations[] = $migration;
+        $this->migrations[$migrationName] = $migration;
 
-        $this->migrationFiles[$migration->getName()] = $migration->getFilename();
+        $this->migrationFiles[$migrationName] = $migration->getFilename();
 
         return $this;
     }
@@ -225,12 +227,7 @@ class Migrator
     */
     public function saveMigration(Migration $migration)
     {
-        $checkOne = 'SELECT * FROM '. $this->migrationTable . ' WHERE migration = :migration';
-
-        $result = $this->schema->getConnection()
-                               ->query($checkOne, ['migration' => $migration->getName()])
-                               ->execute()
-                               ->getResult();;
+        $result = $this->checkOneMigration($migration);
 
         if (! $result) {
             $sql = sprintf("INSERT INTO `%s` (migration, executed_at) VALUES ('%s', '%s')",
@@ -243,6 +240,23 @@ class Migrator
                 ->exec($sql);
         }
     }
+
+
+    /**
+     * @param Migration $migration
+     * @return mixed
+     * @throws \ReflectionException
+    */
+    public function checkOneMigration(Migration $migration)
+    {
+        $checkOne = "SELECT * FROM {$this->migrationTable} WHERE migration = :migration";
+
+        return $this->schema->getConnection()
+                               ->query($checkOne, ['migration' => $migration->getName()])
+                               ->execute()
+                               ->getResult();
+    }
+
 
 
 
@@ -273,6 +287,12 @@ class Migrator
     }
 
 
+
+    public function resetMigrations(array $migrations)
+    {
+
+    }
+
     /**
      * Remove migration file
      *
@@ -281,13 +301,23 @@ class Migrator
     */
     public function removeMigration(Migration $migration)
     {
-         $sql = sprintf('DELETE FROM %s WHERE migration = %s',
+
+         $sql = sprintf("DELETE FROM %s WHERE migration = '%s'",
             $this->migrationTable,
             $migration->getName()
          );
 
+         /*
+          $sql = sprintf('DELETE FROM %s WHERE migration = :migration',
+            $this->migrationTable
+         );
+
          $this->schema->getConnection()
-                      ->exec($sql);
+                      ->query($sql, ['migration' => $migration->getName()])
+                      ->execute();
+         */
+
+         $this->schema->execute($sql);
 
          $this->removeMigrationFile($migration);
     }
