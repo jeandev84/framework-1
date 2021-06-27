@@ -165,7 +165,7 @@ class Query extends QueryContract
     /**
      * @throws QueryException
     */
-    protected function executionProcess()
+    protected function executionProcess(): Query
     {
          if (! $this->sql) {
               throw new QueryException('SQL query is empty.');
@@ -187,8 +187,6 @@ class Query extends QueryContract
     */
     public function executeBindValues(PDOStatement $statement): Query
     {
-         $this->params = [];
-
          $params = [];
 
          foreach ($this->bindValues as $bindParameters) {
@@ -196,7 +194,6 @@ class Query extends QueryContract
               $statement->bindValue(':'. $param, $value, $type);
               $params[$param] = $value;
          }
-
 
          if ($this->statement->execute()) {
              $this->log($this->sql, $params);
@@ -213,8 +210,6 @@ class Query extends QueryContract
     */
     public function executeParams(PDOStatement $statement): Query
     {
-        $this->bindValues = [];
-
         if($statement->execute($this->params)) {
             $this->log($this->sql, $this->params);
         }
