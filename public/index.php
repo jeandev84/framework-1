@@ -98,7 +98,11 @@ if ($otherMigrationFiles) {
     foreach ($otherMigrationFiles as $otherMigrationFile) {
         require_once $otherMigrationFile;
         $migration = pathinfo($otherMigrationFile, PATHINFO_FILENAME);
-        $otherMigrations[] = new $migration();
+
+        $migrationObject = new $migration();
+        $migrator->addMigration($migrationObject);
+
+        /* $otherMigrations[] = new $migration(); */
     }
 }
 
