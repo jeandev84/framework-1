@@ -49,7 +49,7 @@ class Configuration implements \ArrayAccess
        * @param $key
        * @param $value
       */
-      public function setParam($key, $value)
+      public function set($key, $value)
       {
            $this->params[$key] = $value;
       }
@@ -60,7 +60,7 @@ class Configuration implements \ArrayAccess
        * @param $key
        * @return bool
       */
-      public function hasParam($key): bool
+      public function has($key): bool
       {
           return \array_key_exists($key, $this->params);
       }
@@ -73,7 +73,7 @@ class Configuration implements \ArrayAccess
       * @param null $default
       * @return mixed|null
      */
-     public function getParam($name, $default = null)
+     public function get($name, $default = null)
      {
          return $this->params[$name] ?? $default;
      }
@@ -97,7 +97,7 @@ class Configuration implements \ArrayAccess
      */
      public function prefixTable(string $name): string
      {
-         return $this->getParam(self::PREFIX) . $name;
+         return $this->get(self::PREFIX) . $name;
      }
 
      
@@ -119,7 +119,7 @@ class Configuration implements \ArrayAccess
      */
      public function offsetExists($offset): bool
      {
-        return $this->hasParam($offset);
+        return $this->has($offset);
      }
 
 
@@ -129,7 +129,7 @@ class Configuration implements \ArrayAccess
      */
      public function offsetGet($offset)
      {
-         return $this->getParam($offset);
+         return $this->get($offset);
      }
 
 
@@ -139,7 +139,7 @@ class Configuration implements \ArrayAccess
      */
      public function offsetSet($offset, $value)
      {
-         $this->setParam($offset, $value);
+         $this->set($offset, $value);
      }
 
 

@@ -32,6 +32,12 @@ class Migrator
       protected $migrationFiles = [];
 
 
+      /**
+       * @var array
+      */
+      protected $logs = [];
+
+
 
 
      /**
@@ -68,10 +74,13 @@ class Migrator
     /**
      * @param Migration $migration
      * @return Migrator
+     * @throws \ReflectionException
     */
     public function addMigration(Migration $migration): Migrator
     {
         $this->migrations[] = $migration;
+
+        $this->migrationFiles[$migration->getName()] = $migration->getFilename();
 
         return $this;
     }
@@ -82,6 +91,7 @@ class Migrator
      *
      * @param array $migrations
      * @return $this
+     * @throws \ReflectionException
     */
     public function setMigrations(array $migrations): Migrator
     {
@@ -112,7 +122,7 @@ class Migrator
     public function getOldMigrations()
     {
         return $this->schema->getConnection()
-                            ->query("SELECT `version` FROM {$this->migrationTable}")
+                            ->query("SELECT `migration` FROM {$this->migrationTable}")
                             ->execute()
                             ->getResult();
     }
@@ -135,6 +145,7 @@ class Migrator
     }
 
 
+
     /**
      * Install migration version table
      *
@@ -144,10 +155,11 @@ class Migrator
     {
         $this->schema->create($this->migrationTable, function (BluePrint $table) {
             $table->increments('id');
-            $table->string('version');
+            $table->string('migration');
             $table->datetime('executed_at');
         });
     }
+
 
 
     /**
@@ -161,6 +173,7 @@ class Migrator
 
         $this->applyMigrations($this->migrations);
     }
+
 
 
     /**
@@ -203,13 +216,14 @@ class Migrator
     */
     public function saveMigration(Migration $migration)
     {
-        $this->schema->getConnection()
-                     ->exec(sprintf("INSERT INTO `%s` (version, executed_at) VALUES ('%s', '%s')",
-                        $this->migrationTable,
-                        $migration->getName(),
-                        $migration->getExecutedAt()
-            )
+        $sql = sprintf("INSERT INTO `%s` (migration, executed_at) VALUES ('%s', '%s')",
+            $this->migrationTable,
+            $migration->getName(),
+            $migration->getExecutedAt()
         );
+
+        $this->schema->getConnection()
+                     ->exec($sql);
     }
 
 
@@ -245,15 +259,19 @@ class Migrator
      * Remove migration file
      *
      * @param Migration $migration
+     * @throws \ReflectionException
     */
     public function removeMigration(Migration $migration)
     {
-         /*
-           Delete record from migration table
-          'DELETE FROM {$this->migrationTable} WHERE version = {$migration->getVersion()}'
-          $this->removeMigrationFile($migration);
-         */
+         $sql = sprintf('DELETE FROM %s WHERE migration = %s',
+            $this->migrationTable,
+            $migration->getName()
+         );
 
+         $this->schema->getConnection()
+                      ->exec($sql);
+
+         $this->removeMigrationFile($migration);
     }
 
 
@@ -264,7 +282,13 @@ class Migrator
     */
     public function removeMigrationFile(Migration $migration)
     {
-          @unlink($migration->getFilename());
+          $migrationName = $migration->getName();
+
+          if (isset($this->migrationFiles[$migrationName])) {
+               @unlink($migration->getFilename());
+          }
+
+          unset($this->migrationFiles[$migrationName]);
     }
 
 
@@ -275,7 +299,8 @@ class Migrator
     */
     public function log(string $message)
     {
-        echo '['. date('Y-m-d H:i:s') .'] - '. $message .PHP_EOL;
+        /* echo '['. date('Y-m-d H:i:s') .'] - '. $message .PHP_EOL; */
+        $this->logs[] = '['. date('Y-m-d H:i:s') .'] - '. $message .PHP_EOL;
     }
 
 
@@ -290,17 +315,9 @@ class Migrator
 
     /**
      * @return array
-     * @throws \ReflectionException
     */
     public function getMigrationFiles(): array
     {
-        $migrationFiles = [];
-
-        /** @var Migration $migration */
-        foreach ($this->migrations as $migration) {
-            $migrationFiles[] = $migration->getFilename();
-        }
-
-        return $migrationFiles;
+        return $this->migrationFiles;
     }
 }

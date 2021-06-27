@@ -65,8 +65,8 @@ class Schema
                   AUTO_INCREMENT=1;%s;",
                   $table,
                   $bluePrint->buildDefaultColumnSql(),
-                  $this->config->getParam('engine'),
-                  $this->config->getParam('charset'),
+                  $this->config->get('engine'),
+                  $this->config->get('charset'),
                   $bluePrint->buildAlteredColumnSql()
             );
 
