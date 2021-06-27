@@ -230,16 +230,27 @@ class Migrator
         $result = $this->checkOneMigration($migration);
 
         if (! $result) {
-            $sql = sprintf("INSERT INTO `%s` (migration, executed_at) VALUES ('%s', '%s')",
-                $this->migrationTable,
-                $migration->getName(),
-                $migration->getExecutedAt()
-            );
-
-            $this->schema->getConnection()
-                ->exec($sql);
+            $this->registrationMigration($migration);
         }
     }
+
+
+
+    /**
+     * @param Migration $migration
+     * @throws \ReflectionException
+    */
+    public function registrationMigration(Migration $migration)
+    {
+         $sql = sprintf("INSERT INTO `%s` (migration, executed_at) VALUES ('%s', '%s')",
+            $this->migrationTable,
+            $migration->getName(),
+            \date('Y-m-d H:i:s')
+         );
+
+         $this->schema->getConnection()->exec($sql);
+    }
+
 
 
     /**
@@ -286,12 +297,6 @@ class Migrator
         $this->removeMigrationFiles();
     }
 
-
-
-    public function resetMigrations(array $migrations)
-    {
-
-    }
 
     /**
      * Remove migration file
@@ -369,5 +374,12 @@ class Migrator
     public function getMigrationFiles(): array
     {
         return $this->migrationFiles;
+    }
+
+
+
+    public function resetMigrations(array $migrations)
+    {
+
     }
 }

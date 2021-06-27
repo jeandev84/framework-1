@@ -231,7 +231,8 @@ class DatabaseManager implements ManagerInterface
              $name = $this->getDefaultConnection();
          }
 
-         if (isset($this->connections[$name])) {
+         if ($this->hasConnection($name)) {
+             $this->setDefaultConnection($name);
              return $this->connections[$name];
          }
 
@@ -239,6 +240,14 @@ class DatabaseManager implements ManagerInterface
      }
 
 
+     /**
+      * @return mixed
+      * @throws \Exception
+     */
+     public function getConnection()
+     {
+          return $this->connection();
+     }
 
 
     /**

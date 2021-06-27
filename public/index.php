@@ -80,6 +80,12 @@ $capsule->addConnection($type, $configDb);
 $capsule->bootAsGlobal();
 
 
+$database = \Jan\Component\Database\Capsule\Manager::instance();
+$database->setConnection('foo', new \Jan\Component\Database\Connection\Example\FooConnection());
+dump($database->connection('foo'));
+dd($database);
+
+
 $connection = \Jan\Component\Database\Capsule\Manager::connection();
 $schema = new Jan\Component\Database\Schema\Schema($connection);
 $migrator = new \Jan\Component\Database\Migration\Migrator($schema);
@@ -94,6 +100,7 @@ dump($otherMigrationFiles);
 
 $otherMigrations = [];
 
+
 if ($otherMigrationFiles) {
     foreach ($otherMigrationFiles as $otherMigrationFile) {
         require_once $otherMigrationFile;
@@ -101,7 +108,6 @@ if ($otherMigrationFiles) {
 
         $migrationObject = new $migration();
         $migrator->addMigration($migrationObject);
-
         /* $otherMigrations[] = new $migration(); */
     }
 }
