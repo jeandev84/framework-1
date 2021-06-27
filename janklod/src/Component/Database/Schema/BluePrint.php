@@ -26,8 +26,32 @@ class BluePrint
      }
 
 
-     public function column()
+
+     /**
+      * @param string $column
+      * @return void
+     */
+     public function increments(string $column)
      {
-         return '';
+         echo $column;
+     }
+
+
+     /**
+      * @param string $column
+      * @return void
+     */
+     public function string(string $column)
+     {
+         echo $column;
+     }
+
+
+     /**
+      * @param string $column
+     */
+     public function datetime(string $column)
+     {
+         echo  (new \DateTime())->format('Y-m-d H:i:s');
      }
 }

@@ -9,8 +9,19 @@ namespace Jan\Component\Database\Connection;
 */
 class Configuration implements \ArrayAccess
 {
+      const DRIVER    = 'driver';
+      const HOST      = 'host';
+      const DATABASE  = 'database';
+      const PORT      = 'port';
+      const CHARSET   = 'charset';
+      const USERNAME  = 'username';
+      const PASSWORD  = 'password';
+      const COLLATION = 'collation';
+      const OPTIONS   = 'options';
       const PREFIX    = 'prefix';
-      
+      const ENGINE    = 'engine';
+
+
 
       /**
        * @var array
@@ -100,8 +111,6 @@ class Configuration implements \ArrayAccess
          return $this->getParam(self::PREFIX) . $name;
      }
 
-     
-     
      /**
       * Remove config param
       *

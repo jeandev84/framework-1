@@ -143,11 +143,9 @@ class Migrator
     public function install()
     {
         $this->schema->create($this->migrationTable, function (BluePrint $table) {
-            /*
             $table->increments('id');
             $table->string('version');
             $table->datetime('executed_at');
-            */
         });
 
     }
@@ -176,12 +174,6 @@ class Migrator
         $this->applyMigrations($this->getNewMigrations());
     }
 
-
-
-    public function update()
-    {
-        //
-    }
 
 
     /**
@@ -214,10 +206,9 @@ class Migrator
     {
         $this->schema->getConnection()
                      ->exec(sprintf("INSERT INTO `%s` (version, executed_at) VALUES ('%s', '%s')",
-                $this->migrationTable,
-                        $migration->getVersion(),
-                        'GET EXECUTION TIME'
-                        /* $migration->getExecutedAt() */
+                        $this->migrationTable,
+                        $migration->getName(),
+                        $migration->getExecutedAt()
             )
         );
     }
@@ -287,9 +278,10 @@ class Migrator
     }
 
 
+
     /**
      * Remove all migration files
-     */
+    */
     public function removeMigrationFiles()
     {
         array_map('unlink', $this->getMigrationFiles());

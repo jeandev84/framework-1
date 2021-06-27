@@ -12,15 +12,18 @@ use Jan\Component\Database\Migration\Contract\MigrationInterface;
 abstract class Migration implements MigrationInterface
 {
 
-       abstract public function up();
-       abstract public function down();
+      /**
+       * @var string
+      */
+      protected $executedAt;
+
 
 
       /**
        * @return string
        * @throws \ReflectionException
       */
-      public function getVersion(): string
+      public function getName(): string
       {
            return $this->checkMigration()->getShortName();
       }
@@ -38,6 +41,26 @@ abstract class Migration implements MigrationInterface
 
 
       /**
+       * @param string $executedAt
+      */
+      public function setExecutedAt(string $executedAt)
+      {
+            $this->executedAt = $executedAt;
+      }
+
+
+      /**
+        * @return string
+      */
+      public function getExecutedAt(): string
+      {
+          return $this->executedAt;
+      }
+
+
+
+
+      /**
        * @return \ReflectionClass
        * @throws \ReflectionException
       */
@@ -45,4 +68,8 @@ abstract class Migration implements MigrationInterface
       {
           return new \ReflectionClass(get_called_class());
       }
+
+
+      abstract public function up();
+      abstract public function down();
 }

@@ -48,6 +48,15 @@ abstract class Connection implements ConnectionInterface
 
 
     /**
+     * @return Configuration
+    */
+    public function getConfiguration(): Configuration
+    {
+        return $this->config;
+    }
+
+
+    /**
      * @param $connection
     */
     public function setConnection($connection)
@@ -84,16 +93,6 @@ abstract class Connection implements ConnectionInterface
     public function getQuery(): QueryInterface
     {
          return $this->query;
-    }
-
-
-
-    /**
-     * @return Configuration
-    */
-    public function getConfiguration(): Configuration
-    {
-         return $this->config;
     }
 
 
