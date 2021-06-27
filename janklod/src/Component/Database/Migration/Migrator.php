@@ -229,9 +229,10 @@ class Migrator
     }
 
 
+
     /**
      * @throws Exception
-     */
+    */
     public function reset()
     {
         $this->rollback();

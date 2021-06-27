@@ -62,12 +62,12 @@ class Schema
                   CREATE TABLE IF NOT EXISTS `%s` (%s) 
                   ENGINE=%s DEFAULT CHARSET=%s
                   COMMENT='Table with abuse reports' 
-                   AUTO_INCREMENT=1;%s;",
-          $table,
-                  'dddd',
+                  AUTO_INCREMENT=1;%s;",
+                  $table,
+                  $bluePrint->buildDefaultColumnSql(),
                   $this->config->getParam('engine'),
                   $this->config->getParam('charset'),
-                  'add_column'
+                  $bluePrint->buildAlteredColumnSql()
             );
 
             /* dump($sql); */
@@ -160,11 +160,16 @@ class Schema
 
 
     /**
-     * @param $sql
+     * @param string $sql
+     * @param array $params
      * @return mixed
     */
-    public function execSQL($sql)
+    public function execute(string $sql, array $params = [])
     {
+        if ($params) {
+            return $this->connection->query($sql, $params);
+        }
+
         return $this->connection->exec($sql);
     }
 }

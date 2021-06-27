@@ -118,14 +118,17 @@ dump($database->connection());
 $connection = \Jan\Component\Database\Capsule\Manager::connection();
 
 $schema = new Jan\Component\Database\Schema\Schema($connection);
-dump($schema);
 
+/*
+dump($schema);
 $schema->create('users', function (BluePrint $table) {
 
 });
+*/
 
 $migrator = new \Jan\Component\Database\Migration\Migrator($schema);
 dump($migrator);
+$migrator->install();
 
 
 
