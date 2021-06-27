@@ -3,6 +3,7 @@ namespace Jan\Component\Database\Migration;
 
 
 use Jan\Component\Database\Migration\Contract\MigrationInterface;
+use Jan\Component\Database\Schema\Schema;
 
 
 /**
@@ -16,6 +17,29 @@ abstract class Migration implements MigrationInterface
        * @var string
       */
       protected $executedAt;
+
+
+
+      /**
+       * @var Schema
+      */
+      public $schema;
+
+
+
+      public function __construct()
+      {
+           $this->executedAt = (new \DateTime())->format('Y-m-d H:i:s');
+      }
+
+
+      /**
+       * @param Schema $schema
+      */
+      public function schema(Schema $schema)
+      {
+           $this->schema = $schema;
+      }
 
 
 

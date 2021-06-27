@@ -15,6 +15,15 @@ class PdoConnection extends Connection
 {
 
 
+    protected $options = [
+        PDO::ATTR_PERSISTENT => true, // permit to insert/ persist data in to database
+        PDO::ATTR_EMULATE_PREPARES => 0,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    ];
+
+
+
     /**
      * @param array $config
      * @return PdoConnection
@@ -43,7 +52,7 @@ class PdoConnection extends Connection
                     $this->makeDsn(),
                     $this->config['username'],
                     $this->config['password'],
-                    $this->config['options']
+                    array_merge($this->options, $this->config['options'])
                 );
 
                 $this->setConnection($pdo);

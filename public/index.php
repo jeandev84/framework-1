@@ -128,14 +128,18 @@ $schema->create('users', function (BluePrint $table) {
 
 $migrator = new \Jan\Component\Database\Migration\Migrator($schema);
 dump($migrator);
-$migrator->install();
 
+/* $migrator->install(); */
 
 
 $migrator->setMigrations([
     new \App\Migration\Version202106051623(),
     new \App\Migration\Version202106051624()
 ]);
+
+/* $migrator->rollback(); */
+
+$migrator->migrate();
 
 
 dump($migrator->getMigrationFiles());

@@ -19,17 +19,13 @@ class Migrator
 
 
 
-      /**
-       * @var array
-      */
-      protected $migrations = [];
-
-
 
       /**
-       * @var array
+       * @var Schema
       */
-      protected $migrationFiles = [];
+      protected $schema;
+
+
 
 
       /**
@@ -40,10 +36,19 @@ class Migrator
 
 
 
+      /**
+       * @var array
+      */
+      protected $migrations = [];
+
+
+
+
      /**
-       * @var Schema
+      * @var array
      */
-     protected $schema;
+     protected $migrationFiles = [];
+
 
 
 
@@ -55,6 +60,8 @@ class Migrator
      {
          $this->schema = $schema;
      }
+
+
 
 
     /**
@@ -78,6 +85,8 @@ class Migrator
     */
     public function addMigration(Migration $migration): Migrator
     {
+        $migration->schema($this->schema);
+
         $this->migrations[] = $migration;
 
         $this->migrationFiles[$migration->getName()] = $migration->getFilename();
@@ -119,7 +128,7 @@ class Migrator
      *
      * @return array
     */
-    public function getOldMigrations()
+    public function getOldMigrations(): array
     {
         return $this->schema->getConnection()
                             ->query("SELECT `migration` FROM {$this->migrationTable}")
@@ -216,14 +225,23 @@ class Migrator
     */
     public function saveMigration(Migration $migration)
     {
-        $sql = sprintf("INSERT INTO `%s` (migration, executed_at) VALUES ('%s', '%s')",
-            $this->migrationTable,
-            $migration->getName(),
-            $migration->getExecutedAt()
-        );
+        $checkOne = 'SELECT * FROM '. $this->migrationTable . ' WHERE migration = :migration';
 
-        $this->schema->getConnection()
-                     ->exec($sql);
+        $result = $this->schema->getConnection()
+                               ->query($checkOne, ['migration' => $migration->getName()])
+                               ->execute()
+                               ->getResult();;
+
+        if (! $result) {
+            $sql = sprintf("INSERT INTO `%s` (migration, executed_at) VALUES ('%s', '%s')",
+                $this->migrationTable,
+                $migration->getName(),
+                $migration->getExecutedAt()
+            );
+
+            $this->schema->getConnection()
+                ->exec($sql);
+        }
     }
 
 
@@ -312,6 +330,8 @@ class Migrator
     {
         array_map('unlink', $this->getMigrationFiles());
     }
+
+
 
     /**
      * @return array
