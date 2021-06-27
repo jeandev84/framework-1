@@ -48,6 +48,7 @@ class Schema
          *
          * @param string $table
          * @param Closure $closure
+         * @return void
         */
         public function create(string $table, Closure $closure)
         {
@@ -61,7 +62,7 @@ class Schema
                   CREATE TABLE IF NOT EXISTS `%s` (%s) 
                   ENGINE=%s DEFAULT CHARSET=%s
                   COMMENT='Table with abuse reports' 
-                  AUTO_INCREMENT=1;%s;",
+                   AUTO_INCREMENT=1;%s;",
           $table,
                   'dddd',
                   $this->config->getParam('engine'),

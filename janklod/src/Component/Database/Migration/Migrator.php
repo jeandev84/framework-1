@@ -139,7 +139,7 @@ class Migrator
      * Install migration version table
      *
      * @throws Exception
-     */
+    */
     public function install()
     {
         $this->schema->create($this->migrationTable, function (BluePrint $table) {
@@ -147,7 +147,6 @@ class Migrator
             $table->string('version');
             $table->datetime('executed_at');
         });
-
     }
 
 
@@ -214,9 +213,10 @@ class Migrator
     }
 
 
+
     /**
      * Drop all tables
-     */
+    */
     public function rollback()
     {
         foreach ($this->migrations as $migration) {
