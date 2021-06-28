@@ -52,7 +52,7 @@ class PdoConnection extends Connection
                     $this->makeDsn(),
                     $this->config['username'],
                     $this->config['password'],
-                    array_merge($this->options, $this->config['options'])
+                    $this->getOptions()
                 );
 
                 $this->setConnection($pdo);
@@ -65,7 +65,6 @@ class PdoConnection extends Connection
 
         return $this;
     }
-
 
 
     /**
@@ -174,4 +173,16 @@ class PdoConnection extends Connection
 
          return $this->query;
     }
+
+
+    /**
+     * Get options
+     *
+     * @return array
+    */
+    protected function getOptions(): array
+    {
+        return array_merge($this->options, $this->config['options']);
+    }
+
 }

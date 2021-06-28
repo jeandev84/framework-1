@@ -1,5 +1,0 @@
-[2021-06-06 18:55:00]
-Uncaught Jan\Component\FileSystem\Exception\FileLocatorException: Cannot get real path of file (test.php) because does not exist. log method (Jan\Component\FileSystem\FileLocator::realPath)
-in /home/jeandev/Рабочий стол/framework/janklod/src/Component/FileSystem/FileLocator.php:81
-Stack trace: #0 /home/jeandev/Рабочий стол/framework/public/index.php(71): Jan\Component\FileSystem\FileLocator->realPath()
-#1 {main} thrown in /home/jeandev/Рабочий стол/framework/janklod/src/Component/FileSystem/FileLocator.php on line 81

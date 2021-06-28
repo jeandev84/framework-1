@@ -3,6 +3,7 @@ namespace Jan\Component\Database;
 
 
 use InvalidArgumentException;
+use Jan\Component\Database\Connection\Connection;
 use Jan\Component\Database\Connection\ConnectionFactory;
 use Jan\Component\Database\Connection\ConnectionInterface;
 use Jan\Component\Database\Connection\ConnectionStack;
@@ -243,9 +244,20 @@ class DatabaseManager implements ManagerInterface
       * @return mixed
       * @throws \Exception
      */
-     public function getConnection()
+     public function createQueryBuilder(string $alias)
      {
-          return $this->connection();
+          return $this->connection()->makeQueryBuilder($alias);
+     }
+
+
+
+     /**
+      * @return Connection
+      * @throws \Exception
+     */
+     public function getConnection(): Connection
+     {
+         return $this->connection();
      }
 
 

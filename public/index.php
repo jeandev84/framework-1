@@ -95,6 +95,7 @@ dump($migrator);
 
 
 $migrationFiles = $fs->resources('/migrations/*.php');
+$migrator->loadMigrationFromFiles($migrationFiles);
 
 
 $migrations = [
@@ -102,7 +103,6 @@ $migrations = [
     new \App\Migration\Version202106051624()
 ];
 
-$migrator->loadMigrationFromFiles($migrationFiles);
 $migrator->setMigrations($migrations);
 
 /* $migrator->rollback(); */
@@ -115,6 +115,7 @@ $migrator->removeMigration($m);
 
 dump($migrator->getMigrationFiles());
 dump($migrator->getMigrations());
+
 
 dd($app->log());
 
