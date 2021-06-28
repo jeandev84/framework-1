@@ -232,7 +232,6 @@ class DatabaseManager implements ManagerInterface
          }
 
          if ($this->hasConnection($name)) {
-             $this->setDefaultConnection($name);
              return $this->connections[$name];
          }
 

@@ -94,15 +94,32 @@ dump($migrator);
 /* $migrator->install(); */
 
 
-$migrationFiles = $fs->resources('/migrations/*.php');
+$otherMigrationFiles = $fs->resources('/migrations/*.php');
+
+dump($otherMigrationFiles);
+
+$otherMigrations = [];
 
 
-$migrations = [
+if ($otherMigrationFiles) {
+    foreach ($otherMigrationFiles as $otherMigrationFile) {
+        require_once $otherMigrationFile;
+        $migration = pathinfo($otherMigrationFile, PATHINFO_FILENAME);
+
+        $migrationObject = new $migration();
+        $migrator->addMigration($migrationObject);
+        /* $otherMigrations[] = new $migration(); */
+    }
+}
+
+
+$defaultMigrations = [
     new \App\Migration\Version202106051623(),
     new \App\Migration\Version202106051624()
 ];
 
-$migrator->loadMigrationFromFiles($migrationFiles);
+$migrations = array_merge($defaultMigrations, $otherMigrations);
+
 $migrator->setMigrations($migrations);
 
 /* $migrator->rollback(); */

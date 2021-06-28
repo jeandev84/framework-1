@@ -79,6 +79,25 @@ class Migrator
 
 
     /**
+     * Load migration from files
+     *
+     * @param array $migrationFiles
+     * @throws \ReflectionException
+    */
+    public function loadMigrationFromFiles(array $migrationFiles)
+    {
+        foreach ($migrationFiles as $migrationFile) {
+             @require_once $migrationFile;
+
+             $migrationClass = pathinfo($migrationFile, PATHINFO_FILENAME);
+             $migration = new $migrationClass();
+             $this->addMigration($migration);
+        }
+    }
+
+
+
+    /**
      * @param Migration $migration
      * @return Migrator
      * @throws \ReflectionException
@@ -230,7 +249,7 @@ class Migrator
         $result = $this->checkOneMigration($migration);
 
         if (! $result) {
-            $this->registrationMigration($migration);
+            $this->updateMigrationTable($migration);
         }
     }
 
@@ -240,7 +259,7 @@ class Migrator
      * @param Migration $migration
      * @throws \ReflectionException
     */
-    public function registrationMigration(Migration $migration)
+    public function updateMigrationTable(Migration $migration)
     {
          $sql = sprintf("INSERT INTO `%s` (migration, executed_at) VALUES ('%s', '%s')",
             $this->migrationTable,

@@ -13,11 +13,4 @@ use Jan\Component\Database\Connection\PDO\Connector\PdoConnection;
 */
 class MysqlConnector extends PdoConnection
 {
-     /**
-       * @return MysqlQueryBuilder
-     */
-     public function createQueryBuilder(): MysqlQueryBuilder
-     {
-          return new MysqlQueryBuilder();
-     }
 }
