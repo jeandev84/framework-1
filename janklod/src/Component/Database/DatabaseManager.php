@@ -8,6 +8,8 @@ use Jan\Component\Database\Connection\ConnectionFactory;
 use Jan\Component\Database\Connection\ConnectionStack;
 use Jan\Component\Database\Connection\Contract\ConnectionFactoryInterface;
 use Jan\Component\Database\Connection\Contract\ConnectionInterface;
+use Jan\Component\Database\Contract\ManagerFactoryInterface;
+use Jan\Component\Database\Contract\ManagerInterface;
 
 
 
@@ -15,7 +17,7 @@ use Jan\Component\Database\Connection\Contract\ConnectionInterface;
  * Class DatabaseManager
  * @package Jan\Component\Database
 */
-class DatabaseManager implements ManagerInterface
+class DatabaseManager implements ManagerFactoryInterface
 {
 
 
@@ -106,16 +108,32 @@ class DatabaseManager implements ManagerInterface
      * @param array $config
      * @param string|null $connection
     */
-    public function connect(array $config, string $connection = null)
+    public function connect(array $config, string $connection)
     {
         if ($connection && ! $this->connection) {
             $connectors = $this->getConnectors();
             $this->factory->add($connectors);
-            $this->setConfigurations($config);
+            $this->configure($connection, $config);
             $this->setDefaultConnection($connection);
         }
     }
 
+
+
+    /**
+     * @param string $connection
+     * @param array $config
+    */
+    public function configure(string $connection, array $config)
+    {
+        $data = $config;
+
+        if(! \array_key_exists($connection, $config)) {
+            $data = [$connection => $config];
+        }
+
+        $this->setConfigurations($data);
+    }
 
     /**
      * @param string $connection

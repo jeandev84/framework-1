@@ -3,6 +3,7 @@ namespace Jan\Component\Database\Repository;
 
 
 use Jan\Component\Database\Connection\Contract\ConnectionInterface;
+use Jan\Component\Database\Contract\EntityManagerInterface;
 
 /**
  * Class EntityRepository
@@ -10,6 +11,14 @@ use Jan\Component\Database\Connection\Contract\ConnectionInterface;
 */
 class EntityRepository
 {
+
+      /**
+       * @var ConnectionInterface
+      */
+      protected $em;
+
+
+
       /**
        * @var string
       */
@@ -18,22 +27,19 @@ class EntityRepository
 
 
       /**
-       * @var ConnectionInterface
-      */
-      protected $connection;
-
-
-      /**
         * EntityRepository constructor.
-        * @param ConnectionInterface $connection
+        * @param EntityManagerInterface $em
       */
-      public function __construct(ConnectionInterface $connection)
+      public function __construct(EntityManagerInterface $em)
       {
-           $this->connection = $connection;
+           $this->em = $em;
       }
 
 
 
+      /**
+       * @param string $alias
+      */
       public function createQueryBuilder(string $alias)
       {
 
