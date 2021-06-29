@@ -3,12 +3,24 @@ namespace Jan\Component\Http;
 
 
 
+use Jan\Component\Http\Bag\FileBag;
+
 /**
  * Class Request
  * @package Jan\Component\Http
  */
-class Request extends RequestStack
+class Request
 {
+
+    public $files;
+
+
+    public function __construct(array $files)
+    {
+        $this->files = new FileBag($files);
+    }
+
+
     public static function createFromFactory()
     {
 
@@ -20,7 +32,7 @@ class Request extends RequestStack
     */
     public static function createFromGlobals(): Request
     {
-         return new static();
+         return new static($_FILES);
     }
 
 

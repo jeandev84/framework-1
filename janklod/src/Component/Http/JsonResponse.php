@@ -2,6 +2,8 @@
 namespace Jan\Component\Http;
 
 
+
+
 /**
  * Class JsonResponse
  * @package Jan\Component\Http

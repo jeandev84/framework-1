@@ -1,0 +1,69 @@
+echo "<h2>Database</h2>";
+
+$fs = new \Jan\Component\FileSystem\FileSystem(
+    realpath(__DIR__.'/../')
+);
+
+$configDb =  $fs->load('config/database.php');
+
+$capsule = new \Jan\Component\Database\Capsule\Manager();
+$type = $configDb['connection'];
+
+$capsule->addConnection($type, $configDb);
+$capsule->bootAsGlobal();
+
+
+$database = \Jan\Component\Database\Capsule\Manager::instance();
+$database->setConnection('foo', new \Jan\Component\Database\Connection\Example\FooConnection());
+dump($database->connection('foo'));
+// dd($database);
+
+
+$connection = \Jan\Component\Database\Capsule\Manager::connection();
+$schema = new Jan\Component\Database\Schema\Schema($connection);
+$migrator = new \Jan\Component\Database\Migration\Migrator($schema);
+dump($migrator);
+
+/* $migrator->install(); */
+
+
+$migrationFiles = $fs->resources('/migrations/*.php');
+$migrator->loadMigrationFromFiles($migrationFiles);
+
+
+$migrations = [
+    new \App\Migration\Version202106051623(),
+    new \App\Migration\Version202106051624()
+];
+
+$migrator->setMigrations($migrations);
+
+/* $migrator->rollback(); */
+/* $migrator->migrate(); */
+
+/*
+$m = new add_column_migration_00();
+$migrator->removeMigration($m);
+*/
+
+dump($migrator->getMigrationFiles());
+dump($migrator->getMigrations());
+
+
+dump($app->log());
+
+?>
+<h1>Вход</h1>
+<form action="/" method="post">
+    <div>
+        <input type="email" name="email">
+    </div>
+    <div>
+        <input type="password" name="password">
+    </div>
+    <div>
+        <textarea name="content" id="" style="resize: none;"></textarea>
+    </div>
+    <button type="submit">Отправить</button>
+</form>
+

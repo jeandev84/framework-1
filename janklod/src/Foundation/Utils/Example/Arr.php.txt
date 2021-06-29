@@ -1,0 +1,34 @@
+<?php
+namespace Jan\Foundation\Utils;
+
+
+/**
+ * Class Arr
+ * @package Jan\Foundation\Utils
+*/
+class Arr
+{
+
+   /**
+    * @param array $files
+    * @return array
+   */
+   public static function files(array $files): array
+   {
+        $fileItems = [];
+
+        foreach ($files as $name => $fileArray) {
+           if (is_array($fileArray['name'])) {
+               foreach ($fileArray as $attribute => $list) {
+                   foreach ($list as $index => $value) {
+                       $fileItems[$name][$index][$attribute] = $value;
+                   }
+               }
+           }else{
+               $fileItems[$name][] = $fileArray;
+           }
+        }
+
+        return $fileItems;
+   }
+}

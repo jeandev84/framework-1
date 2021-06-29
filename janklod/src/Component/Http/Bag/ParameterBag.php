@@ -16,9 +16,10 @@ class ParameterBag
 
 
       /**
-        * ParameterBag constructor.
+       * ParameterBag constructor.
+       * @param array $params
       */
-      public function __construct(array $params)
+      public function __construct(array $params = [])
       {
            $this->params = $params;
       }
