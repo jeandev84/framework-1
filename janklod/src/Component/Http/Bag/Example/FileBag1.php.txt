@@ -7,102 +7,103 @@ use Jan\Component\Http\File\UploadedFile;
 /**
  * Class FileBag
  * @package Jan\Component\Http\Bag
- */
+*/
 class FileBag extends ParameterBag
 {
 
-    /**
-     * FileBag constructor.
-     * @param array $params
+      /**
+       * FileBag constructor.
+       * @param array $params
+      */
+      public function __construct(array $params = [])
+      {
+           $this->replace($params);
+      }
+
+
+
+      /**
+        * @param array $files
+      */
+      public function replace(array $files = [])
+      {
+           $this->params = [];
+           $this->add($files);
+      }
+
+
+
+      /**
+       * @param array $files
+      */
+      public function add(array $files = [])
+      {
+          $resolvedFiles = $this->transformInformationFiles($files);
+          $convertedFiles = $this->convertFilesToUploadedContext($resolvedFiles);
+
+          foreach ($convertedFiles as $key => $file) {
+               $this->set($key, $file);
+          }
+      }
+
+
+
+      /**
+       * @param array $files
+       * @return array
+      */
+      protected function convertFilesToUploadedContext(array $files): array
+      {
+          $uploadedFiles = [];
+
+          foreach ($files as $name => $items) {
+              foreach ($items as $file) {
+                  if ($file['error'] === UPLOAD_ERR_NO_FILE) {
+                      return [];
+                  }
+
+                  $uploadedFiles[$name][] = new UploadedFile(
+                      $file['name'],
+                      $file['type'],
+                      $file['tmp_name'],
+                      $file['error'],
+                      $file['size']
+                  );
+              }
+          }
+
+          return $uploadedFiles;
+      }
+
+
+      /**
+       * @param $file
+       * @return UploadedFile
+      */
+      protected function convertFileContext($file): UploadedFile
+      {
+           if ($file instanceof UploadedFile) {
+               return $file;
+           }
+
+           if (\is_array($file)) {
+               $file = $this->transformInformationFiles($file);
+               $keys = array_keys($file);
+               sort($keys);
+           }
+      }
+
+
+
+     /**
+      * @param array $files
+      * @return array
      */
-    public function __construct(array $params = [])
-    {
-         $this->replace($params);
-    }
+     protected function transformInformationFiles(array $files): array
+     {
+         $fileItems = [];
 
-
-
-    /**
-     * @param array $files
-     */
-    public function replace(array $files = [])
-    {
-        $this->params = [];
-        $this->add($files);
-    }
-
-
-
-    /**
-     * @param array $files
-     */
-    public function add(array $files = [])
-    {
-        $convertedFiles = $this->convertFiles($files);
-
-        foreach ($convertedFiles as $key => $file) {
-            $this->set($key, $file);
-        }
-    }
-
-
-
-    /**
-     * @param string $key
-     * @param $value
-     * @return ParameterBag
-    */
-    public function set(string $key, $value): ParameterBag
-    {
-        if (!\is_array($value) && ! $value instanceof UploadedFile) {
-            throw new \InvalidArgumentException(
-                'An uploaded file must be an array or an instance of UploadedFile.'
-            );
-        }
-
-        return parent::set($key, $value);
-    }
-
-
-    /**
-     * @param array $files
-     * @return array
-     */
-    protected function convertFiles(array $files): array
-    {
-        $resolvedFiles = $this->transformInformationFiles($files);
-
-        $uploadedFiles = [];
-
-        foreach ($resolvedFiles as $name => $items) {
-            foreach ($items as $file) {
-                if ($file['error'] === UPLOAD_ERR_NO_FILE) {
-                    return [];
-                }
-
-                $uploadedFiles[$name][] = new UploadedFile(
-                    $file['name'],
-                    $file['type'],
-                    $file['tmp_name'],
-                    $file['error'],
-                    $file['size']
-                );
-            }
-        }
-
-        return $uploadedFiles;
-    }
-
-
-    /**
-     * @param array $files
-     * @return array
-     */
-    protected function transformInformationFiles(array $files): array
-    {
-        $fileItems = [];
-
-        foreach ($files as $name => $fileArray) {
+         foreach ($files as $name => $fileArray) {
             if (is_array($fileArray['name'])) {
                 foreach ($fileArray as $attribute => $list) {
                     foreach ($list as $index => $value) {
@@ -112,10 +113,10 @@ class FileBag extends ParameterBag
             }else{
                 $fileItems[$name][] = $fileArray;
             }
-        }
+         }
 
-        return $fileItems;
-    }
+         return $fileItems;
+     }
 }
 
 /*

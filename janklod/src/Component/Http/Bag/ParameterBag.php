@@ -29,11 +29,11 @@ class ParameterBag
       /**
        * Set parameter in the bag
        *
-       * @param $key
+       * @param string $key
        * @param $value
        * @return ParameterBag
       */
-      public function set($key, $value): ParameterBag
+      public function set(string $key, $value): ParameterBag
       {
           $this->params[$key] = $value;
 

@@ -246,7 +246,7 @@ class Migrator
     */
     public function saveMigration(Migration $migration)
     {
-        $result = $this->checkOneMigration($migration);
+        $result = $this->findOneMigration($migration);
 
         if (! $result) {
             $this->updateMigrationTable($migration);
@@ -277,7 +277,7 @@ class Migrator
      * @return mixed
      * @throws \ReflectionException
     */
-    public function checkOneMigration(Migration $migration)
+    public function findOneMigration(Migration $migration)
     {
         $checkOne = "SELECT * FROM {$this->migrationTable} WHERE migration = :migration";
 

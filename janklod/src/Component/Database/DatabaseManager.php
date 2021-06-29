@@ -295,6 +295,8 @@ class DatabaseManager implements ManagerInterface
     */
     public function disconnect(string $name = null)
     {
+        $name = $name ?: $this->getDefaultConnection();
+
         if (isset($this->connections[$name])) {
             $connection = $this->connections[$name];
             if (method_exists($connection, 'disconnect')) {

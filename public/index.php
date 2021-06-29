@@ -82,6 +82,9 @@ dump($request->files->all());
     <div>
         <input type="file" name="brochure[]" multiple>
     </div>
+    <div>
+        <input type="file" name="upload">
+    </div>
     <button type="submit">Отправить</button>
 </form>
 
