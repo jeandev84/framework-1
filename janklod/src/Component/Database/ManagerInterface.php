@@ -10,11 +10,14 @@ namespace Jan\Component\Database;
 interface ManagerInterface
 {
 
+
    /**
-    * @param string|null $name
-    * @return mixed
+     * @param array $config
+     * @param string|null $connection
+     * @return mixed
    */
-   public function connection(string $name = null);
+   public function connect(array $config, string $connection = null);
+
 
 
 
@@ -23,4 +26,12 @@ interface ManagerInterface
    */
    public function getConnection();
 
+
+
+
+   /**
+     * @param string|null $name
+     * @return mixed
+   */
+   public function disconnect(string $name = null);
 }

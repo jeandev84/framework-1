@@ -35,12 +35,12 @@ class FileBag extends ParameterBag
 
     /**
      * @param array $files
-     */
+    */
     public function add(array $files = [])
     {
-        $convertedFiles = $this->convertFiles($files);
+        $files = $this->convertFiles($files);
 
-        foreach ($convertedFiles as $key => $file) {
+        foreach ($files as $key => $file) {
             $this->set($key, $file);
         }
     }
@@ -64,10 +64,11 @@ class FileBag extends ParameterBag
     }
 
 
+
     /**
      * @param array $files
      * @return array
-     */
+    */
     protected function convertFiles(array $files): array
     {
         $resolvedFiles = $this->transformInformationFiles($files);

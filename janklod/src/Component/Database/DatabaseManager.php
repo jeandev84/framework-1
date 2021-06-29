@@ -5,14 +5,10 @@ namespace Jan\Component\Database;
 use InvalidArgumentException;
 use Jan\Component\Database\Connection\Connection;
 use Jan\Component\Database\Connection\ConnectionFactory;
-use Jan\Component\Database\Connection\ConnectionInterface;
 use Jan\Component\Database\Connection\ConnectionStack;
 use Jan\Component\Database\Connection\Contract\ConnectionFactoryInterface;
-use Jan\Component\Database\Connection\PDO\MysqlConnector;
-use Jan\Component\Database\Connection\PDO\OracleConnector;
-use Jan\Component\Database\Connection\PDO\PostgresConnector;
-use Jan\Component\Database\Connection\PDO\SqliteConnector;
-use Jan\Component\Database\Schema\Schema;
+use Jan\Component\Database\Connection\Contract\ConnectionInterface;
+
 
 
 /**
@@ -105,16 +101,18 @@ class DatabaseManager implements ManagerInterface
     /**
      * Connect to the database
      *
-     * @param string $name (specific : mysql, sqlite, postgres, oracle by default)
+     * (specific : mysql, sqlite, postgres, oracle by default)
+     *
      * @param array $config
+     * @param string|null $connection
     */
-    public function connect(string $name, array $config)
+    public function connect(array $config, string $connection = null)
     {
-        if (! $this->connection) {
+        if ($connection && ! $this->connection) {
             $connectors = $this->getConnectors();
             $this->factory->add($connectors);
             $this->setConfigurations($config);
-            $this->setDefaultConnection($name);
+            $this->setDefaultConnection($connection);
         }
     }
 
@@ -151,14 +149,12 @@ class DatabaseManager implements ManagerInterface
      }
 
 
-
-
      /**
       * @param string $name
-      * @param $connection
+      * @param ConnectionInterface $connection
       * @return DatabaseManager
      */
-     public function setConnection(string $name, $connection): DatabaseManager
+     public function setConnection(string $name, ConnectionInterface $connection): DatabaseManager
      {
            $this->connections[$name] = $connection;
 
@@ -232,11 +228,11 @@ class DatabaseManager implements ManagerInterface
              $name = $this->getDefaultConnection();
          }
 
-         if ($this->hasConnection($name)) {
-             return $this->connections[$name];
+         if (! $this->hasConnection($name)) {
+             return $this->factory->make($name, $this->configuration($name));
          }
 
-         return $this->factory->make($name, $this->configuration($name));
+         return $this->connections[$name];
      }
 
 
@@ -296,12 +292,8 @@ class DatabaseManager implements ManagerInterface
     public function disconnect(string $name = null)
     {
         $name = $name ?: $this->getDefaultConnection();
-
         if (isset($this->connections[$name])) {
-            $connection = $this->connections[$name];
-            if (method_exists($connection, 'disconnect')) {
-                return $connection->disconnect();
-            }
+            return $this->connections[$name]->disconnect();
         }
 
         throw new InvalidArgumentException('connection ('. $name . ') cannot be disconnected.');
