@@ -110,11 +110,12 @@ class DatabaseManager implements ManagerFactoryInterface
     */
     public function connect(array $config, string $connection)
     {
-        if ($connection && ! $this->connection) {
+        if (! $this->connection) {
             $connectors = $this->getConnectors();
             $this->factory->add($connectors);
             $this->configure($connection, $config);
             $this->setDefaultConnection($connection);
+            $this->setConnections($connectors); // TODO implements if has registred connection we don't need to make it
         }
     }
 
@@ -252,6 +253,23 @@ class DatabaseManager implements ManagerFactoryInterface
 
          return $this->connections[$name];
      }
+     
+     
+     
+     /**
+      * make connection
+      *
+      * @param string|null $name
+      * @return mixed
+      * @throws \Exception
+     */
+     public function makeConnection(string $name, array $config) 
+     {
+          return $this->factory->make($name, $config);    
+     }
+     
+     
+     
 
 
      /**
