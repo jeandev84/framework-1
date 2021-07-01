@@ -5,7 +5,7 @@ namespace Jan\Component\Routing;
 use InvalidArgumentException;
 
 /**
- * Class RouteConfiguration
+ * Class RouteParser
  * @package Jan\Component\Routing
 */
 class RouteParser
