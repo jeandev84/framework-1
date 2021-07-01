@@ -279,10 +279,10 @@ class Migrator
     */
     public function findOneMigration(Migration $migration)
     {
-        $checkOne = "SELECT * FROM {$this->migrationTable} WHERE migration = :migration";
+        $sql = "SELECT * FROM {$this->migrationTable} WHERE migration = :migration";
 
         return $this->schema->getConnection()
-                               ->query($checkOne, ['migration' => $migration->getName()])
+                               ->query($sql, ['migration' => $migration->getName()])
                                ->execute()
                                ->getResult();
     }
