@@ -60,10 +60,6 @@ class ConnectionFactory implements ConnectionFactoryInterface
           $connection = $this->factories[$name];
 
           if ($connection instanceof ConnectionInterface) {
-              if ($connection instanceof Connection) {
-                  $connection->setConfiguration(new Configuration());
-              }
-
               $connection->connect($config);
               return $connection;
           }

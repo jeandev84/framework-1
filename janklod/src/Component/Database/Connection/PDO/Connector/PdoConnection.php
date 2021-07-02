@@ -3,6 +3,7 @@ namespace Jan\Component\Database\Connection\PDO\Connector;
 
 
 use Jan\Component\Database\Builder\Contract\SQLQueryBuilder;
+use Jan\Component\Database\Connection\Configuration;
 use Jan\Component\Database\Connection\Connection;
 use Jan\Component\Database\Exception\DriverException;
 use PDO;

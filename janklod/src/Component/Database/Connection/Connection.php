@@ -40,11 +40,11 @@ abstract class Connection implements ConnectionInterface, QueryBuilderMakerInter
 
 
     /**
-     * @param Configuration $config
+     * Connection constructor.
     */
-    public function setConfiguration(Configuration $config)
+    public function __construct()
     {
-         $this->config = $config;
+         $this->config = new Configuration();
     }
 
 

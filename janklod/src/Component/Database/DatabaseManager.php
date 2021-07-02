@@ -8,8 +8,7 @@ use Jan\Component\Database\Connection\ConnectionFactory;
 use Jan\Component\Database\Connection\ConnectionStack;
 use Jan\Component\Database\Connection\Contract\ConnectionFactoryInterface;
 use Jan\Component\Database\Connection\Contract\ConnectionInterface;
-use Jan\Component\Database\Contract\ManagerFactoryInterface;
-use Jan\Component\Database\Contract\ManagerInterface;
+use Jan\Component\Database\Contract\ConnectionResolverInterface;
 
 
 
@@ -17,7 +16,7 @@ use Jan\Component\Database\Contract\ManagerInterface;
  * Class DatabaseManager
  * @package Jan\Component\Database
 */
-class DatabaseManager implements ManagerFactoryInterface
+class DatabaseManager implements ConnectionResolverInterface
 {
 
 
@@ -237,7 +236,7 @@ class DatabaseManager implements ManagerFactoryInterface
       * get connection
       *
       * @param string|null $name
-      * @return mixed
+      * @return Connection
       * @throws \Exception
      */
      public function connection(string $name = null)
