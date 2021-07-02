@@ -2,6 +2,7 @@
 namespace Jan\Component\Database\Connection\PDO\Connector;
 
 
+use Jan\Component\Database\Builder\Contract\SQLQueryBuilder;
 use Jan\Component\Database\Connection\Connection;
 use Jan\Component\Database\Exception\DriverException;
 use PDO;
@@ -185,4 +186,8 @@ class PdoConnection extends Connection
         return array_merge($this->options, $this->config['options']);
     }
 
+    public function makeQueryBuilder(): SQLQueryBuilder
+    {
+        // TODO: Implement makeQueryBuilder() method.
+    }
 }

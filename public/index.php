@@ -82,7 +82,7 @@ $capsule->bootAsGlobal();
 
 $database = \Jan\Component\Database\Capsule\Manager::instance();
 $database->setConnection('foo', new \Jan\Component\Database\Connection\Example\FooConnection());
-// dump($database->connection('foo'));
+dump($database->connection('foo'));
 // dd($database);
 
 
@@ -94,7 +94,9 @@ dump($migrator);
 
 echo "<h2>Files</h2>";
 
+dump($_POST);
 dump($request->files->get('brochure', []));
+dump($request->files->get('upload', []));
 dump($request->files->all());
 ?>
 <h1>Вход</h1>

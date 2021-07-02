@@ -115,7 +115,6 @@ class DatabaseManager implements ManagerFactoryInterface
             $this->factory->add($connectors);
             $this->configure($connection, $config);
             $this->setDefaultConnection($connection);
-            $this->setConnections($connectors); // TODO implements if has registred connection we don't need to make it
         }
     }
 
@@ -248,7 +247,7 @@ class DatabaseManager implements ManagerFactoryInterface
          }
 
          if (! $this->hasConnection($name)) {
-             return $this->factory->make($name, $this->configuration($name));
+             $this->connections[$name] = $this->makeConnection($name);
          }
 
          return $this->connections[$name];
@@ -259,12 +258,14 @@ class DatabaseManager implements ManagerFactoryInterface
      /**
       * make connection
       *
-      * @param string|null $name
-      * @return mixed
+      * @param string $name
+      * @return Connection
       * @throws \Exception
      */
-     public function makeConnection(string $name, array $config) 
+     public function makeConnection(string $name): Connection
      {
+          $config = $this->configuration($name);
+
           return $this->factory->make($name, $config);    
      }
      
