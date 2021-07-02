@@ -1,13 +1,14 @@
 <?php
-namespace Jan\Component\Database\Repository;
+namespace Jan\Component\Database\ORM\Repository;
 
 
 use Jan\Component\Database\Connection\Contract\ConnectionInterface;
 use Jan\Component\Database\Contract\EntityManagerInterface;
 
+
 /**
  * Class EntityRepository
- * @package Jan\Component\Database\Repository
+ * @package Jan\Component\Database\ORM\Repository
 */
 class EntityRepository
 {
