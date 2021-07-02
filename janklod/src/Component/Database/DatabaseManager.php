@@ -284,10 +284,10 @@ class DatabaseManager implements ManagerFactoryInterface
 
 
      /**
-      * @return Connection
+      * @return ConnectionInterface
       * @throws \Exception
      */
-     public function getConnection(): Connection
+     public function getConnection(): ConnectionInterface
      {
          return $this->connection();
      }
@@ -309,14 +309,23 @@ class DatabaseManager implements ManagerFactoryInterface
      * Flush all connections
      *
     */
-    public function close()
+    public function reconnect(string $name = null)
+    {
+         // TODO implements
+    }
+
+
+
+    /**
+     * Flush all setting data
+     *
+    */
+    public function flush()
     {
         $this->factory = null;
         $this->configurations = [];
         $this->connections = [];
     }
-
-
 
 
     /**

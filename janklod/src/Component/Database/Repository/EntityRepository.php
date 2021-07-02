@@ -42,6 +42,8 @@ class EntityRepository
       */
       public function createQueryBuilder(string $alias)
       {
+          $qb = $this->em->getConnection()->makeQueryBuilder($alias);
 
+          // $qb->select()->from('table', 'alias'); return $qb;
       }
 }

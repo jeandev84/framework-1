@@ -2,6 +2,8 @@
 namespace Jan\Component\Database\Connection;
 
 
+use Jan\Component\Database\Builder\Contract\QueryBuilderMakerInterface;
+use Jan\Component\Database\Builder\Contract\SQLQueryBuilder;
 use Jan\Component\Database\Connection\Contract\ConnectionInterface;
 use Jan\Component\Database\Connection\PDO\Connector\Query;
 use Jan\Component\Database\Query\Contract\QueryInterface;
@@ -12,7 +14,7 @@ use Jan\Component\Database\Query\Contract\QueryInterface;
  *
  * @package Jan\Component\Database\Connection
 */
-abstract class Connection implements ConnectionInterface
+abstract class Connection implements ConnectionInterface, QueryBuilderMakerInterface
 {
 
     /**
@@ -96,5 +98,16 @@ abstract class Connection implements ConnectionInterface
     }
 
 
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return mixed
+    */
     abstract public function query(string $sql, array $params = []);
+
+
+    /**
+     * @return SQLQueryBuilder
+    */
+    abstract public function makeQueryBuilder(): SQLQueryBuilder;
 }
