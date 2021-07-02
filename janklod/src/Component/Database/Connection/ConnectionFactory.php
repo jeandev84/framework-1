@@ -26,10 +26,13 @@ class ConnectionFactory implements ConnectionFactoryInterface
       */
       public function __construct(array $factories = [])
       {
-           if ($factories) {
-               $this->factories = $factories;
+           if (! $factories) {
+               $factories = $this->getConnectors();
            }
+
+           $this->factories = $factories;
       }
+
 
 
       /**
@@ -76,4 +79,13 @@ class ConnectionFactory implements ConnectionFactoryInterface
       {
           return $this->factories;
       }
+
+
+    /**
+     * @return array
+    */
+    public function getConnectors(): array
+    {
+        return ConnectionStack::getPdoConnectors();
+    }
 }

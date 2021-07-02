@@ -5,7 +5,6 @@ namespace Jan\Component\Database;
 use InvalidArgumentException;
 use Jan\Component\Database\Connection\Connection;
 use Jan\Component\Database\Connection\ConnectionFactory;
-use Jan\Component\Database\Connection\ConnectionStack;
 use Jan\Component\Database\Connection\Contract\ConnectionFactoryInterface;
 use Jan\Component\Database\Connection\Contract\ConnectionInterface;
 use Jan\Component\Database\Contract\ConnectionResolverInterface;
@@ -72,7 +71,7 @@ class DatabaseManager implements ConnectionResolverInterface
              $this->setConfigurations($configParams);
          }
 
-         $this->setFactory(new ConnectionFactory());
+         $this->factory = new ConnectionFactory();
      }
 
 
@@ -99,6 +98,8 @@ class DatabaseManager implements ConnectionResolverInterface
      }
 
 
+
+
     /**
      * Connect to the database
      *
@@ -110,8 +111,6 @@ class DatabaseManager implements ConnectionResolverInterface
     public function connect(array $config, string $connection)
     {
         if (! $this->connection) {
-            $connectors = $this->getConnectors();
-            $this->factory->add($connectors);
             $this->configure($connection, $config);
             $this->setDefaultConnection($connection);
         }
@@ -272,14 +271,14 @@ class DatabaseManager implements ConnectionResolverInterface
      
 
 
-     /**
-      * @return mixed
-      * @throws \Exception
-     */
-     public function createQueryBuilder(string $alias)
-     {
-          return $this->connection()->makeQueryBuilder($alias);
-     }
+//     /**
+//      * @return mixed
+//      * @throws \Exception
+//     */
+//     public function createQueryBuilder(string $alias)
+//     {
+//          return $this->connection()->makeQueryBuilder($alias);
+//     }
 
 
 
@@ -368,16 +367,6 @@ class DatabaseManager implements ConnectionResolverInterface
     {
         return $this->configurations;
     }
-
-
-    /**
-     * @return array
-    */
-    public function getConnectors(): array
-    {
-        return ConnectionStack::getPdoConnectors();
-    }
-
 
 
     /**
