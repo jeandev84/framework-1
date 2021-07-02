@@ -5,6 +5,10 @@ namespace Jan\Component\Database\Connection;
 use InvalidArgumentException;
 use Jan\Component\Database\Connection\Contract\ConnectionFactoryInterface;
 use Jan\Component\Database\Connection\Contract\ConnectionInterface;
+use Jan\Component\Database\Connection\PDO\MysqlConnector;
+use Jan\Component\Database\Connection\PDO\OracleConnector;
+use Jan\Component\Database\Connection\PDO\PostgresConnector;
+use Jan\Component\Database\Connection\PDO\SqliteConnector;
 
 /**
  * Class ConnectionFactory
@@ -81,11 +85,18 @@ class ConnectionFactory implements ConnectionFactoryInterface
       }
 
 
-    /**
-     * @return array
-    */
-    public function getConnectors(): array
-    {
-        return ConnectionStack::getPdoConnectors();
-    }
+
+     /**
+      * @return array
+     */
+     public function getConnectors(): array
+     {
+        // PDO connectors
+        return [
+            'mysql'    => new MysqlConnector(),
+            'sqlite'   => new SqliteConnector(),
+            'postgres' => new PostgresConnector(),
+            'oci'      => new OracleConnector(),
+        ];
+     }
 }
