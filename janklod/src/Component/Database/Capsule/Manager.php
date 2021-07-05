@@ -55,7 +55,7 @@ class Manager
      /**
       * boot connection
      */
-     public function bootAsGlobal(): Manager
+     public function bootManager(): Manager
      {
          if (! static::$instance) {
              static::$instance = $this->getDatabase();

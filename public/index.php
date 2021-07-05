@@ -77,7 +77,7 @@ $capsule = new \Jan\Component\Database\Capsule\Manager();
 $type = $configDb['connection'];
 
 $capsule->addConnection($configDb, $type);
-$capsule->bootAsGlobal();
+$capsule->bootManager();
 
 
 $database = \Jan\Component\Database\Capsule\Manager::instance();
