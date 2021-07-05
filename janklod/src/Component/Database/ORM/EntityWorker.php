@@ -1,5 +1,5 @@
 <?php
-namespace Jan\Component\Database;
+namespace Jan\Component\Database\ORM;
 
 
 use Jan\Component\Database\Connection\Connection;
@@ -8,7 +8,7 @@ use Jan\Component\Database\Connection\Connection;
 
 /**
  * Class EntityWorker
- * @package Jan\Component\Database
+ * @package Jan\Component\Database\ORM
 */
 class EntityWorker
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Jan\Component\Database;
+namespace Jan\Component\Database\ORM;
 
 
 use Jan\Component\Database\Builder\Contract\SQLQueryBuilder;
@@ -9,9 +9,10 @@ use Jan\Component\Database\Contract\EntityManagerInterface;
 use Jan\Component\Database\ORM\Repository\EntityRepository;
 
 
+
 /**
  * Class EntityManager
- * @package Jan\Component\Database
+ * @package Jan\Component\Database\ORM
 */
 class EntityManager implements EntityManagerInterface
 {
