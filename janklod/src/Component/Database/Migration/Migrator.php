@@ -3,6 +3,7 @@ namespace Jan\Component\Database\Migration;
 
 
 use Exception;
+use Jan\Component\Database\Connection\Connection;
 use Jan\Component\Database\Schema\BluePrint;
 use Jan\Component\Database\Schema\Schema;
 
@@ -16,6 +17,13 @@ class Migrator
        * @var string
       */
       protected $migrationTable = 'migrations';
+
+
+
+      /**
+       * @var Connection
+      */
+      protected $connection;
 
 
 
@@ -50,15 +58,19 @@ class Migrator
      protected $migrationFiles = [];
 
 
-
-
-     /**
-      * Migrator constructor.
-      * @param Schema $schema
+    /**
+     * Migrator constructor.
+     * @param Connection $connection
+     * @param Schema|null $schema
      */
-     public function __construct(Schema $schema)
+     public function __construct(Connection $connection, Schema $schema = null)
      {
-         $this->schema = $schema;
+         if (! $schema) {
+             $schema = new Schema($connection);
+         }
+
+         $this->connection = $connection;
+         $this->schema     = $schema;
      }
 
 
