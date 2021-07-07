@@ -88,10 +88,13 @@ class Route implements \ArrayAccess
     protected $options = [];
 
 
+
     /**
      * @var array
     */
-    protected static $nameStorage = [];
+    protected static $stored = [];
+
+
 
 
     /**
@@ -221,7 +224,7 @@ class Route implements \ArrayAccess
             );
         }
 
-        static::$nameStorage[$name] = $this;
+        static::$stored[$name] = $this;
 
         $this->name = $name;
 
@@ -235,7 +238,7 @@ class Route implements \ArrayAccess
      */
     public static function nameStorage(): array
     {
-        return static::$nameStorage;
+        return static::$stored;
     }
 
 
@@ -246,7 +249,7 @@ class Route implements \ArrayAccess
     */
     public static function exists($name): bool
     {
-        return \array_key_exists($name, static::$nameStorage);
+        return \array_key_exists($name, static::$stored);
     }
 
 
@@ -257,7 +260,7 @@ class Route implements \ArrayAccess
     */
     public static function retrieve($name): Route
     {
-        return static::$nameStorage[$name];
+        return static::$stored[$name];
     }
 
 
