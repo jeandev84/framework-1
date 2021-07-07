@@ -158,7 +158,7 @@ class Request
         string $content = null
     )
     {
-        $this->query = new ParameterBag($queryParams);
+        $this->query       = new ParameterBag($queryParams);
         $this->request     = new ParameterBag($request);
         $this->attributes  = new ParameterBag($attributes);
         $this->cookies     = new Cookie($cookies);
@@ -166,10 +166,10 @@ class Request
         $this->files       = new FileBag($files);
         $this->server      = new ServerBag($server);
         $this->headers     = new HeaderBag($this->server->getHeaders());
+        $this->content     = $content;
         $this->requestUri  = $this->server->getRequestUri();
         $this->uri         = new Uri(new UrlParser($this->requestUri));
         $this->method      = $this->getMethod();
-        $this->content     = $content;
     }
 
 
@@ -363,7 +363,11 @@ class Request
     */
     public function getMethod()
     {
-        return $this->server->get('REQUEST_METHOD', 'GET');
+        if(! \is_null($this->method)) {
+            return $this->method;
+        }
+
+        return $this->method = $this->server->get('REQUEST_METHOD', 'GET');
     }
 
 
@@ -414,7 +418,13 @@ class Request
     */
     public function baseUrl(): string
     {
-        return implode([$this->getScheme() . '://', $this->server->getHost()]);
+        $scheme   = $this->getScheme() . '://';
+        $user     = $this->server->getAuthUser();
+        $pass     = $this->server->getAuthPassword();
+        $auth     = ($user && $pass) ? $user .':'. $pass : '';
+        $host     = $this->server->getHost();
+
+        return implode([$scheme, $auth, $host]);
     }
 
 
