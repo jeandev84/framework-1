@@ -58,19 +58,16 @@ class Migrator
      protected $migrationFiles = [];
 
 
-    /**
-     * Migrator constructor.
-     * @param Connection $connection
-     * @param Schema|null $schema
-     */
-     public function __construct(Connection $connection, Schema $schema = null)
-     {
-         if (! $schema) {
-             $schema = new Schema($connection);
-         }
 
-         $this->connection = $connection;
-         $this->schema     = $schema;
+
+     /**
+      * Migrator constructor.
+      *
+      * @param Schema $schema
+     */
+     public function __construct(Schema $schema)
+     {
+         $this->schema = $schema;
      }
 
 
