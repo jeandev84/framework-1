@@ -20,13 +20,6 @@ class Migrator
 
 
 
-      /**
-       * @var Connection
-      */
-      protected $connection;
-
-
-
 
       /**
        * @var Schema
