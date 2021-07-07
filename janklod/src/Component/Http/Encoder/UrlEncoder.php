@@ -13,7 +13,7 @@ class UrlEncoder
       * @param string $url
       * @return string
      */
-     public static function encode(string $url)
+     public static function encode(string $url): string
      {
          return urlencode($url);
      }
@@ -24,7 +24,7 @@ class UrlEncoder
       * @param string $url
       * @return string
      */
-     public static function decode(string $url)
+     public static function decode(string $url): string
      {
          return urldecode($url);
      }

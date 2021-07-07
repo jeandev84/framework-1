@@ -12,21 +12,21 @@ class Cookie
     /**
      * @var array
     */
-    protected $cookies = [];
+    protected $params = [];
 
 
     /**
      * Cookie constructor.
      *
-     * @param array $cookies
+     * @param array $params
     */
-    public function __construct(array $cookies = [])
+    public function __construct(array $params = [])
     {
-         if (! $cookies) {
-             $cookies = $_COOKIE;
+         if (! $params) {
+             $params = $_COOKIE;
          }
 
-         $this->cookies = $cookies;
+         $this->params = $params;
     }
 
 

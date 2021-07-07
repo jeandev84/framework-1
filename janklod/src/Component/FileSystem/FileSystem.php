@@ -78,8 +78,9 @@ class FileSystem extends FileLoader
     */
     public function move($target, $filename)
     {
-        // TODO implements
+         move_uploaded_file($this->mkdir($target), $filename);
     }
+
 
 
     /**
@@ -106,8 +107,10 @@ class FileSystem extends FileLoader
             return @mkdir($directory, 0777, true);
         }
 
-        return true;
+        return $directory;
     }
+
+
 
 
     /**

@@ -41,6 +41,23 @@ class FileLocator implements FileLocatorInterface
     }
 
 
+    /**
+     * @param string $directory
+     * @return string
+    */
+    public function resourceDir(string $directory): string
+    {
+         $dir = $this->resource . DIRECTORY_SEPARATOR . $directory;
+
+         if (! \is_dir($dir)) {
+             return $this->resource;
+         }
+
+         return $dir;
+    }
+
+
+
 
     /**
      * @param $maskLink
@@ -74,14 +91,14 @@ class FileLocator implements FileLocatorInterface
     /**
      * Generate full path of given filename
      *
-     * @param string $filename
+     * @param string $path
      * @return string
     */
-    public function locate(string $filename): string
+    public function locate(string $path): string
     {
          return implode(DIRECTORY_SEPARATOR, [
              $this->resource,
-             $this->resolvePath($filename)
+             $this->resolvePath($path)
          ]);
     }
 

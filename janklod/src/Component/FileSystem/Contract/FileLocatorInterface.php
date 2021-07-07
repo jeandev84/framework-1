@@ -9,8 +9,8 @@ namespace Jan\Component\FileSystem\Contract;
 interface FileLocatorInterface
 {
      /**
-      * @param string $filename
+      * @param string $path
       * @return mixed
      */
-     public function locate(string $filename);
+     public function locate(string $path);
 }

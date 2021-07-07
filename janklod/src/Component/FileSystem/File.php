@@ -121,4 +121,14 @@ class File
     {
         return $this->content;
     }
+
+
+
+    /**
+     * @return array|false
+    */
+    public function toArray()
+    {
+        return file($this->getContent());
+    }
 }

@@ -134,4 +134,21 @@ class ParameterBag
      {
          return (int) $this->get($key, $default);
      }
+
+
+
+     /**
+      * @param int $inputType
+      * @return array
+     */
+     public function sanitize(int $inputType): array
+     {
+         $body = [];
+
+         foreach (array_keys($this->all()) as $key) {
+             $body[$key] = filter_input($inputType, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+         }
+
+         return $body;
+     }
 }

@@ -9,6 +9,7 @@ use Jan\Component\Http\Bag\InputBag;
 use Jan\Component\Http\Bag\ParameterBag;
 use Jan\Component\Http\Bag\ServerBag;
 use Jan\Component\Http\Cookie\Cookie;
+use Jan\Component\Http\Parser\UrlParser;
 use Jan\Component\Http\Session\Session;
 
 
@@ -22,11 +23,11 @@ class Request
 
 
     /**
-     * Get params from request get $_GET
+     * Get query params from request get $_GET
      *
      * @var ParameterBag
     */
-    public $queryParams;
+    public $query;
 
 
 
@@ -63,6 +64,13 @@ class Request
 
 
 
+    /**
+     * @var Session
+    */
+    public $session;
+
+
+
 
     /**
      * Get parameters from request $_FILES
@@ -88,8 +96,9 @@ class Request
      * headers
      *
      * @var HeaderBag
-     */
+    */
     public $headers;
+
 
 
 
@@ -98,67 +107,8 @@ class Request
      * Parsed body
      *
      * @var string
-     */
+    */
     public $content;
-
-
-
-    /**
-     * Get availables languages
-     *
-     * @var
-     */
-    public $languages;
-
-
-
-    /**
-     * Session
-     */
-    public $session;
-
-
-
-    /**
-     *  charset
-     */
-    public $charsets;
-
-
-
-    /**
-     * encodings
-     *
-     * @var string
-    */
-    public $encodings;
-
-
-
-
-    /**
-     * @var string
-    */
-    public $acceptableContentTypes;
-
-
-
-
-
-    /**
-     * Default locale
-     * @var string
-    */
-    public $locale;
-
-
-
-
-    /**
-     * Default local language
-     * @var string
-    */
-    public $defaultLocale = 'en';
 
 
 
@@ -166,62 +116,25 @@ class Request
     /**
      * request uri
      *
-     * @var
-     */
-    protected $requestUri;
+     * @var Uri
+    */
+    public $uri;
 
-
-
-    /**
-     * path info
-     *
-     * @var
-     */
-    protected $pathInfo;
 
 
 
     /**
-     * Get base URL
-     *
      * @var string
     */
-    protected $baseUrl;
+    public $requestUri;
 
 
 
 
     /**
-     * Get base path
-     *
-     * @var string
+     * @var
     */
-    protected $basePath;
-
-
-
-
-    /**
-     * Request method
-    */
-    protected $method;
-
-
-
-    /**
-     * Format
-    */
-    protected $format = 'html';
-
-
-
-
-    /**
-     * Determine if host is valid
-     * @var bool
-    */
-    private $isHostValid = true;
-
+    public $method;
 
 
 
@@ -245,7 +158,7 @@ class Request
         string $content = null
     )
     {
-        $this->queryParams = new ParameterBag($queryParams);
+        $this->query = new ParameterBag($queryParams);
         $this->request     = new ParameterBag($request);
         $this->attributes  = new ParameterBag($attributes);
         $this->cookies     = new Cookie($cookies);
@@ -253,24 +166,10 @@ class Request
         $this->files       = new FileBag($files);
         $this->server      = new ServerBag($server);
         $this->headers     = new HeaderBag($this->server->getHeaders());
+        $this->requestUri  = $this->server->getRequestUri();
+        $this->uri         = new Uri(new UrlParser($this->requestUri));
+        $this->method      = $this->getMethod();
         $this->content     = $content;
-        $this->languages   = null;
-        $this->charsets    = null;
-        $this->encodings   = null;
-        $this->acceptableContentTypes = null;
-        $this->pathInfo    = null;
-        $this->requestUri  = null;
-        $this->baseUrl     = null;
-        $this->basePath    = null;
-        $this->method      = null;
-        $this->format      = null;
-    }
-
-
-
-    public static function create()
-    {
-
     }
 
 
@@ -330,8 +229,8 @@ class Request
     */
     public function get(string $key)
     {
-         if ($this->queryParams->has($key)) {
-             return $this->queryParams->get($key);
+         if ($this->query->has($key)) {
+             return $this->query->get($key);
          }
 
          if ($this->request->has($key)) {
@@ -406,6 +305,32 @@ class Request
 
 
 
+    /**
+     * Determine if the protocol is secure
+     *
+     * @return bool
+    */
+    public function isSecure(): bool
+    {
+        $https = $this->server->get('HTTPS');
+        $port  = $this->server->get('SERVER_PORT');
+
+
+        return $https == 'on' && $port == 443;
+    }
+
+
+
+
+    /**
+     * @return string
+    */
+    public function getScheme(): string
+    {
+         return $this->isSecure() ? 'https' : 'http';
+    }
+
+
 
     /**
      * @return bool
@@ -416,6 +341,94 @@ class Request
     }
 
 
+    /**
+     * Set method
+     *
+     * @param string $method
+     * @return Request
+    */
+    public function setMethod(string $method): Request
+    {
+        $this->method = $method;
+
+        $this->server->set('REQUEST_METHOD', $method);
+
+        return $this;
+    }
+
+
+
+    /**
+     * @return mixed|null
+    */
+    public function getMethod()
+    {
+        return $this->server->get('REQUEST_METHOD', 'GET');
+    }
+
+
+
+    /**
+     * Get request body
+     *
+     * @return array
+    */
+    public function getBody(): array
+    {
+        switch ($this->getMethod()) {
+            case 'GET':
+                return $this->query->sanitize(INPUT_GET);
+                break;
+            case 'POST':
+                return $this->request->sanitize(INPUT_POST);
+                break;
+            default:
+                return [];
+        }
+    }
+
+
+
+    /**
+     * @return Uri
+    */
+    public function getUri(): Uri
+    {
+        return $this->uri;
+    }
+
+
+
+    /**
+     * @return string
+    */
+    public function url(): string
+    {
+       return implode([$this->baseUrl(), $this->requestUri, $this->uri->getFragment()]);
+    }
+
+
+
+    /**
+     * @return string
+    */
+    public function baseUrl(): string
+    {
+        return implode([$this->getScheme() . '://', $this->server->getHost()]);
+    }
+
+
+
+
+    /**
+     * @param string $host
+     * @return bool
+    */
+    public function isValidHost(string $host): bool
+    {
+        return $this->server->getHost() === $host;
+    }
+
 
 
     /**
@@ -425,6 +438,7 @@ class Request
     {
         return stripos($this->getContentType(), 'application/x-www-form-urlencoded') === 0;
     }
+
 
 
 
@@ -456,28 +470,6 @@ class Request
     */
     protected function toUpperMethod(): string
     {
-        return strtoupper($this->server->get('REQUEST_METHOD', 'GET'));
-    }
-
-
-
-
-    /**
-     * @return mixed|null
-    */
-    public function getMethod()
-    {
-        return $this->server->getMethod();
-    }
-
-
-
-
-    /**
-     * @return array
-    */
-    public function getBody()
-    {
-        return [];
+        return strtoupper($this->getMethod());
     }
 }

@@ -1,0 +1,163 @@
+<?php
+namespace Jan\Component\Http;
+
+
+use Jan\Component\Http\Parser\UrlParser;
+
+/**
+ * Class Uri
+ * @package Jan\Component\Http
+*/
+class Uri
+{
+
+
+     /**
+      * Get scheme
+      *
+      * @var string
+     */
+     protected $scheme;
+
+
+
+
+     /**
+      * Get username
+      *
+      * @var string
+     */
+     protected $username;
+
+
+
+
+     /**
+      * Get password
+      *
+      * @var string
+     */
+     protected $password;
+
+
+
+
+     /**
+      * Get host
+      *
+      * @var string
+     */
+     protected $host;
+
+
+
+
+     /**
+      * Get port
+      *
+      * @var string
+     */
+     protected $port;
+
+
+
+
+     /**
+      * Get path
+      *
+      * @var string
+     */
+     protected $path;
+
+
+
+     /**
+      * Query string
+      *
+      * @var string
+     */
+     protected $qs;
+
+
+
+
+     /**
+      * Get fragment
+      *
+      * @var string
+     */
+     protected $fragment;
+
+
+     /**
+      * Uri constructor ( scheme://user:pass@host:port/path?query=value#fragment )
+      *
+      * Example: http://postgres:123456@127.0.0.1:5402/database_name?charset=utf8#anchor;
+      *
+      * @param UrlParser $parser
+     */
+     public function __construct(UrlParser $parser)
+     {
+          $this->scheme   = $parser->parse(PHP_URL_SCHEME);
+          $this->username = $parser->parse(PHP_URL_USER);
+          $this->password = $parser->parse(PHP_URL_PASS);
+          $this->host     = $parser->parse(PHP_URL_HOST);
+          $this->port     = $parser->parse(PHP_URL_PORT);
+          $this->path     = $parser->parse(PHP_URL_PATH);
+          $this->qs       = $parser->parse(PHP_URL_QUERY);
+          $this->fragment = $parser->parse(PHP_URL_FRAGMENT);
+     }
+
+
+
+
+     /**
+      * @return array|string
+     */
+     public function getHost()
+     {
+         return $this->host;
+     }
+
+
+
+
+     /**
+      * @return array|string
+     */
+     public function getPort()
+     {
+         return $this->port;
+     }
+
+
+
+
+     /**
+      * @return array|string
+     */
+     public function getPath()
+     {
+         return $this->path;
+     }
+
+
+
+     /**
+      * @return array|string
+     */
+     public function getQueryString()
+     {
+         return $this->qs;
+     }
+
+
+
+     /**
+      * @return array|string
+     */
+     public function getFragment()
+     {
+         return $this->fragment;
+     }
+}

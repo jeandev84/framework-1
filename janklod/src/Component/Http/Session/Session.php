@@ -10,8 +10,14 @@ class Session implements SessionInterface
 {
 
 
+    /**
+     * Session constructor.
+    */
     public function __construct()
     {
+         if (! session_status() != PHP_SESSION_NONE) {
+              session_start();
+         }
     }
 
 
@@ -75,5 +81,28 @@ class Session implements SessionInterface
     public function all(): array
     {
         return $_SESSION;
+    }
+
+
+    /**
+     * @return mixed|void
+    */
+    public function clear()
+    {
+        foreach (array_keys($_SESSION) as $key) {
+             $this->remove($key);
+        }
+
+        /* session_destroy(); */
+    }
+
+
+
+    /**
+     * Remove all session params
+    */
+    public function forget()
+    {
+        session_destroy();
     }
 }

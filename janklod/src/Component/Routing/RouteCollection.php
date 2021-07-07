@@ -11,7 +11,7 @@ class RouteCollection
 
     /**
      * @var array
-     */
+    */
     protected $routes = [];
 
 
@@ -27,6 +27,16 @@ class RouteCollection
      * @var array
     */
     protected $namedRoutes = [];
+
+
+
+
+    /**
+     * @var array
+    */
+    protected $groups = [];
+
+
 
 
 
@@ -47,6 +57,18 @@ class RouteCollection
 
 
 
+
+    /**
+     * @param array $config
+     * @param callable $callback
+    */
+    public function addGroup(array $config, callable $callback)
+    {
+         $this->groups[] = [$config, $callback];
+    }
+
+
+
     /**
      * @return Route[]
     */
@@ -63,7 +85,7 @@ class RouteCollection
     public function setRoutes(array $routes)
     {
         foreach ($routes as $route) {
-            $this->addRouteFromArray($route);
+            $this->addRouteArrays($route);
         }
     }
 
@@ -73,7 +95,7 @@ class RouteCollection
      * @param array $items
      * @return Route
     */
-    public function addRouteFromArray(array $items): Route
+    public function addRouteArrays(array $items): Route
     {
         $route = new Route();
 
@@ -101,6 +123,7 @@ class RouteCollection
 
         return $this;
     }
+
 
 
     /**
