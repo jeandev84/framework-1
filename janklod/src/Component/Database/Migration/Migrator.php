@@ -72,10 +72,19 @@ class Migrator
 
 
 
+     /**
+      * @param Schema $schema
+     */
+     public function bootSchema(Schema $schema)
+     {
+         $this->schema = $schema;
+     }
 
-    /**
-     * Set table name for versions migrations
-     *
+
+
+     /**
+      * Set table name for versions migrations
+      *
      * @param string $migrationTable
      * @return $this
     */
@@ -85,6 +94,8 @@ class Migrator
 
         return $this;
     }
+
+
 
 
     /**
