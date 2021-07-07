@@ -31,15 +31,46 @@ class Schema
 
 
 
+
          /**
           * Schema constructor.
-          * @param Connection $connection
+          *
+          * @param Connection|null $connection
          */
-         public function __construct(Connection $connection)
+         public function __construct(Connection $connection = null)
          {
-              $this->config     = $connection->getConfiguration();
-              $this->connection = $connection;
+              if ($connection) {
+                  $this->bootParams($connection);
+              }
          }
+
+
+
+
+         /**
+           * Set connection
+           *
+           * @param Connection $connection
+         */
+         public function setConnection(Connection $connection)
+         {
+             $this->connection = $connection;
+         }
+
+
+
+
+
+         /**
+          * Set configuration
+          *
+          * @param Configuration $config
+         */
+         public function setConfiguration(Configuration $config)
+         {
+              $this->config = $config;
+         }
+
 
 
 
@@ -58,6 +89,7 @@ class Schema
 
             $closure($bluePrint);
 
+            // TODO refactoring , we'll don't add altered column sql
             $sql = sprintf("
                   CREATE TABLE IF NOT EXISTS `%s` (%s) 
                   ENGINE=%s DEFAULT CHARSET=%s
@@ -159,6 +191,8 @@ class Schema
     }
 
 
+
+
     /**
      * @param string $sql
      * @param array $params
@@ -171,5 +205,16 @@ class Schema
         }
 
         return $this->connection->exec($sql);
+    }
+
+
+
+    /**
+     * @param Connection $connection
+    */
+    public function bootParams(Connection $connection)
+    {
+         $this->setConnection($connection);
+         $this->setConfiguration($connection->getConfiguration());
     }
 }
