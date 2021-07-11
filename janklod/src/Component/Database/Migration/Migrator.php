@@ -65,7 +65,7 @@ class Migrator
 
 
 
-    /**
+     /**
       * Can run migrator via support connection
       *
       * @param Connection $connection
@@ -96,8 +96,8 @@ class Migrator
      /**
       * Set table name for versions migrations
       *
-     * @param string $migrationTable
-     * @return $this
+      * @param string $migrationTable
+      * @return $this
     */
     public function setMigrationTable(string $migrationTable): Migrator
     {
@@ -119,7 +119,6 @@ class Migrator
     {
         foreach ($migrationFiles as $migrationFile) {
              @require_once $migrationFile;
-
              $migrationClass = pathinfo($migrationFile, PATHINFO_FILENAME);
              $migration = new $migrationClass();
              $this->addMigration($migration);

@@ -45,6 +45,8 @@ class Configuration implements \ArrayAccess
       }
 
 
+
+
       /**
        * @param $key
        * @param $value
@@ -53,6 +55,7 @@ class Configuration implements \ArrayAccess
       {
            $this->params[$key] = $value;
       }
+
 
 
 
@@ -79,6 +82,8 @@ class Configuration implements \ArrayAccess
      }
 
 
+
+
      /**
       * Get all config params
       *
@@ -88,6 +93,8 @@ class Configuration implements \ArrayAccess
      {
          return $this->params;
      }
+
+
 
 
 

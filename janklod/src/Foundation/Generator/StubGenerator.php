@@ -4,6 +4,8 @@ namespace Jan\Foundation\Generator;
 
 use Jan\Component\FileSystem\FileSystem;
 
+
+
 /**
  * Class StubGenerator
  * @package Jan\Foundation\Generator
